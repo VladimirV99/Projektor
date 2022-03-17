@@ -23,13 +23,28 @@ namespace Identity.Controllers
         {
             var user = _mapper.Map<User>(userRegisterRequest);
 
-            // TODO Validation messages
+            // Validation
+            TryValidateModel(user);            
+            if (await _repository.GetUserByEmail(user.Email) != null)
+            {
+                // NOTE: This is validated only when the default UserRegisterRequest validation has passed
+                ModelState.TryAddModelError(nameof(user.Email), "Email is already in use");
+            }
+            if (!ModelState.IsValid)
+            {
+                // ValidationProblem is returned to match the body validation response template
+                // See https://github.com/dotnet/aspnetcore/issues/6077 and https://github.com/dotnet/aspnetcore/issues/38504 for more details
+                return ValidationProblem(ModelState);
+            }
+            
+            // Create user
             if (!await _repository.CreateUser(user, userRegisterRequest.Password))
             {
                 return BadRequest();
             }
             _logger.LogInformation($"Registered user with email: {user.Email}");
 
+            // Add roles
             foreach (var role in roles)
             {
                 if (await _repository.AddRoleToUser(user, role))
@@ -38,7 +53,7 @@ namespace Identity.Controllers
                 }
                 else
                 {
-                    _logger.LogInformation($"Role '{role}' does not exist.");
+                    _logger.LogWarning($"Role '{role}' does not exist.");
                 }
             }
 

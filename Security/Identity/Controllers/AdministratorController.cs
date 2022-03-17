@@ -22,5 +22,26 @@ namespace Identity.Controllers
         {
             return await RegisterUserWithRoles(userRegisterRequest, new string[] { "Administrator" });
         }
+
+        [HttpGet("[action]")]
+        [ProducesResponseType(typeof(IEnumerable<UserDetails>), StatusCodes.Status200OK)]
+        public async Task<IActionResult> GetAllUsers()
+        {
+            var users = await _repository.GetAllUsers();
+            return Ok(_mapper.Map<IEnumerable<UserDetails>>(users));
+        }
+
+        [HttpGet("[action]/{email}")]
+        [ProducesResponseType(typeof(UserDetails), StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        public async Task<IActionResult> GetUserByEmail(string email)
+        {
+            var user = await _repository.GetUserByEmail(email);
+            if (user != null)
+            {
+                return Ok(_mapper.Map<UserDetails>(user));
+            }
+            return NotFound();
+        }
     }
 }

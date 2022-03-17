@@ -10,6 +10,7 @@ namespace Identity.Mapper
         {
             CreateMap<UserRegisterRequest, User>()
                 .ForMember(user => user.UserName, opt => opt.MapFrom(request => request.Email));
+            CreateMap<User, UserDetails>();
         }
     }
 }

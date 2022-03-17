@@ -1,5 +1,6 @@
 ﻿using Identity.Entities;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.EntityFrameworkCore;
 
 namespace Identity.Data
 {
@@ -31,6 +32,16 @@ namespace Identity.Data
                 return true;
             }
             return false;
+        }
+
+        public async Task<IEnumerable<User>> GetAllUsers()
+        {
+            return await _userManager.Users.ToListAsync();
+        }
+
+        public async Task<User> GetUserByEmail(string email)
+        {
+            return await _userManager.FindByEmailAsync(email);
         }
     }
 }

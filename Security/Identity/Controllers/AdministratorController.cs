@@ -1,4 +1,5 @@
 ﻿using AutoMapper;
+using Identity.Constants;
 using Identity.Data;
 using Identity.Models;
 using Microsoft.AspNetCore.Authorization;
@@ -8,7 +9,7 @@ namespace Identity.Controllers
 {
     [ApiController]
     [Route("api/v1/[controller]")]
-    //[Authorize(Roles = "Administrator")] // TODO Enable
+    //[Authorize(Roles = Roles.ADMINISTRATOR)] // TODO Enable
     public class AdministratorController : IdentityControllerBase
     {
         public AdministratorController(ILogger<AuthenticationController> logger, IMapper mapper, IIdentityRepository repository) : base(logger, mapper, repository)
@@ -20,7 +21,7 @@ namespace Identity.Controllers
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         public async Task<IActionResult> RegisterAdministrator([FromBody] UserRegisterRequest userRegisterRequest)
         {
-            return await RegisterUserWithRoles(userRegisterRequest, new string[] { "Administrator" });
+            return await RegisterUserWithRoles(userRegisterRequest, new string[] { Roles.ADMINISTRATOR });
         }
 
         [HttpGet("[action]")]

@@ -1,4 +1,5 @@
 ﻿using AutoMapper;
+using Identity.Constants;
 using Identity.Data;
 using Identity.Models;
 using Microsoft.AspNetCore.Mvc;
@@ -18,7 +19,7 @@ namespace Identity.Controllers
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         public async Task<IActionResult> RegisterCustomer([FromBody] UserRegisterRequest userRegisterRequest)
         {
-            return await RegisterUserWithRoles(userRegisterRequest, new string[] { "Customer" });
+            return await RegisterUserWithRoles(userRegisterRequest, new string[] { Roles.CUSTOMER });
         }
     }
 }

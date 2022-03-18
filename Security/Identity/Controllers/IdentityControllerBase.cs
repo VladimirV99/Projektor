@@ -1,4 +1,5 @@
 ﻿using AutoMapper;
+using Identity.Constants;
 using Identity.Data;
 using Identity.Entities;
 using Identity.Models;
@@ -28,7 +29,7 @@ namespace Identity.Controllers
             if (await _repository.GetUserByEmail(user.Email) != null)
             {
                 // NOTE: This is validated only when the default UserRegisterRequest validation has passed
-                ModelState.TryAddModelError(nameof(user.Email), "Email is already in use");
+                ModelState.TryAddModelError(nameof(user.Email), ErrorMessages.EMAIL_UNIQUE);
             }
             if (!ModelState.IsValid)
             {

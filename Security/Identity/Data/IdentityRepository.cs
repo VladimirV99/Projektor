@@ -26,12 +26,12 @@ namespace Identity.Data
         public async Task<bool> AddRoleToUser(User user, string role)
         {
             var roleExists = await _roleManager.RoleExistsAsync(role);
-            if (roleExists)
-            {
-                await _userManager.AddToRoleAsync(user, role);
-                return true;
-            }
-            return false;
+
+            if (!roleExists)
+                return false;
+
+            await _userManager.AddToRoleAsync(user, role);
+            return true;
         }
 
         public async Task<IEnumerable<User>> GetAllUsers()

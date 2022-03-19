@@ -45,12 +45,13 @@ namespace Identity.Controllers
         {
             var email = User.FindFirstValue(ClaimTypes.Email);
             var user = await _repository.GetUserByEmail(email);
-            if (user != null)
+            if (user == null)
             {
-                await _repository.ChangeUserName(user, userChangeNameRequest.FirstName, userChangeNameRequest.LastName);
-                return Ok(_mapper.Map<UserDetails>(user));
+                return NotFound();
             }
-            return NotFound();
+            
+            await _repository.ChangeUserName(user, userChangeNameRequest.FirstName, userChangeNameRequest.LastName);
+            return Ok(_mapper.Map<UserDetails>(user));
         }
 
         [Authorize]
@@ -69,15 +70,16 @@ namespace Identity.Controllers
 
             var email = User.FindFirstValue(ClaimTypes.Email);
             var user = await _repository.GetUserByEmail(email);
-            if (user != null)
+            if (user == null)
             {
-                var changed = await _repository.ChangeUserPassword(user, request.CurrentPassword, request.NewPassword);
-                if (changed)
-                    return Ok();
-                else
-                    return Unauthorized();
+                return NotFound();
             }
-            return NotFound();
+
+            var changed = await _repository.ChangeUserPassword(user, request.CurrentPassword, request.NewPassword);
+            if (changed)
+                return Ok();
+            else
+                return Unauthorized();
         }
 
         [Authorize(Roles = Roles.CUSTOMER)]

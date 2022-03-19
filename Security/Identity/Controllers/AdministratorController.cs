@@ -53,17 +53,21 @@ namespace Identity.Controllers
         public async Task<ActionResult> DeleteUserByEmail(string email)
         {
             var user = await _repository.GetUserByEmail(email);
-            if (user != null)
+            if (user == null)
             {
-                if (user.Email == User.FindFirstValue(ClaimTypes.Email))
-                    return BadRequest("Administrator can't delete his account");
-                if((await _repository.GetUserRoles(user)).Contains(Roles.ADMINISTRATOR))
-                    return BadRequest("Can't delete account of administrator");
-                
-                await _repository.DeleteUser(user!);
-                return Ok();
+                return NotFound();
             }
-            return NotFound();
+
+            if (user.Email == User.FindFirstValue(ClaimTypes.Email))
+            {
+                return BadRequest("Administrator can't delete his account");
+            }
+            if((await _repository.GetUserRoles(user)).Contains(Roles.ADMINISTRATOR))
+            {
+                return BadRequest("Can't delete account of administrator");
+            }
+            await _repository.DeleteUser(user!);
+            return Ok();
         }
     }
 }

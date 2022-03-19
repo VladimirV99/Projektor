@@ -6,6 +6,7 @@ var builder = WebApplication.CreateBuilder(args);
 // Add services to the container.
 builder.Services.ConfigurePersistence(builder.Configuration);
 builder.Services.ConfigureIdentity();
+builder.Services.ConfigureJWT(builder.Configuration);
 
 builder.Services.AddAutoMapper(Assembly.GetExecutingAssembly());
 

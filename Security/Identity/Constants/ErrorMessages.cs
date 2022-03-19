@@ -11,5 +11,8 @@
         public const string EMAIL_UNIQUE = "Email is already in use";
 
         public const string PASSWORD_REQUIRED = "Password is required";
+
+        public const string NEW_PASSWORD_REQUIRED = "New password is required";
+        public const string NEW_PASSWORD_SAME = "New password can't be the same as old";
     }
 }

@@ -38,6 +38,24 @@ namespace Identity.Data
             return await _userManager.CheckPasswordAsync(user, password);
         }
 
+        public async Task ChangeUserName(User user, string firstName, string lastName)
+        {
+            user.FirstName = firstName;
+            user.LastName = lastName;
+            await _userManager.UpdateAsync(user);
+        }
+
+        public async Task<bool> ChangeUserPassword(User user, string currentPassword, string newPassword)
+        {
+            var result = await _userManager.ChangePasswordAsync(user, currentPassword, newPassword);
+            return result.Succeeded;
+        }
+
+        public async Task DeleteUser(User user)
+        {
+            await _userManager.DeleteAsync(user);
+        }
+
         public async Task<bool> AddRoleToUser(User user, string role)
         {
             var roleExists = await _roleManager.RoleExistsAsync(role);

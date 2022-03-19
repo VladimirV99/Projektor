@@ -41,7 +41,6 @@ namespace Identity.Extensions
         public static IServiceCollection ConfigureJWT(this IServiceCollection services, IConfiguration configuration)
         {
             var jwtSettings = configuration.GetSection("JWT");
-            var secretKey = jwtSettings.GetSection("Key").Value;
 
             services.AddAuthentication(options =>
             {

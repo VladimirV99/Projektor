@@ -6,12 +6,15 @@ namespace Movies.API.Entities
     {
         [Required(ErrorMessage = "MovieId is required.")]
         public int MovieId { get; set; }
-        [Required(ErrorMessage = "RoleId is required.")]
+        public Movie? Movie { get; set; }
 
+        [Required(ErrorMessage = "RoleId is required")]
         public int RoleId { get; set; }
-        [Required(ErrorMessage = "PersonId is required.")]
+        public Role? Role { get; set; }
 
+        [Required(ErrorMessage = "PersonId is required.")]
         public int PersonId { get; set; }
+        public Person? Person { get; set; }
 
     }
 }

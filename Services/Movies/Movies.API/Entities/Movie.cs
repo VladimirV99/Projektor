@@ -1,19 +1,20 @@
 ﻿using System.ComponentModel.DataAnnotations;
+using Movies.API.Constants;
 
 namespace Movies.API.Entities
 {
     public class Movie
     {
-        [Required(ErrorMessage = "Id is required.")]
+        [Required(ErrorMessage = ErrorMessages.ID_REQUIRED)]
         public int Id { get; set; }
 
-        [Required(ErrorMessage = "Title is required.")]
+        [Required(ErrorMessage = ErrorMessages.TITLE_REQUIRED)]
         public string Title { get; set; }
 
-        [Required(ErrorMessage = "Length is required.")]
+        [Required(ErrorMessage = ErrorMessages.LENGTH_REQUIRED)]
         public int Length { get; set; }
 
-        [Required(ErrorMessage = "Year is required.")]
+        [Required(ErrorMessage = ErrorMessages.YEAR_REQUIRED)]
         public uint Year { get; set; }
 
         public string? TrailerUrl { get; set; }

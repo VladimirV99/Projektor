@@ -5,11 +5,11 @@ namespace Movies.API.Data
 {
     public class MovieContext : DbContext
     {
-        public DbSet<Movie> Movies { get; }
-        public DbSet<Person> People { get; }
-        public DbSet<Role> Roles { get; }
-        public DbSet<MoviePerson> MoviePeople { get; }
-        public DbSet<Genre> Genres { get; }
+        public DbSet<Movie> Movies { get; set; }
+        public DbSet<Person> People { get; set; }
+        public DbSet<Role> Roles { get; set; }
+        public DbSet<MoviePerson> MoviePeople { get; set; }
+        public DbSet<Genre> Genres { get; set; }
 
         public MovieContext(DbContextOptions options) : base(options)
         {

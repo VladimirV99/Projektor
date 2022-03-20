@@ -354,3 +354,6 @@ MigrationBackup/
 
 # Rider file
 .idea
+
+# NEKI KRS
+**/.DS_Store

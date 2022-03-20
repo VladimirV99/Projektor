@@ -4,6 +4,7 @@ using Identity.Data;
 using Identity.Models;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using System.Security.Claims;
 
 namespace Identity.Controllers
 {
@@ -43,6 +44,30 @@ namespace Identity.Controllers
                 return Ok(_mapper.Map<UserDetails>(user));
             }
             return NotFound();
+        }
+
+        [HttpDelete("[action]/{email}")]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        public async Task<ActionResult> DeleteUserByEmail(string email)
+        {
+            var user = await _repository.GetUserByEmail(email);
+            if (user == null)
+            {
+                return NotFound();
+            }
+
+            if (user.Email == User.FindFirstValue(ClaimTypes.Email))
+            {
+                return BadRequest("Administrator can't delete his account");
+            }
+            if((await _repository.GetUserRoles(user)).Contains(Roles.ADMINISTRATOR))
+            {
+                return BadRequest("Can't delete account of administrator");
+            }
+            await _repository.DeleteUser(user!);
+            return Ok();
         }
     }
 }

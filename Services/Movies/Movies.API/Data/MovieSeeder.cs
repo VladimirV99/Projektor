@@ -2,21 +2,21 @@ using Movies.API.Entities;
 
 namespace Movies.API.Data;
 
-public class MovieContextSeed
+public class MovieSeeder : IMovieSeeder
 {
-    public static void SeedData(MovieContext context)
+    public async void SeedData(MovieContext context)
     {
         var movies = context.Movies;
         var people = context.People;
 
         if (!movies.Any())
         {
-            movies.AddRangeAsync(getMovies());
+            await movies.AddRangeAsync(getMovies());
         }
 
         if (!people.Any())
         {
-            people.AddRangeAsync(getPeople());
+            await people.AddRangeAsync(getPeople());
         }
 
         context.SaveChanges();

@@ -7,10 +7,16 @@ services:
       context: .
       dockerfile: Services/Movies/Movies.API/Dockerfile
   movies.db:
-    container_name: mssql
+    container_name: movies.db
     image: mcr.microsoft.com/mssql/server:2017-latest
     environment:
       SA_PASSWORD: MatfRs2_Movies
       ACCEPT_EULA: Y
     ports:
       - "1433:1433"
+    volumes:
+      - movies.db.data:/var/opt/mssql
+      - ./Services/Movies/Movies.API/Seed:/var/seed
+
+volumes:
+  movies.db.data:

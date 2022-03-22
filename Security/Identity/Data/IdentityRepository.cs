@@ -71,5 +71,27 @@ namespace Identity.Data
         {
             return await _userManager.GetRolesAsync(user);
         }
+
+        public async Task CreateRefreshToken(RefreshToken refreshToken)
+        {
+            _dbContext.RefreshTokens.Add(refreshToken);
+            await _dbContext.SaveChangesAsync();
+        }
+
+        public IEnumerable<RefreshToken> GetUserRefreshTokens(User user)
+        {
+            return _dbContext.RefreshTokens.Where(t => t.UserId == user.Id);
+        }
+
+        public async Task<RefreshToken?> FindRefreshToken(string refreshToken)
+        {
+            return await _dbContext.RefreshTokens.SingleOrDefaultAsync(t => t.Token == refreshToken);
+        }
+
+        public async Task UpdateRefreshToken(RefreshToken refreshToken)
+        {
+            _dbContext.Update(refreshToken);
+            await _dbContext.SaveChangesAsync();
+        }
     }
 }

@@ -4,6 +4,7 @@ using Identity.Models;
 using Microsoft.IdentityModel.Tokens;
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
+using System.Security.Cryptography;
 using System.Text;
 
 namespace Identity.Services
@@ -29,13 +30,15 @@ namespace Identity.Services
             return user;
         }
 
-        public async Task<AuthenticationResponse> CreateAuthenticationResponse(User user)
+        public async Task<AuthenticationResponse> CreateAuthenticationResponse(User user, RefreshToken? parentToken = null)
         {
             var accessToken = await CreateAccessToken(user);
+            var refreshToken = await CreateRefreshToken(user, parentToken);
 
             return new AuthenticationResponse
             {
-                AccessToken = accessToken
+                AccessToken = accessToken,
+                RefreshToken = refreshToken.Token
             };
         }
 
@@ -82,6 +85,33 @@ namespace Identity.Services
             }
 
             return claims;
+        }
+
+        private async Task<RefreshToken> CreateRefreshToken(User user, RefreshToken? parent)
+        {
+            var randomNumber = new byte[32];
+            using var rng = RandomNumberGenerator.Create();
+            rng.GetBytes(randomNumber);
+            var tokenString = Convert.ToBase64String(randomNumber);
+
+            var token = new RefreshToken
+            {
+                UserId = user.Id,
+                Family = parent?.Family ?? tokenString,
+                Token = tokenString,
+                IsRevoked = false,
+                CreatedAt = DateTime.UtcNow,
+                ExpiresAt = DateTime.UtcNow.AddDays(Convert.ToDouble(_configuration.GetValue<string>("RefreshToken:Expires")))
+            };
+
+            await _repository.CreateRefreshToken(token);
+
+            return token;
+        }
+
+        public Task<AuthenticationResponse> RefreshSession(User user, string refreshToken)
+        {
+            throw new NotImplementedException();
         }
     }
 }

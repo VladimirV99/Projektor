@@ -13,5 +13,9 @@ namespace Identity.Data
         Task DeleteUser(User user);
         Task<bool> AddRoleToUser(User user, string role);
         Task<IEnumerable<string>> GetUserRoles(User user);
+        Task CreateRefreshToken(RefreshToken refreshToken);
+        IEnumerable<RefreshToken> GetUserRefreshTokens(User user);
+        Task<RefreshToken?> FindRefreshToken(string refreshToken);
+        Task UpdateRefreshToken(RefreshToken refreshToken);
     }
 }

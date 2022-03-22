@@ -6,3 +6,11 @@ services:
     build:
       context: .
       dockerfile: Services/Movies/Movies.API/Dockerfile
+  movies.db:
+    container_name: mssql
+    image: mcr.microsoft.com/mssql/server:2017-latest
+    environment:
+      SA_PASSWORD: MatfRs2_Movies
+      ACCEPT_EULA: Y
+    ports:
+      - "1433:1433"

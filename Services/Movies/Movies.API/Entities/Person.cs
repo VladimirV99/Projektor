@@ -1,16 +1,23 @@
 ﻿using System.ComponentModel.DataAnnotations;
+using Movies.API.Constants;
 
 namespace Movies.API.Entities
 {
     public class Person
     {
-        [Required(ErrorMessage = "Id is required.")]
+        [Required(ErrorMessage = ErrorMessages.ID_REQUIRED)]
         public int Id { get; set; }
-        [Required(ErrorMessage = "First name is required.")]
+
+        [Required(ErrorMessage = ErrorMessages.FIRST_NAME_REQUIRED)]
         public string FirstName { get; set; }
-        [Required(ErrorMessage = "Last name is required.")]
+
+        [Required(ErrorMessage = ErrorMessages.LAST_NAME_REQUIRED)]
         public string LastName { get; set; }
-        public string ImageUrl { get; set; }
+
+        public string? ImageUrl { get; set; }
+
+        public string? ImdbUrl { get; set; }
+
         public List<MoviePerson> Movies { get; set; }
     }
 }

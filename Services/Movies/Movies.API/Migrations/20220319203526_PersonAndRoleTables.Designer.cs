@@ -2,6 +2,7 @@
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Movies.API.Data;
 
@@ -10,9 +11,10 @@ using Movies.API.Data;
 namespace Movies.API.Migrations
 {
     [DbContext(typeof(MovieContext))]
-    partial class MovieContextModelSnapshot : ModelSnapshot
+    [Migration("20220319203526_PersonAndRoleTables")]
+    partial class PersonAndRoleTables
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -62,9 +64,11 @@ namespace Movies.API.Migrations
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"), 1L, 1);
 
                     b.Property<string>("ImageUrl")
+                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("ImdbUrl")
+                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<int>("Length")
@@ -75,6 +79,7 @@ namespace Movies.API.Migrations
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("TrailerUrl")
+                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<long>("Year")
@@ -100,8 +105,6 @@ namespace Movies.API.Migrations
 
                     b.HasIndex("PersonId");
 
-                    b.HasIndex("RoleId");
-
                     b.ToTable("MoviePeople");
                 });
 
@@ -118,9 +121,6 @@ namespace Movies.API.Migrations
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("ImageUrl")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("ImdbUrl")
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("LastName")
@@ -170,29 +170,17 @@ namespace Movies.API.Migrations
 
             modelBuilder.Entity("Movies.API.Entities.MoviePerson", b =>
                 {
-                    b.HasOne("Movies.API.Entities.Movie", "Movie")
+                    b.HasOne("Movies.API.Entities.Movie", null)
                         .WithMany("People")
                         .HasForeignKey("MovieId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("Movies.API.Entities.Person", "Person")
+                    b.HasOne("Movies.API.Entities.Person", null)
                         .WithMany("Movies")
                         .HasForeignKey("PersonId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
-
-                    b.HasOne("Movies.API.Entities.Role", "Role")
-                        .WithMany()
-                        .HasForeignKey("RoleId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("Movie");
-
-                    b.Navigation("Person");
-
-                    b.Navigation("Role");
                 });
 
             modelBuilder.Entity("Movies.API.Entities.Movie", b =>

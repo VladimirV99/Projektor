@@ -53,46 +53,12 @@ namespace Identity.Controllers
                 return Unauthorized();
             }
 
-            var userTokens = await _repository.GetUserRefreshTokens(user);
-            var refreshToken = userTokens.SingleOrDefault(t => t.Token == request.RefreshToken);
-            
+            // Check if the refresh token is valid
+            var refreshToken = await _authService.ValidateRefreshToken(user, request.RefreshToken);
             if (refreshToken == null)
             {
-                _logger.LogWarning($"Refreshing session failed: Refresh token not found");
                 return Unauthorized();
             }
-
-            if (refreshToken.UserId != user.Id)
-            {
-                _logger.LogWarning($"Refreshing token failed: Refresh token does not belong to user");
-                return Unauthorized();
-            }
-
-            if (refreshToken.ExpiresAt < DateTime.UtcNow)
-            {
-                _logger.LogWarning($"Refreshing token failed: Refresh token is invalid");
-                return Unauthorized();
-            }
-
-            // If the token was previously revoked then we consider it stolen and invalidate the entire family
-            if (refreshToken.IsRevoked)
-            {
-                _logger.LogWarning($"Atempted to use revoked token for {user.Email}. Revoking entire family");
-
-                var latestToken = userTokens.Where(t => t.Family == refreshToken.Family).OrderByDescending(t => t.CreatedAt).First();
-                
-                if (!latestToken.IsRevoked)
-                {
-                    latestToken.IsRevoked = true;
-                    await _repository.UpdateRefreshToken(latestToken);
-                }
-
-                return Unauthorized();
-            }
-
-            // Revoke the current token
-            refreshToken.IsRevoked = true;
-            await _repository.UpdateRefreshToken(refreshToken);
 
             // Remove expired tokens for user
             await _authService.RemoveOldRefreshTokens(user);

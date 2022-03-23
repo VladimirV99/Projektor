@@ -11,11 +11,13 @@ namespace Identity.Services
 {
     public class AuthenticationService : IAuthenticationService
     {
+        private readonly ILogger<AuthenticationService> _logger;
         private readonly IConfiguration _configuration;
-        protected readonly IIdentityRepository _repository;
+        private readonly IIdentityRepository _repository;
 
-        public AuthenticationService(IConfiguration configuration, IIdentityRepository repository)
+        public AuthenticationService(ILogger<AuthenticationService> logger, IConfiguration configuration, IIdentityRepository repository)
         {
+            _logger = logger ?? throw new ArgumentNullException(nameof(logger));
             _configuration = configuration ?? throw new ArgumentNullException(nameof(configuration));
             _repository = repository ?? throw new ArgumentNullException(nameof(repository));
         }
@@ -28,6 +30,52 @@ namespace Identity.Services
                 return null;
             }
             return user;
+        }
+
+        public async Task<RefreshToken?> ValidateRefreshToken(User user, string refreshToken)
+        {
+            var userTokens = await _repository.GetUserRefreshTokens(user);
+            var token = userTokens.SingleOrDefault(t => t.Token == refreshToken);
+
+            if (token == null)
+            {
+                _logger.LogWarning($"Validating token failed: Refresh token not found");
+                return null;
+            }
+
+            if (token.UserId != user.Id)
+            {
+                _logger.LogWarning($"Validating token failed: Refresh token does not belong to user");
+                return null;
+            }
+
+            if (token.ExpiresAt < DateTime.UtcNow)
+            {
+                _logger.LogWarning($"Validating token failed: Refresh token is expired");
+                return null;
+            }
+
+            // If the token was previously revoked then we consider it stolen and invalidate the entire family
+            if (token.IsRevoked)
+            {
+                _logger.LogWarning($"Atempted to use revoked token for {user.Email}. Revoking entire family");
+
+                var latestToken = userTokens.Where(t => t.Family == token.Family).OrderByDescending(t => t.CreatedAt).First();
+
+                if (!latestToken.IsRevoked)
+                {
+                    latestToken.IsRevoked = true;
+                    await _repository.UpdateRefreshToken(latestToken);
+                }
+
+                return null;
+            }
+
+            // Revoke the current token
+            token.IsRevoked = true;
+            await _repository.UpdateRefreshToken(token);
+
+            return token;
         }
 
         public async Task<AuthenticationResponse> CreateAuthenticationResponse(User user, RefreshToken? parentToken = null)
@@ -107,11 +155,6 @@ namespace Identity.Services
             await _repository.CreateRefreshToken(token);
 
             return token;
-        }
-
-        public Task<AuthenticationResponse> RefreshSession(User user, string refreshToken)
-        {
-            throw new NotImplementedException();
         }
 
         public async Task RemoveRefreshTokenFamily(string refreshToken)

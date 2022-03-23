@@ -21,5 +21,6 @@ namespace Identity.Data
         Task DeleteRefreshToken(RefreshToken refreshToken);
         Task DeleteRefreshTokens(IEnumerable<RefreshToken> refreshTokens);
         Task DeleteRefreshTokens(Expression<Func<RefreshToken, bool>> predicate);
+        Task DeleteAllRefreshTokens();
     }
 }

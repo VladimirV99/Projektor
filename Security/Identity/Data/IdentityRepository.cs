@@ -112,5 +112,10 @@ namespace Identity.Data
             await _dbContext.RefreshTokens.Where(predicate).ForEachAsync(t => _dbContext.RefreshTokens.Remove(t));
             await _dbContext.SaveChangesAsync();
         }
+
+        public async Task DeleteAllRefreshTokens()
+        {
+            await _dbContext.Database.ExecuteSqlRawAsync("TRUNCATE TABLE RefreshTokens");
+        }
     }
 }

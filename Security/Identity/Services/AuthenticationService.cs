@@ -183,9 +183,7 @@ namespace Identity.Services
 
         public async Task RevokeAllTokens()
         {
-            // TODO This method is inefficient, it fetches all tokens and deletes them one by one 
-            // Instead, use: context.Database.ExecuteSqlCommand("TRUNCATE TABLE [TableName]");
-            await _repository.DeleteRefreshTokens(t => true);
+            await _repository.DeleteAllRefreshTokens();
         }
     }
 }

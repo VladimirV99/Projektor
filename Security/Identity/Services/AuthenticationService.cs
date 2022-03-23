@@ -113,5 +113,36 @@ namespace Identity.Services
         {
             throw new NotImplementedException();
         }
+
+        public async Task RemoveRefreshTokenFamily(string refreshToken)
+        {
+            var token = await _repository.FindRefreshToken(refreshToken);
+            if (token == null)
+            {
+                return;
+            }
+
+            await _repository.DeleteRefreshTokens(t => t.Family == token.Family);
+        }
+
+        public async Task RemoveOldRefreshTokens(User user)
+        {
+            // Remove old inactive refresh tokens from user based on time to live setting
+            var timeToLive = Convert.ToDouble(_configuration.GetValue<string>("RefreshToken:TimeToLive"));
+
+            // TODO Remove based on RevokedAt, not ExpiresAt
+            var expiredTokens = (await _repository.GetUserRefreshTokens(user))
+                .Where(t => !t.IsActive && t.ExpiresAt.AddDays(timeToLive) <= DateTime.UtcNow);
+            await _repository.DeleteRefreshTokens(expiredTokens);
+
+            //await _repository.DeleteRefreshTokens(t => t.UserId == user.Id && !t.IsActive && t.ExpiresAt.AddDays(timeToLive) <= DateTime.UtcNow);
+        }
+
+        public async Task RevokeAllTokens()
+        {
+            // TODO This method is inefficient, it fetches all tokens and deletes them one by one 
+            // Instead, use: context.Database.ExecuteSqlCommand("TRUNCATE TABLE [TableName]");
+            await _repository.DeleteRefreshTokens(t => true);
+        }
     }
 }

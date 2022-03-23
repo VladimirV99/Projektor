@@ -2,7 +2,7 @@
 using Identity.Constants;
 using Identity.Data;
 using Identity.Models;
-using Microsoft.AspNetCore.Authorization;
+using Identity.Services;
 using Microsoft.AspNetCore.Mvc;
 using System.Security.Claims;
 
@@ -13,7 +13,8 @@ namespace Identity.Controllers
     //[Authorize(Roles = Roles.ADMINISTRATOR)] // TODO Enable
     public class AdministratorController : IdentityControllerBase
     {
-        public AdministratorController(ILogger<AuthenticationController> logger, IMapper mapper, IIdentityRepository repository) : base(logger, mapper, repository)
+        public AdministratorController(ILogger<AuthenticationController> logger, IMapper mapper, IIdentityRepository repository, IAuthenticationService authService) 
+            : base(logger, mapper, repository, authService)
         {
         }
 
@@ -67,6 +68,14 @@ namespace Identity.Controllers
                 return BadRequest("Can't delete account of administrator");
             }
             await _repository.DeleteUser(user!);
+            return Ok();
+        }
+
+        [HttpPost("[action]")]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        public async Task<IActionResult> RevokeAllTokens()
+        {
+            await _authService.RevokeAllTokens();
             return Ok();
         }
     }

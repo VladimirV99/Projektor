@@ -1,5 +1,4 @@
-﻿using System;
-namespace Movies.API.Constants
+﻿namespace Movies.API.Constants
 {
 	public class ErrorMessages
 	{
@@ -15,7 +14,7 @@ namespace Movies.API.Constants
 
 		public const string MOVIE_ID_REQUIRED = "MovieId is required";
 		public const string PERSON_ID_REQUIRED = "PersonId is required";
-		public const string ROLE_ID_REQUIRED = "RoleId required";
+		public const string ROLE_ID_REQUIRED = "RoleId is required";
 	}
 }
 

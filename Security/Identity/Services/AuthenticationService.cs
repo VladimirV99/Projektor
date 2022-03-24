@@ -65,6 +65,7 @@ namespace Identity.Services
                 if (!latestToken.IsRevoked)
                 {
                     latestToken.IsRevoked = true;
+                    latestToken.RevokedAt = DateTime.UtcNow;
                     await _repository.UpdateRefreshToken(latestToken);
                 }
 
@@ -73,6 +74,7 @@ namespace Identity.Services
 
             // Revoke the current token
             token.IsRevoked = true;
+            token.RevokedAt = DateTime.UtcNow;
             await _repository.UpdateRefreshToken(token);
 
             return token;
@@ -173,12 +175,9 @@ namespace Identity.Services
             // Remove old inactive refresh tokens from user based on time to live setting
             var timeToLive = Convert.ToDouble(_configuration.GetValue<string>("RefreshToken:TimeToLive"));
 
-            // TODO Remove based on RevokedAt, not ExpiresAt
             var expiredTokens = (await _repository.GetUserRefreshTokens(user))
-                .Where(t => !t.IsActive && t.ExpiresAt.AddDays(timeToLive) <= DateTime.UtcNow);
+                .Where(t => t.HasExceededTTL(timeToLive));
             await _repository.DeleteRefreshTokens(expiredTokens);
-
-            //await _repository.DeleteRefreshTokens(t => t.UserId == user.Id && !t.IsActive && t.ExpiresAt.AddDays(timeToLive) <= DateTime.UtcNow);
         }
 
         public async Task RevokeAllTokens()

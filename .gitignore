@@ -355,5 +355,5 @@ MigrationBackup/
 # Rider file
 .idea
 
-# NEKI KRS
+# MacOS Finder Files
 **/.DS_Store

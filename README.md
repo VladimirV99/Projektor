@@ -9,5 +9,5 @@ docker-compose up --build -d movies.db
 ```
 2. Run this command:
 ```console
-opt/mssql-tools/bin/sqlcmd -S localhost -U sa -P MatfRs2_Movies -d MoviesDB -e -i /var/seed/seed_script.sql 
+docker exec -it movies.db opt/mssql-tools/bin/sqlcmd -S localhost -U sa -P MatfRs2_Movies -d MoviesDB -e -i /var/seed/seed_script.sql 
 ```

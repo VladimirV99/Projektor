@@ -3,6 +3,7 @@ using Identity.Constants;
 using Identity.Data;
 using Identity.Entities;
 using Identity.Models;
+using Identity.Services;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Identity.Controllers
@@ -12,12 +13,14 @@ namespace Identity.Controllers
         protected readonly ILogger<AuthenticationController> _logger;
         protected readonly IMapper _mapper;
         protected readonly IIdentityRepository _repository;
+        protected readonly IAuthenticationService _authService;
 
-        public IdentityControllerBase(ILogger<AuthenticationController> logger, IMapper mapper, IIdentityRepository repository)
+        public IdentityControllerBase(ILogger<AuthenticationController> logger, IMapper mapper, IIdentityRepository repository, IAuthenticationService authService)
         {
             _logger = logger ?? throw new ArgumentNullException(nameof(logger));
             _mapper = mapper ?? throw new ArgumentNullException(nameof(mapper));
             _repository = repository ?? throw new ArgumentNullException(nameof(repository));
+            _authService = authService ?? throw new ArgumentNullException(nameof(authService));
         }
 
         protected async Task<IActionResult> RegisterUserWithRoles(UserRegisterRequest userRegisterRequest, IEnumerable<string> roles)

@@ -1,6 +1,7 @@
 ﻿using Identity.Entities;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
+using System.Linq.Expressions;
 
 namespace Identity.Data
 {
@@ -70,6 +71,51 @@ namespace Identity.Data
         public async Task<IEnumerable<string>> GetUserRoles(User user)
         {
             return await _userManager.GetRolesAsync(user);
+        }
+
+        public async Task CreateRefreshToken(RefreshToken refreshToken)
+        {
+            _dbContext.RefreshTokens.Add(refreshToken);
+            await _dbContext.SaveChangesAsync();
+        }
+
+        public async Task<IEnumerable<RefreshToken>> GetUserRefreshTokens(User user)
+        {
+            return await _dbContext.RefreshTokens.Where(t => t.UserId == user.Id).ToListAsync();
+        }
+
+        public async Task<RefreshToken?> FindRefreshToken(string refreshToken)
+        {
+            return await _dbContext.RefreshTokens.SingleOrDefaultAsync(t => t.Token == refreshToken);
+        }
+
+        public async Task UpdateRefreshToken(RefreshToken refreshToken)
+        {
+            _dbContext.Update(refreshToken);
+            await _dbContext.SaveChangesAsync();
+        }
+
+        public async Task DeleteRefreshToken(RefreshToken refreshToken)
+        {
+            _dbContext.Remove(refreshToken);
+            await _dbContext.SaveChangesAsync();
+        }
+
+        public async Task DeleteRefreshTokens(IEnumerable<RefreshToken> refreshTokens)
+        {
+            _dbContext.RemoveRange(refreshTokens);
+            await _dbContext.SaveChangesAsync();
+        }
+
+        public async Task DeleteRefreshTokens(Expression<Func<RefreshToken, bool>> predicate)
+        {
+            await _dbContext.RefreshTokens.Where(predicate).ForEachAsync(t => _dbContext.RefreshTokens.Remove(t));
+            await _dbContext.SaveChangesAsync();
+        }
+
+        public async Task DeleteAllRefreshTokens()
+        {
+            await _dbContext.Database.ExecuteSqlRawAsync("TRUNCATE TABLE RefreshTokens");
         }
     }
 }

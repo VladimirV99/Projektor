@@ -14,5 +14,7 @@
 
         public const string NEW_PASSWORD_REQUIRED = "New password is required";
         public const string NEW_PASSWORD_SAME = "New password can't be the same as old";
+
+        public const string REFRESH_TOKEN_REQUIRED = "Refresh token is required";
     }
 }

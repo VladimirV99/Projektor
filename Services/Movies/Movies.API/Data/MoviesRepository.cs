@@ -34,6 +34,17 @@ namespace Movies.API.Data
                     .ThenInclude(m => m.Genres)
                 .SingleOrDefaultAsync(g => g.Id == id);
         }
+
+        public async Task<List<Movie>> GetMoviesByPerson(int id)
+        {
+            return await _dbContext
+                .Movies
+                .Include(m => m.People)
+                .Where(m => m.People.Select(p => p.PersonId).Contains(id))
+                .Include(m => m.Genres)
+                .ToListAsync();
+
+        }
         
     }
 }

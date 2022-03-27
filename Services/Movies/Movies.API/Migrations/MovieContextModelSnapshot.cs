@@ -50,7 +50,7 @@ namespace Movies.API.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("Genre");
+                    b.ToTable("Genres");
                 });
 
             modelBuilder.Entity("Movies.API.Entities.Movie", b =>
@@ -62,11 +62,9 @@ namespace Movies.API.Migrations
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"), 1L, 1);
 
                     b.Property<string>("ImageUrl")
-                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("ImdbUrl")
-                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<int>("Length")
@@ -77,7 +75,6 @@ namespace Movies.API.Migrations
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("TrailerUrl")
-                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<long>("Year")
@@ -101,7 +98,59 @@ namespace Movies.API.Migrations
 
                     b.HasKey("MovieId", "PersonId", "RoleId");
 
+                    b.HasIndex("PersonId");
+
+                    b.HasIndex("RoleId");
+
                     b.ToTable("MoviePeople");
+                });
+
+            modelBuilder.Entity("Movies.API.Entities.Person", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"), 1L, 1);
+
+                    b.Property<string>("FirstName")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("ImageUrl")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("ImdbUrl")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("LastName")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("People");
+                });
+
+            modelBuilder.Entity("Movies.API.Entities.Role", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"), 1L, 1);
+
+                    b.Property<string>("Description")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("Roles");
                 });
 
             modelBuilder.Entity("GenreMovie", b =>
@@ -121,16 +170,39 @@ namespace Movies.API.Migrations
 
             modelBuilder.Entity("Movies.API.Entities.MoviePerson", b =>
                 {
-                    b.HasOne("Movies.API.Entities.Movie", null)
+                    b.HasOne("Movies.API.Entities.Movie", "Movie")
                         .WithMany("People")
                         .HasForeignKey("MovieId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
+
+                    b.HasOne("Movies.API.Entities.Person", "Person")
+                        .WithMany("Movies")
+                        .HasForeignKey("PersonId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("Movies.API.Entities.Role", "Role")
+                        .WithMany()
+                        .HasForeignKey("RoleId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Movie");
+
+                    b.Navigation("Person");
+
+                    b.Navigation("Role");
                 });
 
             modelBuilder.Entity("Movies.API.Entities.Movie", b =>
                 {
                     b.Navigation("People");
+                });
+
+            modelBuilder.Entity("Movies.API.Entities.Person", b =>
+                {
+                    b.Navigation("Movies");
                 });
 #pragma warning restore 612, 618
         }

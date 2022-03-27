@@ -5,8 +5,11 @@ namespace Movies.API.Data
 {
     public class MovieContext : DbContext
     {
-        public DbSet<Movie> Movies { get; }
-        public DbSet<MoviePerson> MoviePeople { get; }
+        public DbSet<Movie> Movies { get; set; }
+        public DbSet<Person> People { get; set; }
+        public DbSet<Role> Roles { get; set; }
+        public DbSet<MoviePerson> MoviePeople { get; set; }
+        public DbSet<Genre> Genres { get; set; }
 
         public MovieContext(DbContextOptions options) : base(options)
         {
@@ -15,7 +18,8 @@ namespace Movies.API.Data
         protected override void OnModelCreating(ModelBuilder builder)
         {
             base.OnModelCreating(builder);
-            builder.Entity<MoviePerson>().HasKey(person => new { person.MovieId, person.PersonId, person.RoleId } );
+            builder.Entity<MoviePerson>()
+                .HasKey(mp => new { mp.MovieId, mp.PersonId, mp.RoleId });
         }
     }
 }

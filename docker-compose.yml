@@ -1,8 +1,20 @@
 version: '3.4'
 
 services:
+  projektor_mssql:
+    image: mcr.microsoft.com/mssql/server:2017-latest
+
   movies.api:
     image: ${DOCKER_REGISTRY-}moviesapi
     build:
       context: .
       dockerfile: Services/Movies/Movies.API/Dockerfile
+
+  identity:
+    image: ${DOCKER_REGISTRY-}identity
+    build:
+      context: .
+      dockerfile: Security/Identity/Dockerfile
+
+volumes:
+  mssql_data:

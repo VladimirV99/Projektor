@@ -1,11 +1,11 @@
 ﻿using System;
 namespace Movies.API.Models
 {
-	public class GenreModel
+	public class GenreSimpleModel
 	{
         public int Id { get; set; }
 
         public string Name { get; set; }
-    }
+	}
 }
 

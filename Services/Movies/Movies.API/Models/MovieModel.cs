@@ -17,7 +17,7 @@ namespace Movies.API.Models
         public string? ImageUrl { get; set; }
         public string? ImdbUrl { get; set; }
         public List<PersonRoleModel> People { get; set; }
-        public List<GenreModel> Genres { get; set; }
+        public List<GenreSimpleModel> Genres { get; set; }
     }
 }
 

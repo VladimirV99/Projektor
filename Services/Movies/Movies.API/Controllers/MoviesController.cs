@@ -1,6 +1,7 @@
 ﻿using System;
 using Microsoft.AspNetCore.Mvc;
 using Movies.API.Data;
+using Movies.API.Models;
 
 namespace Movies.API.Controllers
 {
@@ -16,7 +17,7 @@ namespace Movies.API.Controllers
         }
 
         [HttpGet("[action]/{id}")]
-        public async IActionResult<MovieModel> GetMovieById(int id)
+        public async Task<IActionResult> GetMovieById(int id)
         {
             var movieModel = await _repository.GetMovieById(id);
             return movieModel == null ? NotFound() : Ok(movieModel);

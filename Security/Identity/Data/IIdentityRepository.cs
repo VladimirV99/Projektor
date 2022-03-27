@@ -1,4 +1,5 @@
 ﻿using Identity.Entities;
+using System.Linq.Expressions;
 
 namespace Identity.Data
 {
@@ -13,5 +14,13 @@ namespace Identity.Data
         Task DeleteUser(User user);
         Task<bool> AddRoleToUser(User user, string role);
         Task<IEnumerable<string>> GetUserRoles(User user);
+        Task CreateRefreshToken(RefreshToken refreshToken);
+        Task<IEnumerable<RefreshToken>> GetUserRefreshTokens(User user);
+        Task<RefreshToken?> FindRefreshToken(string refreshToken);
+        Task UpdateRefreshToken(RefreshToken refreshToken);
+        Task DeleteRefreshToken(RefreshToken refreshToken);
+        Task DeleteRefreshTokens(IEnumerable<RefreshToken> refreshTokens);
+        Task DeleteRefreshTokens(Expression<Func<RefreshToken, bool>> predicate);
+        Task DeleteAllRefreshTokens();
     }
 }

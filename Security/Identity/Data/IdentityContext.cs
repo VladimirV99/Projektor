@@ -7,6 +7,8 @@ namespace Identity.Data
 {
     public class IdentityContext : IdentityDbContext<User>
     {
+        public DbSet<RefreshToken> RefreshTokens => Set<RefreshToken>();
+
         public IdentityContext(DbContextOptions options) : base(options)
         {
         }

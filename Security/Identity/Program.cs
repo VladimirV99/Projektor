@@ -1,4 +1,5 @@
 using Common.Auth.Extensions;
+using Common.Auth.Models;
 using Identity.Extensions;
 using Identity.Services;
 using Microsoft.OpenApi.Models;
@@ -9,7 +10,7 @@ var builder = WebApplication.CreateBuilder(args);
 // Add services to the container.
 builder.Services.ConfigurePersistence(builder.Configuration);
 builder.Services.ConfigureIdentity();
-builder.Services.ConfigureJWT(builder.Configuration);
+builder.Services.ConfigureJWT(builder.Configuration.GetSection("JWT").Get<JwtSettings>());
 
 builder.Services.AddAutoMapper(Assembly.GetExecutingAssembly());
 

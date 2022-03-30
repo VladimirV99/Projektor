@@ -1,5 +1,5 @@
-﻿using Microsoft.AspNetCore.Authentication.JwtBearer;
-using Microsoft.Extensions.Configuration;
+﻿using Common.Auth.Models;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.IdentityModel.Tokens;
 using System.Text;
@@ -8,10 +8,8 @@ namespace Common.Auth.Extensions
 {
     public static class ServiceExtensions
     {
-        public static IServiceCollection ConfigureJWT(this IServiceCollection services, IConfiguration configuration)
+        public static IServiceCollection ConfigureJWT(this IServiceCollection services, JwtSettings jwtSettings)
         {
-            var jwtSettings = configuration.GetSection("JWT");
-
             services.AddAuthentication(options =>
             {
                 options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
@@ -27,9 +25,9 @@ namespace Common.Auth.Extensions
                         ValidateIssuerSigningKey = true,
                         //ClockSkew = TimeSpan.Zero,
 
-                        ValidIssuer = jwtSettings["Issuer"],
-                        ValidAudience = jwtSettings["Audience"],
-                        IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(jwtSettings["Key"]))
+                        ValidIssuer = jwtSettings.Issuer,
+                        ValidAudience = jwtSettings.Audience,
+                        IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(jwtSettings.Key))
                     };
                     options.Events = new JwtBearerEvents
                     {

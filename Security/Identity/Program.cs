@@ -1,6 +1,6 @@
+using Common.Auth.Extensions;
 using Identity.Extensions;
 using Identity.Services;
-using Identity.Swagger;
 using Microsoft.OpenApi.Models;
 using System.Reflection;
 
@@ -27,16 +27,8 @@ builder.Services.AddSwaggerGen(options =>
         Title = "Identity Server",
         Description = "Identity Server for Projektor Application"
     });
-    options.AddSecurityDefinition("Bearer", new OpenApiSecurityScheme
-    {
-        In = ParameterLocation.Header,
-        Description = "Please enter JWT access token:",
-        Name = "Authorization",
-        Type = SecuritySchemeType.Http,
-        BearerFormat = "JWT",
-        Scheme = "Bearer"
-    });
-    options.OperationFilter<AuthOperationFilter>();
+    options.AddJwtSecurityDefinition();
+    options.AddAuthOperationFilter();
 });
 
 var app = builder.Build();

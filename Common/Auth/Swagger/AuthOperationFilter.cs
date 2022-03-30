@@ -3,7 +3,7 @@ using Microsoft.OpenApi.Models;
 using Swashbuckle.AspNetCore.SwaggerGen;
 using System.Text;
 
-namespace Identity.Swagger
+namespace Common.Auth.Swagger
 {
     public class AuthOperationFilter : IOperationFilter
     {

@@ -1,4 +1,4 @@
-﻿using Identity.Constants;
+﻿using Common.Auth;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;

@@ -3,11 +3,13 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
 VisualStudioVersion = 17.1.32228.430
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Movies.API", "Services\Movies\Movies.API\Movies.API.csproj", "{4E9E6319-7B71-43DB-9F07-63AE55AA9971}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Movies.API", "Services\Movies\Movies.API\Movies.API.csproj", "{4E9E6319-7B71-43DB-9F07-63AE55AA9971}"
 EndProject
 Project("{E53339B2-1760-4266-BCC7-CA923CBCF16C}") = "docker-compose", "docker-compose.dcproj", "{58366047-EED2-4F98-AEA7-38BD7EDD6336}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Identity", "Security\Identity\Identity.csproj", "{11B8D71C-A14B-49BE-9FE2-057D6C4A6DC4}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Identity", "Security\Identity\Identity.csproj", "{11B8D71C-A14B-49BE-9FE2-057D6C4A6DC4}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Mailer", "Services\Mailer\Mailer.csproj", "{055D77FE-0937-4C50-9327-F721A3936737}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -27,6 +29,10 @@ Global
 		{11B8D71C-A14B-49BE-9FE2-057D6C4A6DC4}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{11B8D71C-A14B-49BE-9FE2-057D6C4A6DC4}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{11B8D71C-A14B-49BE-9FE2-057D6C4A6DC4}.Release|Any CPU.Build.0 = Release|Any CPU
+		{055D77FE-0937-4C50-9327-F721A3936737}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{055D77FE-0937-4C50-9327-F721A3936737}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{055D77FE-0937-4C50-9327-F721A3936737}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{055D77FE-0937-4C50-9327-F721A3936737}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

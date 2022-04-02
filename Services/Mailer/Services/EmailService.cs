@@ -3,6 +3,7 @@ using MailKit.Net.Smtp;
 using MailKit.Security;
 using Microsoft.Extensions.Options;
 using MimeKit;
+using QRCoder;
 
 namespace Mailer.Services
 {
@@ -10,6 +11,8 @@ namespace Mailer.Services
     {
         private readonly EmailSettings _emailSettings;
         private readonly ILogger<EmailService> _logger;
+
+        private Dictionary<string, string> _templateCache = new();
 
         public EmailService(IOptions<EmailSettings> emailSettings, ILogger<EmailService> logger)
         {
@@ -80,6 +83,89 @@ namespace Mailer.Services
             }
 
             return true;
+        }
+
+        public async Task<bool> SendWelcomeEmail(WelcomeEmailModel welcomeModel)
+        {
+            const string templateKey = "Welcome";
+            string mailBody;
+            if (_templateCache.ContainsKey(templateKey))
+            {
+                mailBody = _templateCache.GetValueOrDefault(templateKey, "");
+            }
+            else
+            {
+                string templatePath = $"{Directory.GetCurrentDirectory()}/Templates/WelcomeTemplate.html";
+                try
+                {
+                    string template = File.ReadAllText(templatePath);
+                    _templateCache.Add(templateKey, template);
+                    mailBody = template;
+                } 
+                catch (Exception ex)
+                {
+                    _logger.LogError("Could not parse template file {Template}: {Error}", templatePath, ex.Message);
+                    return false;
+                }
+            }
+            
+            mailBody = string.Format(mailBody, welcomeModel.Name);
+
+            var email = new EmailModel
+            {
+                To = welcomeModel.To,
+                Subject = "Welcome to Projektor",
+                Body = mailBody,
+                IsHTML = true
+            };
+            return await SendEmail(email);
+        }
+
+        public async Task<bool> SendReservationEmail(ReservationEmailModel reservationModel)
+        {
+            const string templateKey = "Reservation";
+            string mailBody;
+            if (_templateCache.ContainsKey(templateKey))
+            {
+                mailBody = _templateCache.GetValueOrDefault(templateKey, "");
+            }
+            else
+            {
+                string templatePath = $"{Directory.GetCurrentDirectory()}/Templates/ReservationTemplate.html";
+                try
+                {
+                    string template = File.ReadAllText(templatePath);
+                    _templateCache.Add(templateKey, template);
+                    mailBody = template;
+                }
+                catch (Exception ex)
+                {
+                    _logger.LogError("Could not parse template file {Template}: {Error}", templatePath, ex.Message);
+                    return false;
+                }
+            }
+
+            using QRCodeGenerator qrGenerator = new();
+            using QRCodeData qrCodeData = qrGenerator.CreateQrCode(reservationModel.ReservationNumber, QRCodeGenerator.ECCLevel.Q);
+
+            // This directly converts the code to base64, but doesn't work with dotnet6 until version 2.0
+            //using Base64QRCode qrCode = new Base64QRCode(qrCodeData);
+            //string qrCodeText = qrCode.GetGraphic(20);
+
+            using PngByteQRCode qrCode = new(qrCodeData);
+            string qrCodeText = Convert.ToBase64String(qrCode.GetGraphic(20));
+
+            mailBody = string.Format(mailBody, reservationModel.Movie, reservationModel.Time, reservationModel.Hall,
+                reservationModel.Seat, reservationModel.Price, reservationModel.ReservationNumber, qrCodeText);
+
+            var email = new EmailModel
+            {
+                To = reservationModel.To,
+                Subject = "Projektor Reservation Confirmation",
+                Body = mailBody,
+                IsHTML = true
+            };
+            return await SendEmail(email);
         }
     }
 }

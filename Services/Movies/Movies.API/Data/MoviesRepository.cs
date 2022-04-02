@@ -27,7 +27,6 @@ namespace Movies.API.Data
 
         public async Task<List<Movie>> GetMoviesByGenreId(int id)
         {
-            // TODO: Should we call this GetGenre ?
             return await _dbContext
                 .Movies
                 .Include(m => m.Genres)

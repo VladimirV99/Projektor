@@ -26,14 +26,6 @@ namespace Movies.API.Mapper
                 .ForMember(dest => dest.People,
                     opt => opt.MapFrom(src => src.People));
 
-
-
-
-
-            //CreateMap<Movie, MovieModel>()
-            //        .ForMember(m => m.Genres, opt => opt.MapFrom(m => m.Genres))
-            //        .ForMember(m => m.People, opt => opt.MapFrom());
-
         }
 
     }

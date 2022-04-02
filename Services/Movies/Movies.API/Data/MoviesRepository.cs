@@ -25,14 +25,18 @@ namespace Movies.API.Data
                 .SingleOrDefaultAsync(m => m.Id == id);
         }
 
-        public async Task<Genre?> GetMoviesByGenreId(int id)
+        public async Task<List<Movie>> GetMoviesByGenreId(int id)
         {
             // TODO: Should we call this GetGenre ?
             return await _dbContext
-                .Genres
-                .Include(g => g.Movies)
-                    .ThenInclude(m => m.Genres)
-                .SingleOrDefaultAsync(g => g.Id == id);
+                .Movies
+                .Include(m => m.Genres)
+                .Include(m => m.People)
+                .ThenInclude(x => x.Person)
+                .Include(m => m.People)
+                .ThenInclude(x => x.Role)
+                .Where(m => m.Genres.Select(g => g.Id).Contains(id))
+                .ToListAsync();
         }
 
         public async Task<List<Movie>> GetMoviesByPerson(int id)

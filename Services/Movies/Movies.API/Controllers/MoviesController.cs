@@ -30,19 +30,13 @@ namespace Movies.API.Controllers
         [HttpGet("[action]/{id}")]
         public async Task<IActionResult> GetMoviesByGenre(int id)
         {
-            var genre = await _repository.GetMoviesByGenreId(id);
-            return genre == null ? NotFound() : Ok(_mapper.Map<Genre, GenreWithMoviesModel>(genre));
+            var movies = await _repository.GetMoviesByGenreId(id);
+            return Ok(_mapper.Map<List<Movie>, List<MovieModel>>(movies));
         }
 
         [HttpGet("[action]/{id}")]
         public async Task<IActionResult> GetMoviesByPerson(int id)
         {
-            // TODO: Do we need a separate model here?
-            // Something like MovieSimple that just has basic movie info and excludes people and genres?
-            // If so, we would also use it for GetMoviesByGenreId
-            // The idea is that when you're searching for a movie based on something we just give you some basic
-            // info and then if you want details you gotta click on it and go to a separate page which gives you
-            // the full model.
             var movies = await _repository.GetMoviesByPerson(id);
             return Ok(_mapper.Map<List<Movie>, List<MovieModel>>(movies));
         }

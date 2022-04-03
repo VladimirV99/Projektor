@@ -9,7 +9,11 @@ Project("{E53339B2-1760-4266-BCC7-CA923CBCF16C}") = "docker-compose", "docker-co
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Identity", "Security\Identity\Identity.csproj", "{11B8D71C-A14B-49BE-9FE2-057D6C4A6DC4}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Mailer", "Services\Mailer\Mailer.csproj", "{055D77FE-0937-4C50-9327-F721A3936737}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Mailer", "Services\Mailer\Mailer.csproj", "{055D77FE-0937-4C50-9327-F721A3936737}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Common", "Common", "{7860AF4D-331A-48D9-B641-D5E88853A7BF}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "EventBus", "Common\EventBus\EventBus.csproj", "{E837F5E9-C1FE-4CBF-A332-6A6D0BB6B9E9}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -33,9 +37,16 @@ Global
 		{055D77FE-0937-4C50-9327-F721A3936737}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{055D77FE-0937-4C50-9327-F721A3936737}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{055D77FE-0937-4C50-9327-F721A3936737}.Release|Any CPU.Build.0 = Release|Any CPU
+		{E837F5E9-C1FE-4CBF-A332-6A6D0BB6B9E9}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{E837F5E9-C1FE-4CBF-A332-6A6D0BB6B9E9}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{E837F5E9-C1FE-4CBF-A332-6A6D0BB6B9E9}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{E837F5E9-C1FE-4CBF-A332-6A6D0BB6B9E9}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(NestedProjects) = preSolution
+		{E837F5E9-C1FE-4CBF-A332-6A6D0BB6B9E9} = {7860AF4D-331A-48D9-B641-D5E88853A7BF}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {20A3AC5B-CB15-4B69-9A95-BDA539EBEFE1}

@@ -1,4 +1,5 @@
 ﻿using AutoMapper;
+using Common.Auth;
 using Identity.Constants;
 using Identity.Data;
 using Identity.Models;

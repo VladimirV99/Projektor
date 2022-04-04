@@ -1,4 +1,4 @@
-﻿namespace Identity.Constants
+﻿namespace Common.Auth
 {
     public class Roles
     {

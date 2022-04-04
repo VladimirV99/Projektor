@@ -1,6 +1,7 @@
 ﻿using System;
 using Microsoft.EntityFrameworkCore;
 using Movies.API.Entities;
+using Movies.API.Models;
 
 namespace Movies.API.Data
 {
@@ -46,7 +47,21 @@ namespace Movies.API.Data
                 .Where(m => m.People.Select(p => p.PersonId).Contains(id))
                 .Include(m => m.Genres)
                 .ToListAsync();
+        }
 
+        public async Task<List<Movie>> FilterMovies(FilterMoviesRequest request)
+        {
+            var page = request.Page ?? 1;
+            var perPage = request.PerPage ?? 20;
+
+            return await _dbContext.Movies
+                .Where(request.YearFrom == null ? m => true : m => m.Year >= request.YearFrom)
+                .Where(request.YearTo == null ? m => true : m => m.Year <= request.YearTo)
+                .Where(request.LengthFrom == null ? m => true : m => m.Length >= request.LengthFrom)
+                .Where(request.LengthTo == null ? m => true : m => m.Length <= request.LengthTo)
+                .Take(perPage)
+                .Skip((page - 1) * perPage)
+                .ToListAsync();
         }
         
     }

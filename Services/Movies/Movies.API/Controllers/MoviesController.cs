@@ -1,6 +1,6 @@
-﻿using System;
-using AutoMapper;
+﻿using AutoMapper;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.WebUtilities;
 using Movies.API.Data;
 using Movies.API.Entities;
 using Movies.API.Models;
@@ -40,7 +40,13 @@ namespace Movies.API.Controllers
             var movies = await _repository.GetMoviesByPerson(id);
             return Ok(_mapper.Map<List<Movie>, List<MovieModel>>(movies));
         }
-
+        
+        [HttpGet("[action]")]
+        public async Task<IActionResult> FilterMovies([FromQuery] FilterMoviesRequest request)
+        {
+            var movies = await _repository.FilterMovies(request);
+            return Ok(_mapper.Map<List<Movie>, List<MovieModel>>(movies));
+        }
     }
 }
 

@@ -1,8 +1,8 @@
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
-import * as API from "@redux/api";
-import Movie from "@models/Movie";
-import FilterMoviesRequest from "@models/Movie/FilterMoviesRequest";
-import { ApiSuccess } from "@models/index";
+import Movie from "../../../models/Movie";
+import FilterMoviesRequest from "../../../models/Movie/FilterMoviesRequest";
+import { ApiSuccess } from "../../../models";
+import * as API from "../../api";
 
 export type MovieSliceType = {
     entities: Movie[];

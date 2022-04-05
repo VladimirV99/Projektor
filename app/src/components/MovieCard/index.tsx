@@ -1,5 +1,5 @@
 import React from 'react';
-import Movie from '../../models/Movie';
+import Movie from '@models/Movie'
 
 type MovieCardProps = {
     movie: Movie;

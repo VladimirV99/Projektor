@@ -6,8 +6,8 @@ export default class Movie {
                 public TrailerUrl: string | null,
                 public ImdbUrl: string | null,
                 public ImageUrl: string | null,
-                public people: { personId: number, name: string}[],
-                public genres: { id: number, name: string }[]) {
+                public People: { personId: number, name: string}[],
+                public Genres: { id: number, name: string }[]) {
                     
                 }
 }

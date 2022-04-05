@@ -6,23 +6,29 @@ namespace Movies.API.Models;
 
 public class FilterMoviesRequest
 {
-    [FromQuery(Name="page")]
+    [FromQuery(Name="Page")]
     [Range(1, int.MaxValue, ErrorMessage=ErrorMessages.PAGE_NUMBER_AT_LEAST_ONE)]
     public int? Page { get; set; }
     
-    [FromQuery(Name="perPage")]
+    [FromQuery(Name="PerPage")]
     [Range(1, Misc.MAX_PAGE_SIZE, ErrorMessage=ErrorMessages.PER_PAGE_TOO_LARGE)]
     public int? PerPage { get; set; }
     
-    [FromQuery(Name="yearFrom")]
+    [FromQuery(Name="YearFrom")]
     public int? YearFrom { get; set; }
     
-    [FromQuery(Name="yearTo")]
+    [FromQuery(Name="YearTo")]
     public int? YearTo { get; set; }
     
-    [FromQuery(Name="lengthFrom")]
+    [FromQuery(Name="LengthFrom")]
     public int? LengthFrom { get; set; }
     
-    [FromQuery(Name="lengthTo")]
+    [FromQuery(Name="LengthTo")]
     public int? LengthTo { get; set; }
+    
+    [FromQuery(Name="Genres")]
+    public List<int>? Genres { get; set; }
+    
+    [FromQuery(Name="People")]
+    public List<int>? People { get; set; }
 }

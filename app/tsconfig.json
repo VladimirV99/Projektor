@@ -6,10 +6,13 @@
       "dom.iterable",
       "esnext"
     ],
-    "baseUrl": "src",
+    "baseUrl": "./src",
     "paths": {
       "@components/*": ["components/*"],
-      "@models/*": ["models/*"]
+      "@models/*": ["models/*"],
+      "@redux/*": ["redux/*"],
+      "@constants/*": ["constants/*"],
+      "@hooks/*": ["hooks/*"]
     },
     "allowJs": true,
     "skipLibCheck": true,

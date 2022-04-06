@@ -57,9 +57,11 @@ namespace Identity.Data
 
             // Seed admin account
             var adminSettings = _configuration.GetSection("Admin").Get<UserRegisterRequest>();
-            if ((await _identityRepository.GetUserByEmail(adminSettings.Email)) == null)
+            var admin = await _identityRepository.GetUserByEmail(adminSettings.Email);
+            // Check if admin account exists
+            if (admin == null)
             {
-                var admin = _mapper.Map<User>(adminSettings);
+                admin = _mapper.Map<User>(adminSettings);
 
                 var result = await _userManager.CreateAsync(admin, adminSettings.Password);
                 if (result.Succeeded)
@@ -71,6 +73,15 @@ namespace Identity.Data
                 else
                 {
                     _logger.LogError("Error creating administrator '{Email}'", adminSettings.Email);
+                }
+            }
+            else
+            {
+                // If admin exists, check for administrator role
+                if (!await _userManager.IsInRoleAsync(admin, Roles.ADMINISTRATOR))
+                {
+                    await _userManager.AddToRoleAsync(admin, Roles.ADMINISTRATOR);
+                    _logger.LogInformation("Added administrator role to user '{Email}'", adminSettings.Email);
                 }
             }
 

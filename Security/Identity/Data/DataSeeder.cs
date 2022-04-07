@@ -29,16 +29,23 @@ namespace Identity.Data
 
         public void Seed()
         {
-            int retryCount = 5;
-            var retry = Policy.Handle<SqlException>()
-                            .WaitAndRetry(
-                                retryCount: retryCount,
-                                sleepDurationProvider: retryAttempt => TimeSpan.FromSeconds(Math.Pow(2, retryAttempt)),
-                                onRetry: (exception, retryNumber, context) =>
-                                {
-                                    _logger.LogWarning("Retry {RetryNumber}/{RetryCount} of {Policy} at {Operation}, due to {Exception}", retryNumber, retryCount, context.PolicyKey, context.OperationKey, exception);
-                                });
-            retry.Execute(() => SeedFunction().Wait());
+            try
+            {
+                int retryCount = 5;
+                var retry = Policy.Handle<SqlException>()
+                                .WaitAndRetry(
+                                    retryCount: retryCount,
+                                    sleepDurationProvider: retryAttempt => TimeSpan.FromSeconds(Math.Pow(2, retryAttempt)),
+                                    onRetry: (exception, retryNumber, context) =>
+                                    {
+                                        _logger.LogWarning("Retry {RetryNumber}/{RetryCount} of {Policy} at {Operation}, due to {Exception}", retryNumber, retryCount, context.PolicyKey, context.OperationKey, exception);
+                                    });
+                retry.Execute(() => SeedFunction().Wait());
+            }
+            catch (Exception)
+            {
+                _logger.LogError("Could not seed data. All attempts failed");
+            }
         }
 
         private async Task SeedFunction()

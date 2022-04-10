@@ -53,7 +53,6 @@ namespace Movies.API.Data
         {
             var page = request.Page ?? 1;
             var perPage = request.PerPage ?? 20;
-
             return await _dbContext.Movies
                 .Where(request.YearFrom == null ? m => true : m => m.Year >= request.YearFrom)
                 .Where(request.YearTo == null ? m => true : m => m.Year <= request.YearTo)
@@ -64,8 +63,8 @@ namespace Movies.API.Data
                 .Where(request.People == null ? m => true : m => m.People.Select(p => p.PersonId).Intersect(request.People).Any())
                 .Include(m => m.Genres)
                 .Where(request.Genres == null ? m => true : m => m.Genres.Select(g => g.Id).Intersect(request.Genres).Any())
-                .Take(perPage)
                 .Skip((page - 1) * perPage)
+                .Take(perPage)
                 .ToListAsync();
         }
         

@@ -14,4 +14,8 @@ export const getMoviesStatus = createSelector(
     (state: MovieSliceType) => state.status
 );
 
+export const getMoviesCount = createSelector(
+    [getCoreState],
+    (state: MovieSliceType) => state.count
+);
 

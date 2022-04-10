@@ -49,23 +49,32 @@ namespace Movies.API.Data
                 .ToListAsync();
         }
 
-        public async Task<List<Movie>> FilterMovies(FilterMoviesRequest request)
+        public async Task<Tuple<List<Movie>, int>> FilterMovies(FilterMoviesRequest request)
         {
             var page = request.Page ?? 1;
             var perPage = request.PerPage ?? 20;
-            return await _dbContext.Movies
+            var query = _dbContext.Movies
                 .Where(request.YearFrom == null ? m => true : m => m.Year >= request.YearFrom)
                 .Where(request.YearTo == null ? m => true : m => m.Year <= request.YearTo)
                 .Where(request.LengthFrom == null ? m => true : m => m.Length >= request.LengthFrom)
                 .Where(request.LengthTo == null ? m => true : m => m.Length <= request.LengthTo)
                 .Include(m => m.People)
                 .ThenInclude(p => p.Role)
-                .Where(request.People == null ? m => true : m => m.People.Select(p => p.PersonId).Intersect(request.People).Any())
+                .Where(request.People == null
+                    ? m => true
+                    : m => m.People.Select(p => p.PersonId).Intersect(request.People).Any())
                 .Include(m => m.Genres)
-                .Where(request.Genres == null ? m => true : m => m.Genres.Select(g => g.Id).Intersect(request.Genres).Any())
+                .Where(request.Genres == null
+                    ? m => true
+                    : m => m.Genres.Select(g => g.Id).Intersect(request.Genres).Any());
+                
+            var result = await query
                 .Skip((page - 1) * perPage)
-                .Take(perPage)
-                .ToListAsync();
+                .Take(perPage).ToListAsync();
+            var count = query.Count();
+
+            return new Tuple<List<Movie>, int>(result, count);
+
         }
         
     }

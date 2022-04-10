@@ -15,9 +15,11 @@ const BrowseMoviesScreen = () => {
   const dispatch = useDispatch();
   const movies: Movie[] = useSelector(selectors.getMovies);
   const moviesStatus = useSelector(selectors.getMoviesStatus);
+  const moviesCount = useSelector(selectors.getMoviesCount);
 
-  const movieCount = useMemo(() => movies.length, [movies]);
-  const pageCount = useMemo(() => Math.ceil(movieCount / filterMovieRequest.PerPage), [movieCount, filterMovieRequest.PerPage]);
+  const numberOfPages = useMemo(() => {
+    return Math.ceil(moviesCount / filterMovieRequest.PerPage);
+  }, [moviesCount, filterMovieRequest.PerPage]);
 
   const handlePageChange = (event: any, page: number) => {
     setFilterMovieRequest(prevState => ({ ...prevState, Page: page }));
@@ -42,7 +44,7 @@ const BrowseMoviesScreen = () => {
       Filters here.
     </S.MovieFiltersContainer>
     <S.MovieListContainer>
-      <Pagination count={movieCount} page={filterMovieRequest.Page} onChange={handlePageChange} />
+      <Pagination count={numberOfPages} page={filterMovieRequest.Page} onChange={handlePageChange} />
       {moviesStatus === 'pending' || moviesStatus === 'idle' ? renderLoading() : movies.map(movie => (<S.MovieCardWrapper><MovieCard key={movie.id} movie={movie} /></S.MovieCardWrapper>))}
     </S.MovieListContainer>
   </S.Container>

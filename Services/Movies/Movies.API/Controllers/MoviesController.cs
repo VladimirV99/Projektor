@@ -44,8 +44,8 @@ namespace Movies.API.Controllers
         [HttpGet("[action]")]
         public async Task<IActionResult> FilterMovies([FromQuery] FilterMoviesRequest request)
         {
-            var movies = await _repository.FilterMovies(request);
-            return Ok(_mapper.Map<List<Movie>, List<MovieModel>>(movies));
+            var (movies, count) = await _repository.FilterMovies(request);
+            return Ok(new PaginatedMovieList {Movies = _mapper.Map<List<Movie>, List<MovieModel>>(movies), Count = count});
         }
     }
 }

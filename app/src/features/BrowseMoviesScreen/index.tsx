@@ -5,6 +5,7 @@ import MovieCard from "../../components/MovieCard"
 import Movie from "../../models/Movie";
 import FilterMoviesRequest from "../../models/Movie/FilterMoviesRequest";
 import * as selectors from '../../redux/selectors';
+import * as S from './index.styles';
 
 const BrowseMoviesScreen = () => {
 
@@ -26,9 +27,9 @@ const BrowseMoviesScreen = () => {
     return <div>Error</div>;
   }
 
-  return <Fragment>
-    {movies.map(movie => (<MovieCard key={movie.Id} movie={movie} />))}
-  </Fragment>
+  return <S.Container>
+    {movies.map(movie => (<S.MovieCardWrapper><MovieCard key={movie.id} movie={movie} /></S.MovieCardWrapper>))}
+  </S.Container>
 }
 
 export default BrowseMoviesScreen;

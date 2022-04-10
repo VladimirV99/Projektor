@@ -1,13 +1,13 @@
 export default class Movie {
-    constructor(public Id: number,
-                public Title: string,
-                public Year: number,
-                public Length: number,
-                public TrailerUrl: string | null,
-                public ImdbUrl: string | null,
-                public ImageUrl: string | null,
-                public People: { personId: number, name: string}[],
-                public Genres: { id: number, name: string }[]) {
+    constructor(public id: number,
+                public title: string,
+                public year: number,
+                public length: number,
+                public trailerUrl: string | null,
+                public imdbUrl: string | null,
+                public imageUrl: string | null,
+                public people: { personId: number, name: string}[],
+                public genres: { id: number, name: string }[]) {
                     
                 }
 }

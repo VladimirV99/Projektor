@@ -1,7 +1,5 @@
-import { Button } from "@mui/material";
 import { useState } from "react";
-import SignIn from "../authentication/signIn";
-import SignUp from "../authentication/signUp";
+import HomeScreenHeader from "./components/header";
 
 const HomeScreen = () => {
 
@@ -13,26 +11,16 @@ const HomeScreen = () => {
         setSignUpModal(true);
     }
 
-    const renderSignInModal = () => (
-        <SignIn
-            shouldRender={signInModal}
-            onModalClose={() => setSignInModal(!signInModal)}
-            onSignUpLinkClicked={onSignUpLinkCicked}
-        />
-    )
-
-    const renderSignUpModal = () => (
-        <SignUp shouldRender={signUpModal} onModalClose={() => setSignUpModal(!signUpModal)} />
-    )
-
     return (
-        <div>
-            {signInModal && renderSignInModal()}
-            {signUpModal && renderSignUpModal()}
-            <div>...Under construction</div>
-            <Button onClick={() => setSignInModal(true)}>Jebo te signIn dugme</Button>
-            <Button onClick={() => setSignUpModal(true)}>Jebo te signUp dugme</Button>
-        </div>
+        <HomeScreenHeader
+            shouldRenderSignInModal={signInModal} 
+            shouldRenderSignUpModal={signUpModal} 
+            onSignInModalClose={() => setSignInModal(!signInModal)}
+            onSignUpModalClose={() => setSignUpModal(!signUpModal)}
+            onSignUpLinkCicked={onSignUpLinkCicked}
+            openSignInModal={() => setSignInModal(true)}
+            openSignUpModal={() => setSignUpModal(true)}
+        />
     )
 }
 

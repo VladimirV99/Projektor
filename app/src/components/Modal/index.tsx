@@ -8,7 +8,7 @@ type Props = {
 
 const ModalCheKoV = ({ children, shouldRender, onModalClose }: Props): JSX.Element => {
     return (
-        <Modal open={shouldRender} onBackdropClick={onModalClose}>
+        <Modal open={shouldRender} onBackdropClick={onModalClose} style={{display: "flex", justifyContent: "center"}}>
             {children}
         </Modal>
     );

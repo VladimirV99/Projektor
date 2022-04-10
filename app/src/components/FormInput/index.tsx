@@ -18,7 +18,8 @@ const FormInput = ({ onChange, type, value, label, required = true }: Props): JS
                 onChange={e => {
                     onChange(e);
                 }}
-                value={value} />
+                value={value} 
+            />
         </FormControl>
     );
 }

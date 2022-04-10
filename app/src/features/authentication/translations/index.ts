@@ -1,3 +1,5 @@
+export const FIRST_NAME_LABEL = "First name";
+export const LAST_NAME_LABEL = "Last name";
 export const SIGN_IN_LABEL = "Sign in";
 export const EMAIL_LABEL = "Email address";
 export const PASSWORD_LABEL = "Password";

@@ -6,11 +6,20 @@ const useTokens = () => {
     const [refreshToken, setRefreshToken] = useState('');
 
     useEffect(() => {
-        window.onstorage = () => {
-            setAccessToken(window.localStorage.getItem('accessToken') || '');
-            setRefreshToken(window.localStorage.getItem('refreshToken') || '');
-        }
-    }, [])
+        window.addEventListener('storage', () => {
+            // When local storage changes, dump the list to
+            // the console.
+            console.log("Jebem mu majku");
+            console.log(window.localStorage.getItem('accessToken') || '');
+          });
+    });
+
+    // useEffect(() => {
+    //     window.onstorage = () => {
+    //         setAccessToken(window.localStorage.getItem('accessToken') || '');
+    //         setRefreshToken(window.localStorage.getItem('refreshToken') || '');
+    //     }
+    // }, [])
     console.log('-------------------------');
     console.log(accessToken);
     console.log('-------------------------');

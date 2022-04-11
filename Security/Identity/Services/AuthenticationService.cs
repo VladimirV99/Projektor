@@ -87,6 +87,7 @@ namespace Identity.Services
 
             return new AuthenticationResponse
             {
+                User = user,
                 AccessToken = accessToken,
                 RefreshToken = refreshToken.Token
             };

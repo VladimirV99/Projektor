@@ -1,10 +1,12 @@
-import { Button, FormControl, Input, InputLabel } from "@mui/material";
-import useTokens from "../../../../hooks/useTokens";
+import { Button } from "@mui/material";
+import { useDispatch, useSelector } from "react-redux";
+import { logoutCustomer } from "../../../authentication/redux/reducers";
+import { selectUser } from "../../../authentication/redux/selectors";
 import SignIn from "../../../authentication/signIn";
 import SignUp from "../../../authentication/signUp";
 
 type Props = {
-    isUserLogedIn?: boolean;
+    isUserLoggedIn?: boolean;
     shouldRenderSignInModal: boolean;
     shouldRenderSignUpModal: boolean;
     onSignInModalClose: () => void;
@@ -22,25 +24,33 @@ const HomeScreenHeader = (
         onSignUpModalClose,
         onSignUpLinkCicked,
         openSignInModal,
-        openSignUpModal
+        openSignUpModal,
+        isUserLoggedIn
     }: Props): JSX.Element => {
 
-    const {isLoggedIn} = useTokens();
+    const user = useSelector(selectUser);
 
-    return isLoggedIn ? (
-        <div>
-            <span>ljkdslkdlskd</span>
+    const dispatch = useDispatch();
+
+    const onLogOut = () => {
+        dispatch(logoutCustomer());
+    }
+
+    return isUserLoggedIn ? (
+        <div style={{ display: 'flex', justifyContent: 'space-between'}}>
+            <span>{user.firstName} {user.lastName}</span>
+            <Button onClick={onLogOut}>Log out</Button>
         </div>
-    ): (
-            <div style = {{ display: "flex", justifyContent: "flex-end" }}>
-                <div>
-                    <Button onClick={openSignInModal}>Sign in</Button>
-                    <Button onClick={openSignUpModal}>Sign up</Button>
-                    <SignIn shouldRender={shouldRenderSignInModal} onModalClose={onSignInModalClose} onSignUpLinkClicked={onSignUpLinkCicked} />
-                    <SignUp shouldRender={shouldRenderSignUpModal} onModalClose={onSignUpModalClose} />
-                </div>
-            </div >
-        )
+    ) : (
+        <div style={{ display: "flex", justifyContent: "flex-end" }}>
+            <div>
+                <Button onClick={openSignInModal}>Sign in</Button>
+                <Button onClick={openSignUpModal}>Sign up</Button>
+                <SignIn shouldRender={shouldRenderSignInModal} onModalClose={onSignInModalClose} onSignUpLinkClicked={onSignUpLinkCicked} />
+                <SignUp shouldRender={shouldRenderSignUpModal} onModalClose={onSignUpModalClose} />
+            </div>
+        </div >
+    )
 }
 
 export default HomeScreenHeader;

@@ -1,7 +1,5 @@
-import React, { useEffect } from 'react';
+import React from 'react';
 import 'bootstrap/dist/css/bootstrap.min.css';
-import { Col, Row } from 'react-bootstrap';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faClapperboard } from '@fortawesome/free-solid-svg-icons/faClapperboard';
 import { faClock } from '@fortawesome/free-regular-svg-icons/faClock';
 import { faLink } from '@fortawesome/free-solid-svg-icons/faLink';
@@ -13,27 +11,28 @@ type MovieCardProps = {
 }
 
 const MovieCard = ({ movie }: MovieCardProps): JSX.Element => {
-    const { title, year, length, people, genres, imdbUrl, imageUrl } = movie;
-    const genresDisplayString = genres.map(genre => genre.name.trim()).join(', ');
+    const { title, year, length, genres, imdbUrl, imageUrl } = movie;
+    const genresDisplayString = genres.length > 0 ? 
+                                    genres.map(genre => genre.name.trim()).join(', ')
+                                    : 'Other';
 
     return <S.MovieCardContainer>
         <S.MovieCardRow>
-            <Col xs={3} sm={3} md={2}>
+            <S.MovieCardCol xs={3}>
                 <S.MovieCoverImageContainer>
                     <S.MovieCoverImage src={imageUrl || "/movie_placeholder.jpg"} />
                 </S.MovieCoverImageContainer>
-            </Col>
-            <Col xs={9} sm={9} md={10}>
+            </S.MovieCardCol>
+            <S.MovieInfoCol xs={9}>
                 <div style={{display: 'flex'}}>
                     <S.MovieTitle>{title}</S.MovieTitle>
-                    <S.MovieYear> ({year}) </S.MovieYear>
+                    <S.MovieYear>({year})</S.MovieYear>
                 </div>
                 
-                {genres.length > 0 && 
                 <S.MovieInfo>
                     <S.MovieInfoIcon icon={faClapperboard} />
                     {genresDisplayString}
-                </S.MovieInfo>}
+                </S.MovieInfo>
 
                 <S.MovieInfo>
                     <S.MovieInfoIcon icon={faClock}/>
@@ -45,7 +44,7 @@ const MovieCard = ({ movie }: MovieCardProps): JSX.Element => {
                     <a href={imdbUrl! as string} target="_blank" rel="noopener noreferrer">View on IMDB</a>
                 </S.MovieInfo>}               
 
-            </Col>
+            </S.MovieInfoCol>
         </S.MovieCardRow>
     </S.MovieCardContainer>
 };

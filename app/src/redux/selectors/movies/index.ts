@@ -1,6 +1,5 @@
 import { MovieSliceType } from "@redux/reducers/Movie";
 import { createSelector } from "@reduxjs/toolkit";
-import Movie from "../../../models/Movie";
 
 const getCoreState = (state: any) : MovieSliceType => state.movies as MovieSliceType;
 

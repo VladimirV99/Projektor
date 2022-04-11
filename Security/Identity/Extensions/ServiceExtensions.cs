@@ -14,6 +14,7 @@ namespace Identity.Extensions
                 options.UseSqlServer(configuration.GetConnectionString("IdentityConnectionString"));
             });
             services.AddScoped<IIdentityRepository, IdentityRepository>();
+            services.AddTransient<IDataSeeder, DataSeeder>();
 
             return services;
         }

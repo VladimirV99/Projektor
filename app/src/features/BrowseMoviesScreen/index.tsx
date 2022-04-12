@@ -1,26 +1,35 @@
-﻿import React, { useCallback, useEffect, useMemo, useState } from "react";
+﻿import { useCallback, useEffect, useMemo, useState } from "react";
 import { useSelector, useDispatch } from "react-redux";
 import { filterMovies } from "../../redux/reducers/Movie";
+import { getGenres } from "../../redux/reducers/Genre";
 import { Backdrop, CircularProgress, Pagination } from "@mui/material";
 import { Col, Row } from "react-bootstrap";
 import MovieCard from "../../components/MovieCard"
 import MovieFilters from "../../components/MovieFilters";
 import Movie from "../../models/Movie";
 import FilterMoviesRequest from "../../models/Movie/FilterMoviesRequest";
+import useAsyncError from "hooks/useAsyncError";
 import * as selectors from '../../redux/selectors';
 import * as S from './index.styles';
 
 
-const BrowseMoviesScreen = () => {
+const BrowseMoviesScreen = () : JSX.Element => {
 
   const [filterMovieRequest, setFilterMovieRequest] = useState<FilterMoviesRequest>(new FilterMoviesRequest());
 
+  const throwAsyncError = useAsyncError();
   const dispatch = useDispatch();
   const movies: Movie[] = useSelector(selectors.getMovies);
   const moviesStatus = useSelector(selectors.getMoviesStatus);
   const moviesCount = useSelector(selectors.getMoviesCount);
 
+  const genres = useSelector(selectors.getGenres);
+  const genresStatus = useSelector(selectors.getGenresStatus);
+
   const isMoviesLoading = moviesStatus === 'pending' || moviesStatus === 'idle';
+  const isGenresLoading = genresStatus === 'pending' || genresStatus === 'idle';
+
+  console.log(isMoviesLoading, isGenresLoading);
 
   const numberOfPages = useMemo(() => {
     return Math.ceil(moviesCount / filterMovieRequest.PerPage);
@@ -41,12 +50,12 @@ const BrowseMoviesScreen = () => {
   }, [numberOfPages, filterMovieRequest.Page]);
 
   const renderMovies = useCallback(() => {
-    return moviesStatus === 'pending' || moviesStatus === 'idle' ? renderLoading()
-     : movies.length > 0 ? movies.map(movie => (<S.MovieCardWrapper>
-                              <MovieCard key={movie.id} movie={movie} />
-                            </S.MovieCardWrapper>))
-      : <p>No movies with such filters.</p>;
-  }, [movies, moviesStatus, renderLoading]);
+    return isMoviesLoading || isGenresLoading ? renderLoading()
+      : movies.length > 0 ? movies.map(movie => (<S.MovieCardWrapper>
+        <MovieCard key={movie.id} movie={movie} />
+      </S.MovieCardWrapper>))
+        : <p>No movies with such filters.</p>;
+  }, [movies, renderLoading, isMoviesLoading, isGenresLoading]);
 
   const handleYearRangeChange = (min: number, max: number) => {
     setFilterMovieRequest(prevState => ({ ...prevState, YearFrom: min, YearTo: max }));
@@ -56,31 +65,48 @@ const BrowseMoviesScreen = () => {
     setFilterMovieRequest(prevState => ({ ...prevState, LengthFrom: min, LengthTo: max }));
   };
 
+  const handleGenreIdsChange = (genreIds: number[] | null) => {
+    setFilterMovieRequest(prevState => ({ ...prevState, Genres: genreIds }));
+  };
+
   useEffect(() => {
-    console.log('Refiltering...');
+    console.log('Filtering with request:', filterMovieRequest);
     dispatch(filterMovies(filterMovieRequest));
   }, [filterMovieRequest, dispatch]);
 
-  if (moviesStatus === 'error') {
-    return <div>Error</div>;
-  }
+  useEffect(() => {
+    if (genresStatus === 'success') {
+      return;
+    }
+    dispatch(getGenres());
+  }, []);
 
-  return <S.Container>
+  useEffect(() => {
+    if (moviesStatus === 'error' || genresStatus === 'error') {
+      throwAsyncError(new Error('Something went wrong'));
+    }
+  }, [moviesStatus, genresStatus]);
+
+  return (<S.Container>
     <Row>
       <Col sm={12} md={4}>
         <S.MovieFiltersContainer>
-          <MovieFilters onYearRangeChange={handleYearRangeChange} onLengthRangeChange={handleLengthRangeChange}/>
+          <MovieFilters
+            genres={genres}
+            onYearRangeChange={handleYearRangeChange}
+            onLengthRangeChange={handleLengthRangeChange}
+            onGenreIdsChange={handleGenreIdsChange} />
         </S.MovieFiltersContainer>
       </Col>
       <Col sm={12} md={8}>
         {renderPagination()}
-        <S.MovieListContainer isLoading={isMoviesLoading} isEmpty={movies.length === 0}>
+        <S.MovieListContainer isLoading={isMoviesLoading || isGenresLoading} isEmpty={movies.length === 0}>
           {renderMovies()}
         </S.MovieListContainer>
         {renderPagination()}
       </Col>
     </Row>
-  </S.Container>
+  </S.Container>)
 }
 
 export default BrowseMoviesScreen;

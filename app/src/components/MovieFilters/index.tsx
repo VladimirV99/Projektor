@@ -1,22 +1,26 @@
-import React, { Fragment, useState } from 'react';
+import React, { Fragment, useEffect, useState } from 'react';
 import 'bootstrap/dist/css/bootstrap.min.css';
-import { Formik } from 'formik';
 import { Slider } from '@mui/material';
+import Genre from 'models/Genre';
+import * as S from './index.styles';
 
 type MovieFiltersProps = {
+    genres: Genre[];
     onYearRangeChange: (min: number, max: number) => void;
     onLengthRangeChange: (min: number, max: number) => void;
+    onGenreIdsChange: (genreIds: number[] | null) => void;
 }
 
-const MovieFilters = ( { onYearRangeChange, onLengthRangeChange } : MovieFiltersProps): JSX.Element => {
+const MovieFilters = ({ genres, onYearRangeChange, onLengthRangeChange, onGenreIdsChange }: MovieFiltersProps): JSX.Element => {
     const [yearRange, setYearRange] = useState<number[]>([1800, 2020]);
     const [lengthRange, setLengthRange] = useState<number[]>([0, 500]);
+    const [genreIds, setGenreIds] = useState<number[]>([]);
 
     const handleYearSliderChange = (event: Event, newValue: number | number[]) => {
         setYearRange(newValue as number[]);
     };
 
-    const handleYearSliderChangeCommited = (event: Event | React.SyntheticEvent<Element, Event>, newValue: number | number[]) : void => {
+    const handleYearSliderChangeCommited = (event: Event | React.SyntheticEvent<Element, Event>, newValue: number | number[]): void => {
         onYearRangeChange((newValue as number[])[0], (newValue as number[])[1]);
     }
 
@@ -24,9 +28,13 @@ const MovieFilters = ( { onYearRangeChange, onLengthRangeChange } : MovieFilters
         setLengthRange(newValue as number[]);
     };
 
-    const handleLengthSliderChangeCommited = (event: Event | React.SyntheticEvent<Element, Event>, newValue: number | number[]) : void => {
+    const handleLengthSliderChangeCommited = (event: Event | React.SyntheticEvent<Element, Event>, newValue: number | number[]): void => {
         onLengthRangeChange((newValue as number[])[0], (newValue as number[])[1]);
     }
+
+    useEffect(() => {
+        onGenreIdsChange(genreIds.length > 0 ? genreIds : null);
+    }, [genreIds]);
 
     return <Fragment>
         <h3>Advanced search:</h3>
@@ -52,6 +60,42 @@ const MovieFilters = ( { onYearRangeChange, onLengthRangeChange } : MovieFilters
             valueLabelDisplay="auto"
             getAriaValueText={(value: number) => `${value} min`}
         />
+
+        <h5>Genres</h5>
+        <div>
+            <div>
+                <S.CheckBoxWrapper>
+                    <input type="checkbox" checked={genreIds.length === 0} onChange={() => {
+                        if (genreIds.length === 0){
+                            return;
+                        }
+                        setGenreIds([]);
+                    }} />
+                </S.CheckBoxWrapper>
+                All
+            </div>
+            {genres.map(({ id, name }) =>
+                <div key={id}>
+                    <S.CheckBoxWrapper>
+                        <input type="checkbox" checked={genreIds.includes(id)} onChange={(e) => {
+                            setGenreIds(genreIds => {
+                                const newIds = [...genreIds]
+                                if (genreIds.includes(id)) {
+                                    newIds.splice(newIds.indexOf(id), 1);
+                                } else {
+                                    newIds.push(id);
+                                }
+                                return newIds;
+                            })
+                        }} />
+                    </S.CheckBoxWrapper>
+
+                    {name}
+
+                </div>)}
+
+        </div>
+
 
     </Fragment>
 };

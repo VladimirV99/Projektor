@@ -51,6 +51,17 @@ namespace Movies.API.Data
 
         public async Task<Tuple<List<Movie>, int>> FilterMovies(FilterMoviesRequest request)
         {
+                        
+            Console.WriteLine("----FILTER REQUEST------------");
+            Console.WriteLine(request.Genres);
+            if (request.Genres != null)
+            {
+                foreach (var g in request.Genres)
+                {
+                    Console.WriteLine(g);
+                }
+            }
+            Console.WriteLine("----FILTER REQUEST------------");
             var page = request.Page ?? 1;
             var perPage = request.PerPage ?? 20;
             var query = _dbContext.Movies
@@ -67,14 +78,20 @@ namespace Movies.API.Data
                 .Where(request.Genres == null
                     ? m => true
                     : m => m.Genres.Select(g => g.Id).Intersect(request.Genres).Any());
-                
+            
+            var count = query.Count();
             var result = await query
                 .Skip((page - 1) * perPage)
                 .Take(perPage).ToListAsync();
-            var count = query.Count();
+            
 
             return new Tuple<List<Movie>, int>(result, count);
 
+        }
+
+        public async Task<List<Genre>> GetGenres()
+        {
+            return await _dbContext.Genres.ToListAsync();
         }
         
     }

@@ -27,7 +27,7 @@ public class FilterMoviesRequest
     public int? LengthTo { get; set; }
     
     [FromQuery(Name="Genres[]")]
-    public int[]? Genres { get; set; }
+    public List<int>? Genres { get; set; }
     
     [FromQuery(Name="People")]
     public List<int>? People { get; set; }

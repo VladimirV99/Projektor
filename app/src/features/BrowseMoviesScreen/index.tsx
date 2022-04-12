@@ -51,8 +51,8 @@ const BrowseMoviesScreen = () : JSX.Element => {
 
   const renderMovies = useCallback(() => {
     return isMoviesLoading || isGenresLoading ? renderLoading()
-      : movies.length > 0 ? movies.map(movie => (<S.MovieCardWrapper>
-        <MovieCard key={movie.id} movie={movie} />
+      : movies.length > 0 ? movies.map(movie => (<S.MovieCardWrapper key={movie.id}>
+        <MovieCard movie={movie} />
       </S.MovieCardWrapper>))
         : <p>No movies with such filters.</p>;
   }, [movies, renderLoading, isMoviesLoading, isGenresLoading]);

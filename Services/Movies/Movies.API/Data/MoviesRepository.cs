@@ -77,8 +77,8 @@ namespace Movies.API.Data
                 .Include(m => m.Genres)
                 .Where(request.Genres == null
                     ? m => true
-                    : m => m.Genres.Select(g => g.Id).Intersect(request.Genres).Any());
-            
+                    : m => m.Genres.Select(g => g.Id).Any(x => request.Genres.Contains(x)));
+
             var count = query.Count();
             var result = await query
                 .Skip((page - 1) * perPage)

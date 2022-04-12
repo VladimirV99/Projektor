@@ -10,6 +10,7 @@ namespace Movies.API.Data
 		public Task<List<Movie>> GetMoviesByPerson(int id);
 		public Task<Tuple<List<Movie>, int>> FilterMovies(FilterMoviesRequest request);
 		public Task<List<Genre>> GetGenres();
+		public Task<Tuple<uint, uint, int, int>> GetFilterLimits();
 	}
 }
 

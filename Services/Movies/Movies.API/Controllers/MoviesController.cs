@@ -54,6 +54,13 @@ namespace Movies.API.Controllers
             var genres = await _repository.GetGenres();
             return Ok(_mapper.Map<List<Genre>, List<GenreSimpleModel>>(genres));
         }
+
+        [HttpGet("[action]")]
+        public async Task<IActionResult> GetFilterLimits()
+        {
+            var (yearMin, yearMax, lengthMin, lengthMax) = await _repository.GetFilterLimits();
+            return Ok(new FilterLimits{YearMax = yearMax, YearMin = yearMin, LengthMax = lengthMax, LengthMin = lengthMin});
+        }
     }
 }
 

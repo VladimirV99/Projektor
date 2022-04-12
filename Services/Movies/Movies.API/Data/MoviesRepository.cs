@@ -93,7 +93,21 @@ namespace Movies.API.Data
         {
             return await _dbContext.Genres.ToListAsync();
         }
-        
+
+        public async Task<Tuple<uint, uint, int, int>> GetFilterLimits()
+        {
+            var moviesExist = await _dbContext.Movies.AnyAsync();
+            if (!moviesExist)
+            {
+                return new Tuple<uint, uint, int, int>(1900, (uint) (new DateTime().Year), 10, 500);
+            }
+            var yearMin = await _dbContext.Movies.MinAsync(m => m.Year);
+            var yearMax = await _dbContext.Movies.MaxAsync(m => m.Year);
+            var lengthMin = await _dbContext.Movies.MinAsync(m => m.Length);
+            var lengthMax = await _dbContext.Movies.MaxAsync(m => m.Length);
+
+            return new Tuple<uint, uint, int, int>(yearMin, yearMax, lengthMin, lengthMax);
+        }
     }
 }
 

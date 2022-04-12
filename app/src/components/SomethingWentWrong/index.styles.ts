@@ -11,4 +11,5 @@ export const RefreshButton = styled.div`
     display: inline;
     color: blue;
     text-decoration: underline;
+    cursor: pointer;
 `;

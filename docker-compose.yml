@@ -4,6 +4,9 @@ services:
   projektor_mssql:
     image: mcr.microsoft.com/mssql/server:2017-latest
 
+  projektor_rabbitmq:
+    image: rabbitmq:3-management-alpine
+
   movies.api:
     image: ${DOCKER_REGISTRY-}moviesapi
     build:
@@ -16,5 +19,12 @@ services:
       context: .
       dockerfile: Security/Identity/Dockerfile
 
+  mailer:
+    image: ${DOCKER_REGISTRY-}mailer
+    build:
+      context: .
+      dockerfile: Services/Mailer/Dockerfile
+
 volumes:
   mssql_data:
+

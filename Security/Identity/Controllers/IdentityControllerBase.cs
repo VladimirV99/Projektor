@@ -1,5 +1,4 @@
 ﻿using AutoMapper;
-using Identity.Constants;
 using Identity.Data;
 using Identity.Entities;
 using Identity.Models;
@@ -26,20 +25,6 @@ namespace Identity.Controllers
         protected async Task<IActionResult> RegisterUserWithRoles(UserRegisterRequest userRegisterRequest, IEnumerable<string> roles)
         {
             var user = _mapper.Map<User>(userRegisterRequest);
-
-            // Validation
-            TryValidateModel(user);            
-            if (await _repository.GetUserByEmail(user.Email) != null)
-            {
-                // NOTE: This is validated only when the default UserRegisterRequest validation has passed
-                ModelState.TryAddModelError(nameof(user.Email), ErrorMessages.EMAIL_UNIQUE);
-            }
-            if (!ModelState.IsValid)
-            {
-                // ValidationProblem is returned to match the body validation response template
-                // See https://github.com/dotnet/aspnetcore/issues/6077 and https://github.com/dotnet/aspnetcore/issues/38504 for more details
-                return ValidationProblem(ModelState);
-            }
             
             // Create user
             if (!await _repository.CreateUser(user, userRegisterRequest.Password))

@@ -28,7 +28,4 @@ public class FilterMoviesRequest
     
     [FromQuery(Name="Genres[]")]
     public List<int>? Genres { get; set; }
-    
-    [FromQuery(Name="People")]
-    public List<int>? People { get; set; }
 }

@@ -61,9 +61,6 @@ namespace Movies.API.Data
                 .Where(request.LengthTo == null ? m => true : m => m.Length <= request.LengthTo)
                 .Include(m => m.People)
                 .ThenInclude(p => p.Role)
-                .Where(request.People == null
-                    ? m => true
-                    : m => m.People.Select(p => p.PersonId).Intersect(request.People).Any())
                 .Include(m => m.Genres)
                 .Where(request.Genres == null
                     ? m => true

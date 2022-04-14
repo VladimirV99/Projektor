@@ -1,5 +1,6 @@
 ﻿using System;
 using Microsoft.EntityFrameworkCore;
+using Movies.API.Constants;
 using Movies.API.Entities;
 using Movies.API.Models;
 
@@ -51,19 +52,8 @@ namespace Movies.API.Data
 
         public async Task<Tuple<List<Movie>, int>> FilterMovies(FilterMoviesRequest request)
         {
-                        
-            Console.WriteLine("----FILTER REQUEST------------");
-            Console.WriteLine(request.Genres);
-            if (request.Genres != null)
-            {
-                foreach (var g in request.Genres)
-                {
-                    Console.WriteLine(g);
-                }
-            }
-            Console.WriteLine("----FILTER REQUEST------------");
             var page = request.Page ?? 1;
-            var perPage = request.PerPage ?? 20;
+            var perPage = request.PerPage ?? Settings.PER_PAGE_DEFAULT;
             var query = _dbContext.Movies
                 .Where(request.YearFrom == null ? m => true : m => m.Year >= request.YearFrom)
                 .Where(request.YearTo == null ? m => true : m => m.Year <= request.YearTo)

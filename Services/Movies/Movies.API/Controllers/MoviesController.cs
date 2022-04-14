@@ -1,6 +1,5 @@
 ﻿using AutoMapper;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.WebUtilities;
 using Movies.API.Data;
 using Movies.API.Entities;
 using Movies.API.Models;
@@ -19,7 +18,7 @@ namespace Movies.API.Controllers
             _repository = repository ?? throw new ArgumentNullException(nameof(repository));
             _mapper = mapper ?? throw new ArgumentNullException(nameof(mapper));
         }
-
+        
         [HttpGet("[action]/{id}")]
         public async Task<IActionResult> GetMovieById(int id)
         {

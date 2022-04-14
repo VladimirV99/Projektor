@@ -3,17 +3,19 @@ import 'bootstrap/dist/css/bootstrap.min.css';
 import { Slider } from '@mui/material';
 import Genre from 'models/Genre';
 import * as S from './index.styles';
+import FilterLimits from '../../models/FilterLimits';
 
 type MovieFiltersProps = {
     genres: Genre[];
+    filterLimits: FilterLimits
     onYearRangeChange: (min: number, max: number) => void;
     onLengthRangeChange: (min: number, max: number) => void;
     onGenreIdsChange: (genreIds: number[] | null) => void;
 }
 
-const MovieFilters = ({ genres, onYearRangeChange, onLengthRangeChange, onGenreIdsChange }: MovieFiltersProps): JSX.Element => {
-    const [yearRange, setYearRange] = useState<number[]>([1800, 2020]);
-    const [lengthRange, setLengthRange] = useState<number[]>([0, 500]);
+const MovieFilters = ({ genres, onYearRangeChange, onLengthRangeChange, onGenreIdsChange, filterLimits }: MovieFiltersProps): JSX.Element => {
+    const [yearRange, setYearRange] = useState<number[]>([filterLimits.yearMin, filterLimits.yearMax]);
+    const [lengthRange, setLengthRange] = useState<number[]>([filterLimits.lengthMin, filterLimits.lengthMax]);
     const [genreIds, setGenreIds] = useState<number[]>([]);
 
     const handleYearSliderChange = (event: Event, newValue: number | number[]) => {
@@ -41,8 +43,8 @@ const MovieFilters = ({ genres, onYearRangeChange, onLengthRangeChange, onGenreI
 
         <h5>Year</h5>
         <Slider
-            min={1800}
-            max={2020}
+            min={filterLimits.yearMin}
+            max={filterLimits.yearMax}
             value={yearRange}
             onChange={handleYearSliderChange}
             onChangeCommitted={handleYearSliderChangeCommited}
@@ -52,8 +54,8 @@ const MovieFilters = ({ genres, onYearRangeChange, onLengthRangeChange, onGenreI
 
         <h5>Length</h5>
         <Slider
-            min={0}
-            max={300}
+            min={filterLimits.lengthMin}
+            max={filterLimits.lengthMax}
             value={lengthRange}
             onChange={handleLengthSliderChange}
             onChangeCommitted={handleLengthSliderChangeCommited}

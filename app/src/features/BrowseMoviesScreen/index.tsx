@@ -2,6 +2,7 @@
 import { useSelector, useDispatch } from "react-redux";
 import { filterMovies } from "../../redux/reducers/Movie";
 import { getGenres } from "../../redux/reducers/Genre";
+import { getFilterLimits } from "../../redux/reducers/FilterLimits";
 import { Backdrop, CircularProgress, Pagination } from "@mui/material";
 import { Col, Row } from "react-bootstrap";
 import MovieCard from "../../components/MovieCard"
@@ -13,7 +14,7 @@ import * as selectors from '../../redux/selectors';
 import * as S from './index.styles';
 
 
-const BrowseMoviesScreen = () : JSX.Element => {
+const BrowseMoviesScreen = (): JSX.Element => {
 
   const [filterMovieRequest, setFilterMovieRequest] = useState<FilterMoviesRequest>(new FilterMoviesRequest());
 
@@ -25,11 +26,12 @@ const BrowseMoviesScreen = () : JSX.Element => {
 
   const genres = useSelector(selectors.getGenres);
   const genresStatus = useSelector(selectors.getGenresStatus);
+  const filterLimitsStatus = useSelector(selectors.getFilterLimitsStatus);
+  
+  const filterLimits = useSelector(selectors.getLimits);
 
   const isMoviesLoading = moviesStatus === 'pending' || moviesStatus === 'idle';
   const isGenresLoading = genresStatus === 'pending' || genresStatus === 'idle';
-
-  console.log(isMoviesLoading, isGenresLoading);
 
   const numberOfPages = useMemo(() => {
     return Math.ceil(moviesCount / filterMovieRequest.PerPage);
@@ -58,10 +60,12 @@ const BrowseMoviesScreen = () : JSX.Element => {
   }, [movies, renderLoading, isMoviesLoading, isGenresLoading]);
 
   const handleYearRangeChange = (min: number, max: number) => {
+    console.log('EAR RANGE!!')
     setFilterMovieRequest(prevState => ({ ...prevState, YearFrom: min, YearTo: max }));
   };
 
   const handleLengthRangeChange = (min: number, max: number) => {
+    console.log('LENGTH RANGE!!')
     setFilterMovieRequest(prevState => ({ ...prevState, LengthFrom: min, LengthTo: max }));
   };
 
@@ -70,7 +74,7 @@ const BrowseMoviesScreen = () : JSX.Element => {
   };
 
   useEffect(() => {
-    console.log('Filtering with request:', filterMovieRequest);
+    // console.log('Filtering with request:', filterMovieRequest);
     dispatch(filterMovies(filterMovieRequest));
   }, [filterMovieRequest, dispatch]);
 
@@ -79,13 +83,21 @@ const BrowseMoviesScreen = () : JSX.Element => {
       return;
     }
     dispatch(getGenres());
-  }, []);
+  }, [dispatch, genresStatus]);
+
+  useEffect(() => {
+    if (filterLimitsStatus === 'success') {
+      return;
+    }
+
+    dispatch(getFilterLimits());
+  }, [dispatch, filterLimitsStatus]);
 
   useEffect(() => {
     if (moviesStatus === 'error' || genresStatus === 'error') {
       throwAsyncError(new Error('Something went wrong'));
     }
-  }, [moviesStatus, genresStatus]);
+  }, [moviesStatus, genresStatus, throwAsyncError]);
 
   return (<S.Container>
     <Row>
@@ -93,9 +105,11 @@ const BrowseMoviesScreen = () : JSX.Element => {
         <S.MovieFiltersContainer>
           <MovieFilters
             genres={genres}
+            filterLimits={filterLimits}
             onYearRangeChange={handleYearRangeChange}
             onLengthRangeChange={handleLengthRangeChange}
-            onGenreIdsChange={handleGenreIdsChange} />
+            onGenreIdsChange={handleGenreIdsChange} 
+            />
         </S.MovieFiltersContainer>
       </Col>
       <Col sm={12} md={8}>

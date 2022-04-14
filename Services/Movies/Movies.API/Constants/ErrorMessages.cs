@@ -18,7 +18,7 @@
 		
 		
 		public const string PAGE_NUMBER_AT_LEAST_ONE = "Page number must be at least one";
-		public const string PER_PAGE_TOO_LARGE = $"Maximum page size is 100";
+		public const string PER_PAGE_TOO_LARGE = "Maximum page size is 100";
 	}
 }
 

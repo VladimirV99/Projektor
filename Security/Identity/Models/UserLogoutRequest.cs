@@ -6,6 +6,6 @@ namespace Identity.Models
     public class UserLogoutRequest
     {
         [Required(ErrorMessage = ErrorMessages.REFRESH_TOKEN_REQUIRED)]
-        public string RefreshToken { get; set; }
+        public string RefreshToken { get; set; } = null!;
     }
 }

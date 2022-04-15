@@ -49,7 +49,7 @@ namespace Identity.Controllers
             var user = await _repository.GetUserByEmail(request.Email);
             if (user == null)
             {
-                _logger.LogWarning($"Refreshing session failed: Unknown user {request.Email}");
+                _logger.LogWarning("Refreshing session failed: Unknown user '{Email}'", request.Email);
                 return Unauthorized();
             }
 
@@ -78,7 +78,7 @@ namespace Identity.Controllers
             var user = await _repository.GetUserByEmail(email);
             if (user == null)
             {
-                _logger.LogWarning($"Logout failed: Unknown user {email}");
+                _logger.LogWarning("Logout failed: Unknown user '{Email}'", email);
                 return Unauthorized();
             }
 

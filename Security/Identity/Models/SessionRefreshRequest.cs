@@ -7,9 +7,9 @@ namespace Identity.Models
     {
         [EmailAddress(ErrorMessage = ErrorMessages.EMAIL_INVALID)]
         [Required(ErrorMessage = ErrorMessages.EMAIL_REQUIRED)]
-        public string Email { get; set; }
+        public string Email { get; set; } = null!;
 
         [Required(ErrorMessage = ErrorMessages.REFRESH_TOKEN_REQUIRED)]
-        public string RefreshToken { get; set; }
+        public string RefreshToken { get; set; } = null!;
     }
 }

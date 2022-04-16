@@ -1,7 +1,6 @@
 import { useState } from 'react';
 import { Formik } from 'formik';
 import { Button } from '@mui/material';
-import { Link } from 'react-router-dom';
 import ModalCheKoV from '../../../components/Modal';
 import FormInput from '../../../components/FormInput';
 import * as TRANSLATIONS from '../../../translations';
@@ -22,7 +21,7 @@ const SignIn = ({ shouldRender, onModalClose, onSignUpLinkClicked }: Props) => {
 
   const dispatch = useDispatch();
 
-  const isSubmiting = email && password;
+  const isSubmitting = email && password;
 
   const signUp = () => (
     <div>
@@ -38,7 +37,7 @@ const SignIn = ({ shouldRender, onModalClose, onSignUpLinkClicked }: Props) => {
         <h1 style={{ textAlign: "center" }}>{TRANSLATIONS.SIGN_IN_LABEL}</h1>
         <h3 style={{ textAlign: "center" }}>{signUp()}</h3>
         <Formik
-          initialValues={{ email: email, password: password }}
+          initialValues={{ email, password }}
           onSubmit={() => {
             dispatch(loginCustomer({email, password}));
           }}
@@ -51,7 +50,7 @@ const SignIn = ({ shouldRender, onModalClose, onSignUpLinkClicked }: Props) => {
               <FormInput type='password' label={TRANSLATIONS.PASSWORD_LABEL} value={password} onChange={(e) => setPassword(e.currentTarget.value)} />
               <Button
                 type='submit'
-                disabled={!isSubmiting}
+                disabled={!isSubmitting}
               >{TRANSLATIONS.SUBMIT_LABEL}</Button>
             </form>
           )}

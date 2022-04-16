@@ -1,3 +1,10 @@
+export type userType = {
+    id: string;
+    firstName: string;
+    lastName: string;
+    email: string;
+};
+
 export type userRegisterRequest = {
     email: string;
     firstName: string;
@@ -13,5 +20,5 @@ export type userLoginRequest = {
 export type loginResponse = {
     accessToken: string;
     refreshToken: string;
-    user: any;
+    user: userType;
 }

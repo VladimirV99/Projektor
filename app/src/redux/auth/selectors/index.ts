@@ -1,7 +1,9 @@
+import { createSelector } from "@reduxjs/toolkit";
+import { RootStateOrAny } from "react-redux";
 import { authenticationReducerName, AuthenticationReducerType } from "../reducers/types";
 import { featuresReducerName } from "../types";
 
-export const getState = (state: any) => state[featuresReducerName][authenticationReducerName];
+export const getState = (state: RootStateOrAny) => state[featuresReducerName][authenticationReducerName];
 
 //TODO: Bind onstorage event
 export const selectUser = (state: AuthenticationReducerType) => {
@@ -13,4 +15,4 @@ export const selectUser = (state: AuthenticationReducerType) => {
 }
 export const selectIsUserLoggedIn = (state: AuthenticationReducerType) => localStorage.getItem('accessToken') !== null;
 
-export const selectAuthErrors = (state: AuthenticationReducerType) => getState(state).errors;
+export const selectAuthErrors = createSelector([getState], (state) => state.errors);

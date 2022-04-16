@@ -8,6 +8,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import { registerCustomer } from '../../../redux/auth/modules';
 import { MIN_PASSWORD_LENGTH } from '../../../constants';
 import { selectAuthErrors } from '../../../redux/auth/selectors';
+import { PASSWORDS_DONT_MATCH, PASSWORD_TOO_SHORT } from '../../../translations';
 
 type Props = {
   shouldRender: boolean;
@@ -26,16 +27,16 @@ const SignUp = ({ shouldRender, onModalClose }: Props) => {
   const apiErrors = useSelector(selectAuthErrors);
   const dispatch = useDispatch();
 
-  const isSubmiting = firstName && lastName && email && password && passwordConfirmed;
+  const isSubmitting = firstName && lastName && email && password && passwordConfirmed;
 
   const validate = () => {
     if(password !== passwordConfirmed){
-      setErrors({...errors, password: "Passwords do not match"});
+      setErrors({...errors, password: PASSWORDS_DONT_MATCH});
       return errors;
     }
 
     if(password.length < MIN_PASSWORD_LENGTH){
-      setErrors({...errors, password: "Password must be at least 8 characters long"});
+      setErrors({...errors, password: PASSWORD_TOO_SHORT});
       return errors;
     }
   }
@@ -50,7 +51,7 @@ const SignUp = ({ shouldRender, onModalClose }: Props) => {
         </div>
         <Formik
           validate={validate}
-          initialValues={{ email: email, password: password, passwordConfirmed: passwordConfirmed }}
+          initialValues={{ email, password, passwordConfirmed }}
           onSubmit={async () => {
             dispatch(registerCustomer({email, password, firstName, lastName}));
           }}
@@ -64,7 +65,7 @@ const SignUp = ({ shouldRender, onModalClose }: Props) => {
               <FormInput type="email" label={TRANSLATIONS.EMAIL_LABEL} onChange={(e) => setEmail(e.currentTarget.value)} value={email} />
               <FormInput type="password" label={TRANSLATIONS.PASSWORD_LABEL} onChange={(e) => setPassword(e.currentTarget.value)} value={password} />
               <FormInput type="password" label={TRANSLATIONS.CONFIRM_PASSWORD_LABEL} onChange={(e) => setPasswordConfirmed(e.currentTarget.value)} value={passwordConfirmed} />
-              <Button type='submit' disabled={!isSubmiting}>{TRANSLATIONS.SUBMIT_LABEL}</Button>
+              <Button type='submit' disabled={!isSubmitting}>{TRANSLATIONS.SUBMIT_LABEL}</Button>
             </form>
           )}
         </Formik>

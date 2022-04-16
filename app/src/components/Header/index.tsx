@@ -2,22 +2,11 @@ import { Button } from "@mui/material";
 import { useDispatch, useSelector } from "react-redux";
 import { logoutCustomer } from "../../redux/auth/reducers";
 import { selectIsUserLoggedIn, selectUser } from "../../redux/auth/selectors";
-import SignIn from "../../features/authentication/signIn";
-import SignUp from "../../features/authentication/signUp";
+import SignIn from "../../features/authentication/SignIn";
+import SignUp from "../../features/authentication/SignUp";
 import { useEffect, useState } from "react";
 
-type Props = {
-    isUserLoggedIn?: boolean;
-    shouldRenderSignInModal: boolean;
-    shouldRenderSignUpModal: boolean;
-    onSignInModalClose: () => void;
-    onSignUpModalClose: () => void;
-    onSignUpLinkCicked: () => void;
-    openSignInModal: () => void;
-    openSignUpModal: () => void;
-}
-
-const AppHeader = (): JSX.Element => {
+const Header = (): JSX.Element => {
 
     const [signInModal, setSignInModal] = useState<boolean>(false);
     const [signUpModal, setSignUpModal] = useState<boolean>(false);
@@ -66,4 +55,4 @@ const AppHeader = (): JSX.Element => {
     )
 }
 
-export default AppHeader;
+export default Header;

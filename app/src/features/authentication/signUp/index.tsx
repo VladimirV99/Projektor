@@ -24,7 +24,6 @@ const SignUp = ({ shouldRender, onModalClose }: Props) => {
   const [errors, setErrors] = useState({ password: ''});
 
   const apiErrors = useSelector(selectAuthErrors);
-  console.log(apiErrors);
   const dispatch = useDispatch();
 
   const isSubmiting = firstName && lastName && email && password && passwordConfirmed;
@@ -46,8 +45,8 @@ const SignUp = ({ shouldRender, onModalClose }: Props) => {
       <div style={{ backgroundColor: "white" }}>
         <h1 style={{ textAlign: "center"}}>{TRANSLATIONS.SIGN_UP_LABEL}</h1>
         <div style={{ paddingBottom: '16px'}}>
-          {apiErrors && <span style={{ color: 'red'}}>{apiErrors.Email[0]}</span>}
-          {errors.password && <span style={{ color: 'red'}}>{errors.password}</span>}
+          {apiErrors && <span style={{ color: 'red', textAlign: 'center', display: 'block'}}>{apiErrors.Email[0]}</span>}
+          {errors.password && <span style={{ color: 'red', textAlign: 'center', display: 'block'}}>{errors.password}</span>}
         </div>
         <Formik
           validate={validate}

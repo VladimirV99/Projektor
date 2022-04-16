@@ -12,3 +12,5 @@ export enum LoadingStatus {
     FetchingMore,
     Refreshing,
 }
+
+export const MIN_PASSWORD_LENGTH = 8;

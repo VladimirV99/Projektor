@@ -1,5 +1,4 @@
 import axios, { Axios, AxiosPromise } from 'axios';
-import { ServerResponse } from 'http';
 import { URL_PREFIX } from '../../../constants';
 import { loginResponse, userLoginRequest, userRegisterRequest } from '../models';
 
@@ -12,7 +11,7 @@ export const createUser = ({
   password,
   email
 } : userRegisterRequest
-): AxiosPromise<ServerResponse> =>
+) =>
   axios.post(registerUrl, {
         firstName,
         lastName,

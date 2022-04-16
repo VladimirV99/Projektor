@@ -1,12 +1,16 @@
 import { createAsyncThunk } from '@reduxjs/toolkit';
 import * as API from '../api';
 import { userLoginRequest, userRegisterRequest } from '../models';
+import { registerFailed } from '../reducers';
 
 export const registerCustomer = createAsyncThunk(
   `registerCustomer`,
   async (user: userRegisterRequest, { dispatch }) => {
-      await API.createUser(user);
-      dispatch(loginCustomer({email: user.email, password: user.password}));
+      API.createUser(user)
+      .then(() => dispatch(loginCustomer({email: user.email, password: user.password})))
+      .catch((res) => {
+        dispatch(registerFailed(res.response.data.errors));
+      });
   },
 );
 

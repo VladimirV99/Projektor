@@ -1,4 +1,5 @@
-﻿using Identity.Data;
+﻿using AutoMapper;
+using Identity.Data;
 using Identity.Entities;
 using Identity.Models;
 using Microsoft.IdentityModel.Tokens;
@@ -14,12 +15,14 @@ namespace Identity.Services
         private readonly ILogger<AuthenticationService> _logger;
         private readonly IConfiguration _configuration;
         private readonly IIdentityRepository _repository;
+        private readonly IMapper _mapper;
 
-        public AuthenticationService(ILogger<AuthenticationService> logger, IConfiguration configuration, IIdentityRepository repository)
+        public AuthenticationService(ILogger<AuthenticationService> logger, IConfiguration configuration, IIdentityRepository repository, IMapper mapper)
         {
             _logger = logger ?? throw new ArgumentNullException(nameof(logger));
             _configuration = configuration ?? throw new ArgumentNullException(nameof(configuration));
             _repository = repository ?? throw new ArgumentNullException(nameof(repository));
+            _mapper = mapper ?? throw new ArgumentNullException(nameof(mapper));
         }
 
         public async Task<User?> ValidateUser(UserCredentials userCredentials)
@@ -87,7 +90,7 @@ namespace Identity.Services
 
             return new AuthenticationResponse
             {
-                User = user,
+                User = _mapper.Map<UserDetails>(user),
                 AccessToken = accessToken,
                 RefreshToken = refreshToken.Token
             };

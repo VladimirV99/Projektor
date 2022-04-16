@@ -60,21 +60,18 @@ const BrowseMoviesScreen = (): JSX.Element => {
   }, [movies, renderLoading, isMoviesLoading, isGenresLoading]);
 
   const handleYearRangeChange = (min: number, max: number) => {
-    console.log('EAR RANGE!!')
-    setFilterMovieRequest(prevState => ({ ...prevState, YearFrom: min, YearTo: max }));
+    setFilterMovieRequest(prevState => ({ ...prevState, YearFrom: min, YearTo: max, Page: 1 }));
   };
 
   const handleLengthRangeChange = (min: number, max: number) => {
-    console.log('LENGTH RANGE!!')
-    setFilterMovieRequest(prevState => ({ ...prevState, LengthFrom: min, LengthTo: max }));
+    setFilterMovieRequest(prevState => ({ ...prevState, LengthFrom: min, LengthTo: max, Page: 1 }));
   };
 
   const handleGenreIdsChange = (genreIds: number[] | null) => {
-    setFilterMovieRequest(prevState => ({ ...prevState, Genres: genreIds }));
+    setFilterMovieRequest(prevState => ({ ...prevState, Genres: genreIds, Page: 1 }));
   };
 
   useEffect(() => {
-    // console.log('Filtering with request:', filterMovieRequest);
     dispatch(filterMovies(filterMovieRequest));
   }, [filterMovieRequest, dispatch]);
 

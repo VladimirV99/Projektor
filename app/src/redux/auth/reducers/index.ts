@@ -1,5 +1,5 @@
 import { createAction, createReducer } from '@reduxjs/toolkit';
-import { LoadingStatus } from '../../../../constants/common';
+import { LoadingStatus } from '../../../constants/common';
 import { loginCustomer } from '../modules';
 import { AuthenticationReducerType } from './types';
 
@@ -23,7 +23,6 @@ const reducer = createReducer(initialState, (builder) => {
         state.user = action.payload.user;
     });
     builder.addCase(logoutCustomer, (state) => {
-        console.log('Tuj sammm');
         localStorage.removeItem('accessToken');
         localStorage.removeItem('refreshToken');
         localStorage.removeItem('user');

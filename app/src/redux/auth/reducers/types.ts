@@ -1,4 +1,4 @@
-import { LoadingStatus } from '../../../../constants/common';
+import { LoadingStatus } from '../../../constants/common';
 
 export const authenticationReducerName = 'authentication';
 

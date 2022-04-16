@@ -1,7 +1,7 @@
 import { Provider } from 'react-redux';
 import { PersistGate } from 'redux-persist/integration/react';
 import { persistStore } from 'redux-persist';
-import store from '../redux/reducers/store';
+import store from '../redux/store';
 
 export default function WithReduxProvider({ children }: { children: JSX.Element | JSX.Element[] }) {
   const persistor = persistStore(store);

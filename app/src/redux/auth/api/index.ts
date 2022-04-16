@@ -1,6 +1,6 @@
 import axios, { Axios, AxiosPromise } from 'axios';
 import { ServerResponse } from 'http';
-import { URL_PREFIX } from '../../../../constants';
+import { URL_PREFIX } from '../../../constants';
 import { loginResponse, userLoginRequest, userRegisterRequest } from '../models';
 
 const registerUrl = `${URL_PREFIX}/api/v1/Authentication/RegisterCustomer`;

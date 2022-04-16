@@ -1,9 +1,8 @@
 import { combineReducers } from 'redux';
 import { persistReducer } from 'redux-persist';
 import storage from "redux-persist/lib/storage";
-import featuresReducer from '../../features/redux/reducers';
-import { featuresReducerName } from '../../features/redux/reducers/types';
-
+import featuresReducer from './auth/index';
+import { featuresReducerName } from './auth/types';
 const rootReducer = combineReducers({
   [featuresReducerName]: featuresReducer
 });

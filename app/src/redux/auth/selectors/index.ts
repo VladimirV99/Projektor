@@ -1,5 +1,6 @@
 import { AuthenticationReducerType } from "../reducers/types";
 
+//TODO: Bind onstorage event
 export const selectUser = (state: AuthenticationReducerType) => {
     const user = localStorage.getItem('user');
 

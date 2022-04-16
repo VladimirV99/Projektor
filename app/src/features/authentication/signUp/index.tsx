@@ -1,11 +1,12 @@
 import { useState } from 'react';
 import { Formik } from 'formik';
 import { Button } from '@mui/material';
+import * as Yup from 'yup';
 import ModalCheKoV from '../../../components/Modal';
-import * as TRANSLATIONS from '../translations';
+import * as TRANSLATIONS from '../../../translations';
 import FormInput from '../../../components/FormInput';
 import { useDispatch } from 'react-redux';
-import { registerCustomer } from '../redux/modules';
+import { registerCustomer } from '../../../redux/auth/modules';
 
 type Props = {
   shouldRender: boolean;
@@ -19,16 +20,27 @@ const SignUp = ({ shouldRender, onModalClose }: Props) => {
   const [email, setEmail] = useState<string>('');
   const [password, setPassword] = useState<string>('');
   const [passwordConfirmed, setPasswordConfirmed] = useState<string>('');
+  const [errors, setErrors] = useState({firstName: '', lastName: '', email: '', password: ''});
 
   const dispatch = useDispatch();
 
   const isSubmiting = email && password && passwordConfirmed;
 
+  const validate = () => {
+    if(password !== passwordConfirmed){
+      setErrors({...errors, password: "Passwords do not match"});
+    }
+
+    return errors;
+  }
+
   return (
     <ModalCheKoV shouldRender={shouldRender} onModalClose={onModalClose}>
       <div style={{ backgroundColor: "white" }}>
         <h1 style={{ textAlign: "center"}}>{TRANSLATIONS.SIGN_UP_LABEL}</h1>
+        {errors.password && <span>{errors.password}</span>}
         <Formik
+          validate={validate}
           initialValues={{ email: email, password: password, passwordConfirmed: passwordConfirmed }}
           onSubmit={async () => {
             dispatch(registerCustomer({email, password, firstName, lastName}));

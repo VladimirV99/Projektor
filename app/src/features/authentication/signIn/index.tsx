@@ -4,9 +4,9 @@ import { Button } from '@mui/material';
 import { Link } from 'react-router-dom';
 import ModalCheKoV from '../../../components/Modal';
 import FormInput from '../../../components/FormInput';
-import * as TRANSLATIONS from '../translations';
+import * as TRANSLATIONS from '../../../translations';
 import { useDispatch } from 'react-redux';
-import { loginCustomer } from '../redux/modules';
+import { loginCustomer } from '../../../redux/auth/modules';
 
 type Props = {
   shouldRender: boolean;
@@ -26,8 +26,8 @@ const SignIn = ({ shouldRender, onModalClose, onSignUpLinkClicked }: Props) => {
 
   const signUp = () => (
     <div>
-      <span>{TRANSLATIONS.NOT_A_MEMBER_LABEL} {<Link to="/" onClick={onSignUpLinkClicked}>
-        {TRANSLATIONS.SIGN_UP_LABEL}</Link>}
+      <span>{TRANSLATIONS.NOT_A_MEMBER_LABEL} {<a style={{ color: 'blue'}} onClick={onSignUpLinkClicked}>
+        {TRANSLATIONS.SIGN_UP_LABEL}</a>}
       </span>
     </div>
   )

@@ -1,4 +1,4 @@
-import { AuthenticationReducerType, authenticationReducerName } from '../../authentication/redux/reducers/types';
+import { AuthenticationReducerType, authenticationReducerName } from '../auth/reducers/types';
 
 export const featuresReducerName = 'featureReducer';
 

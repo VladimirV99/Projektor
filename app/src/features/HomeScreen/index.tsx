@@ -1,9 +1,11 @@
-import React from "react";
+import { useEffect, useState } from "react";
+import { useSelector } from "react-redux";
+import { selectIsUserLoggedIn } from "../../redux/auth/selectors";
 
 const HomeScreen = () => {
 
     return (
-        <div>...Under construction</div>
+        <div></div>
     )
 }
 

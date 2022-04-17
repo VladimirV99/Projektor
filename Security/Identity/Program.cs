@@ -45,6 +45,10 @@ app.SeedDatabase();
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())
 {
+    app.UseCors(x => x.AllowAnyMethod()
+                      .AllowAnyHeader()
+                      .AllowAnyOrigin()
+               );
     app.UseSwagger();
     app.UseSwaggerUI();
 }

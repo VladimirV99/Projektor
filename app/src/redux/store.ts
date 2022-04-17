@@ -1,6 +1,6 @@
 import { configureStore } from '@reduxjs/toolkit';
 
-import rootReducer from '../reducers';
+import rootReducer from './reducers';
 
 // TODO Add support for network middleware
 // const networkMiddleware =

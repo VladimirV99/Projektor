@@ -31,18 +31,18 @@ namespace Identity.Controllers
             {
                 return BadRequest();
             }
-            _logger.LogInformation($"Registered user with email: {user.Email}");
+            _logger.LogInformation("Registered user with email '{Email}'", user.Email);
 
             // Add roles
             foreach (var role in roles)
             {
                 if (await _repository.AddRoleToUser(user, role))
                 {
-                    _logger.LogInformation($"Added a role '{role}' to user: {user.UserName}.");
+                    _logger.LogInformation("Added role '{Role}' to user '{Email}'", role, user.Email);
                 }
                 else
                 {
-                    _logger.LogWarning($"Role '{role}' does not exist.");
+                    _logger.LogWarning("Role '{Role}' does not exist", role);
                 }
             }
 

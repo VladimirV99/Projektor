@@ -42,26 +42,26 @@ namespace Identity.Services
 
             if (token == null)
             {
-                _logger.LogWarning($"Validating token failed: Refresh token not found");
+                _logger.LogWarning("Validating token failed: Refresh token not found");
                 return null;
             }
 
             if (token.UserId != user.Id)
             {
-                _logger.LogWarning($"Validating token failed: Refresh token does not belong to user");
+                _logger.LogWarning("Validating token failed: Refresh token does not belong to user");
                 return null;
             }
 
             if (token.ExpiresAt < DateTime.UtcNow)
             {
-                _logger.LogWarning($"Validating token failed: Refresh token is expired");
+                _logger.LogWarning("Validating token failed: Refresh token is expired");
                 return null;
             }
 
             // If the token was previously revoked then we consider it stolen and invalidate the entire family
             if (token.IsRevoked)
             {
-                _logger.LogWarning($"Atempted to use revoked token for {user.Email}. Revoking entire family");
+                _logger.LogWarning("Attempted to use revoked token for '{Email}'. Revoking entire family", user.Email);
 
                 var latestToken = userTokens.Where(t => t.Family == token.Family).OrderByDescending(t => t.CreatedAt).First();
 

@@ -38,7 +38,7 @@ namespace Identity.Data
                                     sleepDurationProvider: retryAttempt => TimeSpan.FromSeconds(Math.Pow(2, retryAttempt)),
                                     onRetry: (exception, retryNumber, context) =>
                                     {
-                                        _logger.LogWarning("Retry {RetryNumber}/{RetryCount} of {Policy} at {Operation}, due to {Exception}", retryNumber, retryCount, context.PolicyKey, context.OperationKey, exception);
+                                        _logger.LogWarning("Attempt {RetryNumber}/{RetryCount} to seed data", retryNumber, retryCount);
                                     });
                 retry.Execute(() => SeedFunction().Wait());
             }
@@ -58,7 +58,7 @@ namespace Identity.Data
                 if (!await _roleManager.RoleExistsAsync(role))
                 {
                     await _roleManager.CreateAsync(new IdentityRole(role));
-                    _logger.LogInformation("Created role: '{Role}'", role);
+                    _logger.LogInformation("Created role '{Role}'", role);
                 }
             }
 

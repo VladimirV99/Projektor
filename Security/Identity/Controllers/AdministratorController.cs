@@ -3,6 +3,7 @@ using Common.Auth;
 using Identity.Data;
 using Identity.Models;
 using Identity.Services;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using System.Security.Claims;
 
@@ -10,7 +11,7 @@ namespace Identity.Controllers
 {
     [ApiController]
     [Route("api/v1/[controller]")]
-    //[Authorize(Roles = Roles.ADMINISTRATOR)] // TODO Enable
+    [Authorize(Roles = Roles.ADMINISTRATOR)]
     public class AdministratorController : IdentityControllerBase
     {
         public AdministratorController(ILogger<AuthenticationController> logger, IMapper mapper, IIdentityRepository repository, IAuthenticationService authService) 

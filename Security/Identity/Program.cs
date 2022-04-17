@@ -1,5 +1,6 @@
 using Common.Auth.Extensions;
 using Common.Auth.Models;
+using FluentValidation.AspNetCore;
 using Identity.Extensions;
 using Identity.Services;
 using Microsoft.OpenApi.Models;
@@ -13,6 +14,11 @@ builder.Services.ConfigureIdentity();
 builder.Services.ConfigureJWT(builder.Configuration.GetSection("JWT").Get<JwtSettings>());
 
 builder.Services.AddAutoMapper(Assembly.GetExecutingAssembly());
+
+builder.Services.AddFluentValidation(fv =>
+{
+    fv.RegisterValidatorsFromAssembly(Assembly.GetExecutingAssembly());
+});
 
 builder.Services.AddScoped<IAuthenticationService, AuthenticationService>();
 
@@ -33,6 +39,8 @@ builder.Services.AddSwaggerGen(options =>
 });
 
 var app = builder.Build();
+
+app.SeedDatabase();
 
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())

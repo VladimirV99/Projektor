@@ -1,21 +1,24 @@
-import { useEffect, useState } from 'react';
-import { useSelector } from 'react-redux';
 import { BrowserRouter, Route, Routes } from 'react-router-dom';
 import WithReduxProvider from './config/withReduxProvider';
 import HomeScreen from './features/HomeScreen';
 import AppHeader from './components/Header';
-import { selectIsUserLoggedIn } from './redux/auth/selectors';
+import BrowseMoviesScreen from './features/BrowseMoviesScreen';
+import { ErrorBoundary } from 'react-error-boundary';
+import SomethingWentWrong from 'components/SomethingWentWrong';
 
 function App() {
 
   return (
     <WithReduxProvider>
-      <AppHeader />
-      <BrowserRouter>
-        <Routes>
-          <Route path='/' element={<HomeScreen />} />
-        </Routes>
-      </BrowserRouter>
+      <ErrorBoundary FallbackComponent={SomethingWentWrong}>
+        <AppHeader />
+        <BrowserRouter>
+          <Routes>
+            <Route path='/' element={<HomeScreen/>} />
+            <Route path="/movies" element={<BrowseMoviesScreen />} /> 
+          </Routes>
+        </BrowserRouter>
+      </ErrorBoundary>
     </WithReduxProvider>
   );
 }

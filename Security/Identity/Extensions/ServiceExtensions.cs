@@ -1,4 +1,5 @@
-﻿using Identity.Data;
+﻿using Identity.Constants;
+using Identity.Data;
 using Identity.Entities;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
@@ -14,6 +15,7 @@ namespace Identity.Extensions
                 options.UseSqlServer(configuration.GetConnectionString("IdentityConnectionString"));
             });
             services.AddScoped<IIdentityRepository, IdentityRepository>();
+            services.AddTransient<IDataSeeder, DataSeeder>();
 
             return services;
         }
@@ -22,11 +24,11 @@ namespace Identity.Extensions
         {
             services.AddIdentity<User, IdentityRole>(options =>
             {
-                options.Password.RequireLowercase = false;
-                options.Password.RequireUppercase = false;
-                options.Password.RequireDigit = true;
-                options.Password.RequireNonAlphanumeric = false;
-                options.Password.RequiredLength = 8;
+                options.Password.RequireLowercase = Settings.PASSWORD_REQUIRE_LOWERCASE;
+                options.Password.RequireUppercase = Settings.PASSWORD_REQUIRE_UPPERCASE;
+                options.Password.RequireDigit = Settings.PASSWORD_REQUIRE_DIGIT;
+                options.Password.RequireNonAlphanumeric = Settings.PASSWORD_REQUIRE_SYMBOL;
+                options.Password.RequiredLength = Settings.PASSWORD_MIN_LENGTH;
                 options.User.RequireUniqueEmail = true;
             })
                 .AddEntityFrameworkStores<IdentityContext>()

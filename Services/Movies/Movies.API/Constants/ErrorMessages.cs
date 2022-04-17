@@ -15,6 +15,10 @@
 		public const string MOVIE_ID_REQUIRED = "MovieId is required";
 		public const string PERSON_ID_REQUIRED = "PersonId is required";
 		public const string ROLE_ID_REQUIRED = "RoleId is required";
+		
+		
+		public const string PAGE_NUMBER_AT_LEAST_ONE = "Page number must be at least one";
+		public const string PER_PAGE_TOO_LARGE = "Maximum page size is 100";
 	}
 }
 

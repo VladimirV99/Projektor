@@ -22,7 +22,7 @@ axiosAuthInstance.interceptors.request.use(
             console.log(
                 '[request interceptor]: found authorization header, skip'
             );
-            return;
+            return config;
         }
         if (!config.headers) {
             config.headers = {};
@@ -80,7 +80,9 @@ axiosAuthInstance.interceptors.response.use(
                         JSON.stringify(response.data.user)
                     );
                     store.dispatch(setTokensAndUser(response.data));
-                    resolve(axiosAuthInstance(originalRequest));
+                    const repeatedRequest = { ...originalRequest };
+                    repeatedRequest.headers.Authorization = `Bearer ${response.data.accessToken}`;
+                    resolve(axiosAuthInstance(repeatedRequest));
                 })
                 .catch((error) => {
                     // Failed to refresh token, just remove it

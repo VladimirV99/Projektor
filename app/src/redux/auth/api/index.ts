@@ -1,9 +1,13 @@
-import axios, { Axios, AxiosPromise } from 'axios'
-import { URL_PREFIX } from '../../../constants'
-import { loginResponse, userLoginRequest, userRegisterRequest } from '../models'
+import axios, { Axios, AxiosPromise } from 'axios';
+import { URL_PREFIX } from '../../../constants';
+import {
+    loginResponse,
+    userLoginRequest,
+    userRegisterRequest,
+} from '../models';
 
-const registerUrl = `${URL_PREFIX}/api/v1/Authentication/RegisterCustomer`
-const loginUrl = `${URL_PREFIX}/api/v1/Authentication/Login`
+const registerUrl = `${URL_PREFIX}/api/v1/Authentication/RegisterCustomer`;
+const loginUrl = `${URL_PREFIX}/api/v1/Authentication/Login`;
 
 export const createUser = ({
     firstName,
@@ -16,7 +20,7 @@ export const createUser = ({
         lastName,
         password,
         email,
-    })
+    });
 
 export const loginUser = ({
     email,
@@ -25,4 +29,4 @@ export const loginUser = ({
     axios.post(loginUrl, {
         email,
         password,
-    })
+    });

@@ -1,25 +1,25 @@
-import { useState } from 'react'
-import { Formik } from 'formik'
-import { Button } from '@mui/material'
-import ModalCheKoV from '../../../components/Modal'
-import FormInput from '../../../components/FormInput'
-import * as TRANSLATIONS from '../../../translations'
-import { useDispatch } from 'react-redux'
-import { loginCustomer } from '../../../redux/auth/modules'
+import { useState } from 'react';
+import { Formik } from 'formik';
+import { Button } from '@mui/material';
+import ModalCheKoV from '../../../components/Modal';
+import FormInput from '../../../components/FormInput';
+import * as TRANSLATIONS from '../../../translations';
+import { useDispatch } from 'react-redux';
+import { loginCustomer } from '../../../redux/auth/modules';
 
 type Props = {
-    shouldRender: boolean
-    onModalClose: () => void
-    onSignUpLinkClicked: () => void
-}
+    shouldRender: boolean;
+    onModalClose: () => void;
+    onSignUpLinkClicked: () => void;
+};
 
 const SignIn = ({ shouldRender, onModalClose, onSignUpLinkClicked }: Props) => {
-    const [email, setEmail] = useState<string>('admin@admin.com')
-    const [password, setPassword] = useState<string>('Admin_123')
+    const [email, setEmail] = useState<string>('admin@admin.com');
+    const [password, setPassword] = useState<string>('Admin_123');
 
-    const dispatch = useDispatch()
+    const dispatch = useDispatch();
 
-    const isSubmitting = email && password
+    const isSubmitting = email && password;
 
     const signUp = () => (
         <div>
@@ -32,7 +32,7 @@ const SignIn = ({ shouldRender, onModalClose, onSignUpLinkClicked }: Props) => {
                 }
             </span>
         </div>
-    )
+    );
 
     return (
         <ModalCheKoV shouldRender={shouldRender} onModalClose={onModalClose}>
@@ -44,7 +44,7 @@ const SignIn = ({ shouldRender, onModalClose, onSignUpLinkClicked }: Props) => {
                 <Formik
                     initialValues={{ email, password }}
                     onSubmit={() => {
-                        dispatch(loginCustomer({ email, password }))
+                        dispatch(loginCustomer({ email, password }));
                     }}
                 >
                     {({ handleSubmit }) => (
@@ -80,7 +80,7 @@ const SignIn = ({ shouldRender, onModalClose, onSignUpLinkClicked }: Props) => {
                 </Formik>
             </div>
         </ModalCheKoV>
-    )
-}
+    );
+};
 
-export default SignIn
+export default SignIn;

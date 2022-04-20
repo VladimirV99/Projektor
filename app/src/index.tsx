@@ -1,9 +1,9 @@
-import React from 'react'
-import ReactDOM from 'react-dom'
-import { ThemeProvider } from 'styled-components'
-import App from './App'
-import reportWebVitals from './reportWebVitals'
-import theme from './theme'
+import React from 'react';
+import ReactDOM from 'react-dom';
+import { ThemeProvider } from 'styled-components';
+import App from './App';
+import reportWebVitals from './reportWebVitals';
+import theme from './theme';
 
 ReactDOM.render(
     <React.StrictMode>
@@ -12,6 +12,6 @@ ReactDOM.render(
         </ThemeProvider>
     </React.StrictMode>,
     document.getElementById('root')
-)
+);
 
-reportWebVitals()
+reportWebVitals();

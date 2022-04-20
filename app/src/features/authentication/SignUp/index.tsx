@@ -1,45 +1,48 @@
-import { useState } from 'react'
-import { Formik } from 'formik'
-import { Button } from '@mui/material'
-import ModalCheKoV from '../../../components/Modal'
-import * as TRANSLATIONS from '../../../translations'
-import FormInput from '../../../components/FormInput'
-import { useDispatch, useSelector } from 'react-redux'
-import { registerCustomer } from '../../../redux/auth/modules'
-import { MIN_PASSWORD_LENGTH } from '../../../constants'
-import { selectAuthErrors } from '../../../redux/auth/selectors'
-import { PASSWORDS_DONT_MATCH, PASSWORD_TOO_SHORT } from '../../../translations'
+import { useState } from 'react';
+import { Formik } from 'formik';
+import { Button } from '@mui/material';
+import ModalCheKoV from '../../../components/Modal';
+import * as TRANSLATIONS from '../../../translations';
+import FormInput from '../../../components/FormInput';
+import { useDispatch, useSelector } from 'react-redux';
+import { registerCustomer } from '../../../redux/auth/modules';
+import { MIN_PASSWORD_LENGTH } from '../../../constants';
+import { selectAuthErrors } from '../../../redux/auth/selectors';
+import {
+    PASSWORDS_DONT_MATCH,
+    PASSWORD_TOO_SHORT,
+} from '../../../translations';
 
 type Props = {
-    shouldRender: boolean
-    onModalClose: () => void
-}
+    shouldRender: boolean;
+    onModalClose: () => void;
+};
 
 const SignUp = ({ shouldRender, onModalClose }: Props) => {
-    const [firstName, setFirstName] = useState<string>('')
-    const [lastName, setLastName] = useState<string>('')
-    const [email, setEmail] = useState<string>('')
-    const [password, setPassword] = useState<string>('')
-    const [passwordConfirmed, setPasswordConfirmed] = useState<string>('')
-    const [errors, setErrors] = useState({ password: '' })
+    const [firstName, setFirstName] = useState<string>('');
+    const [lastName, setLastName] = useState<string>('');
+    const [email, setEmail] = useState<string>('');
+    const [password, setPassword] = useState<string>('');
+    const [passwordConfirmed, setPasswordConfirmed] = useState<string>('');
+    const [errors, setErrors] = useState({ password: '' });
 
-    const apiErrors = useSelector(selectAuthErrors)
-    const dispatch = useDispatch()
+    const apiErrors = useSelector(selectAuthErrors);
+    const dispatch = useDispatch();
 
     const isSubmitting =
-        firstName && lastName && email && password && passwordConfirmed
+        firstName && lastName && email && password && passwordConfirmed;
 
     const validate = () => {
         if (password !== passwordConfirmed) {
-            setErrors({ ...errors, password: PASSWORDS_DONT_MATCH })
-            return errors
+            setErrors({ ...errors, password: PASSWORDS_DONT_MATCH });
+            return errors;
         }
 
         if (password.length < MIN_PASSWORD_LENGTH) {
-            setErrors({ ...errors, password: PASSWORD_TOO_SHORT })
-            return errors
+            setErrors({ ...errors, password: PASSWORD_TOO_SHORT });
+            return errors;
         }
-    }
+    };
 
     return (
         <ModalCheKoV shouldRender={shouldRender} onModalClose={onModalClose}>
@@ -82,7 +85,7 @@ const SignUp = ({ shouldRender, onModalClose }: Props) => {
                                 firstName,
                                 lastName,
                             })
-                        )
+                        );
                     }}
                 >
                     {({ handleSubmit }) => (
@@ -143,7 +146,7 @@ const SignUp = ({ shouldRender, onModalClose }: Props) => {
                 </Formik>
             </div>
         </ModalCheKoV>
-    )
-}
+    );
+};
 
-export default SignUp
+export default SignUp;

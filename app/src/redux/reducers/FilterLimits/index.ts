@@ -1,20 +1,20 @@
-import { createAsyncThunk, createSlice } from '@reduxjs/toolkit'
-import { ApiSuccess } from '../../../models'
-import FilterLimits from '../../../models/FilterLimits'
-import * as API from '../../api'
+import { createAsyncThunk, createSlice } from '@reduxjs/toolkit';
+import { ApiSuccess } from '../../../models';
+import FilterLimits from '../../../models/FilterLimits';
+import * as API from '../../api';
 
 export type FilterLimitsSliceType = {
-    limits: FilterLimits
-    status: 'idle' | 'pending' | 'success' | 'error'
-}
+    limits: FilterLimits;
+    status: 'idle' | 'pending' | 'success' | 'error';
+};
 
 export const getFilterLimits = createAsyncThunk(
     'filterLimits/get',
     async () => {
-        const { data }: ApiSuccess<FilterLimits> = await API.getFilterLimits()
-        return data
+        const { data }: ApiSuccess<FilterLimits> = await API.getFilterLimits();
+        return data;
     }
-)
+);
 
 const filterLimitsSlice = createSlice({
     name: 'filterLimits',
@@ -25,16 +25,16 @@ const filterLimitsSlice = createSlice({
     reducers: {},
     extraReducers: (builder) => {
         builder.addCase(getFilterLimits.pending, (state, action) => {
-            state.status = 'pending'
-        })
+            state.status = 'pending';
+        });
         builder.addCase(getFilterLimits.fulfilled, (state, action) => {
-            state.limits = action.payload
-            state.status = 'success'
-        })
+            state.limits = action.payload;
+            state.status = 'success';
+        });
         builder.addCase(getFilterLimits.rejected, (state, action) => {
-            state.status = 'error'
-        })
+            state.status = 'error';
+        });
     },
-})
+});
 
-export default filterLimitsSlice.reducer
+export default filterLimitsSlice.reducer;

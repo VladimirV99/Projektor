@@ -1,21 +1,21 @@
-import React from 'react'
-import 'bootstrap/dist/css/bootstrap.min.css'
-import { faClapperboard } from '@fortawesome/free-solid-svg-icons/faClapperboard'
-import { faClock } from '@fortawesome/free-regular-svg-icons/faClock'
-import { faLink } from '@fortawesome/free-solid-svg-icons/faLink'
-import Movie from '@models/Movie'
-import * as S from './index.styles'
+import React from 'react';
+import 'bootstrap/dist/css/bootstrap.min.css';
+import { faClapperboard } from '@fortawesome/free-solid-svg-icons/faClapperboard';
+import { faClock } from '@fortawesome/free-regular-svg-icons/faClock';
+import { faLink } from '@fortawesome/free-solid-svg-icons/faLink';
+import Movie from '@models/Movie';
+import * as S from './index.styles';
 
 type MovieCardProps = {
-    movie: Movie
-}
+    movie: Movie;
+};
 
 const MovieCard = ({ movie }: MovieCardProps): JSX.Element => {
-    const { title, year, length, genres, imdbUrl, imageUrl } = movie
+    const { title, year, length, genres, imdbUrl, imageUrl } = movie;
     const genresDisplayString =
         genres.length > 0
             ? genres.map((genre) => genre.name.trim()).join(', ')
-            : 'Other'
+            : 'Other';
 
     return (
         <S.MovieCardContainer>
@@ -58,7 +58,7 @@ const MovieCard = ({ movie }: MovieCardProps): JSX.Element => {
                 </S.MovieInfoCol>
             </S.MovieCardRow>
         </S.MovieCardContainer>
-    )
-}
+    );
+};
 
-export default MovieCard
+export default MovieCard;

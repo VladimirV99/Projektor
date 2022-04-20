@@ -1,4 +1,4 @@
-import styled, { css } from 'styled-components'
+import styled, { css } from 'styled-components';
 
 export const Container = styled.div`
     padding-top: 100px;
@@ -6,11 +6,11 @@ export const Container = styled.div`
     padding-right: 10px;
     margin: 0 auto;
     max-width: 800px;
-`
+`;
 
 export const MovieListContainer = styled.div<{
-    isLoading: boolean
-    isEmpty: boolean
+    isLoading: boolean;
+    isEmpty: boolean;
 }>`
     padding-top: 10px;
     padding-bottom: 10px;
@@ -19,8 +19,8 @@ export const MovieListContainer = styled.div<{
         css`
             height: 100vh;
         `}
-`
+`;
 
-export const MovieFiltersContainer = styled.div``
+export const MovieFiltersContainer = styled.div``;
 
-export const MovieCardWrapper = styled.div``
+export const MovieCardWrapper = styled.div``;

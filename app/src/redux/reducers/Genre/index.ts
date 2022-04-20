@@ -1,17 +1,17 @@
-import { createAsyncThunk, createSlice } from '@reduxjs/toolkit'
-import { ApiSuccess } from '../../../models'
-import Genre from '../../../models/Genre'
-import * as API from '../../api'
+import { createAsyncThunk, createSlice } from '@reduxjs/toolkit';
+import { ApiSuccess } from '../../../models';
+import Genre from '../../../models/Genre';
+import * as API from '../../api';
 
 export type GenreSliceType = {
-    entities: Genre[]
-    status: 'idle' | 'pending' | 'success' | 'error'
-}
+    entities: Genre[];
+    status: 'idle' | 'pending' | 'success' | 'error';
+};
 
 export const getGenres = createAsyncThunk('genres/get', async () => {
-    const { data }: ApiSuccess<Genre[]> = await API.getGenres()
-    return data
-})
+    const { data }: ApiSuccess<Genre[]> = await API.getGenres();
+    return data;
+});
 
 const genresSlice = createSlice({
     name: 'genres',
@@ -22,16 +22,16 @@ const genresSlice = createSlice({
     reducers: {},
     extraReducers: (builder) => {
         builder.addCase(getGenres.pending, (state, action) => {
-            state.status = 'pending'
-        })
+            state.status = 'pending';
+        });
         builder.addCase(getGenres.fulfilled, (state, action) => {
-            state.entities = action.payload
-            state.status = 'success'
-        })
+            state.entities = action.payload;
+            state.status = 'success';
+        });
         builder.addCase(getGenres.rejected, (state, action) => {
-            state.status = 'error'
-        })
+            state.status = 'error';
+        });
     },
-})
+});
 
-export default genresSlice.reducer
+export default genresSlice.reducer;

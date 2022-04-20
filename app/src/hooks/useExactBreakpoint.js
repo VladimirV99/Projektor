@@ -1,11 +1,11 @@
-import { useMemo } from 'react'
-import useBreakpoint, { Config } from 'use-breakpoint'
-import theme from '../theme'
+import { useMemo } from 'react';
+import useBreakpoint, { Config } from 'use-breakpoint';
+import theme from '../theme';
 
 const useExactBreakpoint = () => {
-    const breakpoints = useMemo(() => theme.breakpoints, [])
+    const breakpoints = useMemo(() => theme.breakpoints, []);
 
-    const { breakpoint } = useBreakpoint(breakpoints)
+    const { breakpoint } = useBreakpoint(breakpoints);
 
     return {
         breakpoint,
@@ -13,7 +13,7 @@ const useExactBreakpoint = () => {
         isMedium: breakpoint === breakpoints.medium,
         isLarge: breakpoint === breakpoints.large,
         isXLarge: breakpoint === breakpoints.xlarge,
-    }
-}
+    };
+};
 
-export default useExactBreakpoint
+export default useExactBreakpoint;

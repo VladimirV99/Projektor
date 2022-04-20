@@ -1,6 +1,6 @@
-import { configureStore } from '@reduxjs/toolkit'
+import { configureStore } from '@reduxjs/toolkit';
 
-import rootReducer from './reducers'
+import rootReducer from './reducers';
 
 // TODO Add support for network middleware
 // const networkMiddleware =
@@ -25,9 +25,9 @@ const store = configureStore({
         const middlewares = getDefaultMiddleware({
             serializableCheck: false,
             immutableCheck: false,
-        })
-        return middlewares
+        });
+        return middlewares;
     },
-})
+});
 
-export default store
+export default store;

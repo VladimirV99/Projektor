@@ -1,28 +1,28 @@
-import { Fragment, useEffect } from 'react'
-import { useDispatch } from 'react-redux'
-import { clearTokensAndUser, setTokensAndUser } from 'redux/auth/actions'
+import { Fragment, useEffect } from 'react';
+import { useDispatch } from 'react-redux';
+import { clearTokensAndUser, setTokensAndUser } from 'redux/auth/actions';
 
 export default function WithLocalStorageFetcher({
     children,
 }: {
-    children: JSX.Element | JSX.Element[]
+    children: JSX.Element | JSX.Element[];
 }) {
-    const dispatch = useDispatch()
+    const dispatch = useDispatch();
     //fetch data from localStorage and dispatch action to store
     useEffect(() => {
-        const accessToken = window.localStorage.getItem('accessToken')
-        const refreshToken = window.localStorage.getItem('refreshToken')
-        const userEncoded = window.localStorage.getItem('user')
+        const accessToken = window.localStorage.getItem('accessToken');
+        const refreshToken = window.localStorage.getItem('refreshToken');
+        const userEncoded = window.localStorage.getItem('user');
 
         if (!accessToken || !refreshToken || !userEncoded) {
-            dispatch(clearTokensAndUser())
-            return
+            dispatch(clearTokensAndUser());
+            return;
         }
 
-        const user = JSON.parse(userEncoded)
+        const user = JSON.parse(userEncoded);
 
-        dispatch(setTokensAndUser({ accessToken, refreshToken, user }))
-    }, [])
+        dispatch(setTokensAndUser({ accessToken, refreshToken, user }));
+    }, []);
 
-    return <Fragment>{children}</Fragment>
+    return <Fragment>{children}</Fragment>;
 }

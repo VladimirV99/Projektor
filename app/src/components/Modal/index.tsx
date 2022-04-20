@@ -1,10 +1,10 @@
-import { Modal } from '@mui/material'
+import { Modal } from '@mui/material';
 
 type Props = {
-    children: JSX.Element
-    shouldRender: boolean
-    onModalClose: () => void
-}
+    children: JSX.Element;
+    shouldRender: boolean;
+    onModalClose: () => void;
+};
 
 const ModalCheKoV = ({
     children,
@@ -19,7 +19,7 @@ const ModalCheKoV = ({
         >
             {children}
         </Modal>
-    )
-}
+    );
+};
 
-export default ModalCheKoV
+export default ModalCheKoV;

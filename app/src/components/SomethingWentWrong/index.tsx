@@ -1,4 +1,4 @@
-import * as S from './index.styles'
+import * as S from './index.styles';
 
 const SomethingWentWrong = () => (
     <S.Container>
@@ -7,7 +7,7 @@ const SomethingWentWrong = () => (
             There seems to be an error. Try{' '}
             <S.RefreshButton
                 onClick={() => {
-                    window.location.reload()
+                    window.location.reload();
                 }}
             >
                 refreshing
@@ -15,6 +15,6 @@ const SomethingWentWrong = () => (
             the page.
         </p>
     </S.Container>
-)
+);
 
-export default SomethingWentWrong
+export default SomethingWentWrong;

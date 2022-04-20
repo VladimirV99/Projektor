@@ -19,13 +19,15 @@ import rootReducer from './reducers';
 //   };
 
 const store = configureStore({
-  reducer: rootReducer,
-  preloadedState: { },
-  middleware: (getDefaultMiddleware) => {
-    const middlewares = getDefaultMiddleware({ serializableCheck: false, immutableCheck: false });
-
-    return middlewares;
-  },
+    reducer: rootReducer,
+    preloadedState: {},
+    middleware: (getDefaultMiddleware) => {
+        const middlewares = getDefaultMiddleware({
+            serializableCheck: false,
+            immutableCheck: false,
+        });
+        return middlewares;
+    },
 });
 
 export default store;

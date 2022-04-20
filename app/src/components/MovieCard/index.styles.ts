@@ -6,7 +6,7 @@ export const MovieCardContainer = styled.div`
     max-width: 700px;
     height: 120px;
 
-    &:hover{
+    &:hover {
         background-image: linear-gradient(315deg, #d9e4f5 0%, #f5e3e6 74%);
     }
 
@@ -15,7 +15,7 @@ export const MovieCardContainer = styled.div`
 
 export const MovieCardRow = styled(Row)`
     padding: 5px;
-    display: flex;  
+    display: flex;
     align-items: center;
     justify-content: center;
     border-bottom: 1px solid #e0e0e0;
@@ -24,7 +24,7 @@ export const MovieCardRow = styled(Row)`
 `;
 
 export const MovieCardCol = styled(Col)`
-    display: flex;  
+    display: flex;
     align-items: center;
     justify-content: center;
     height: 100%;
@@ -79,12 +79,10 @@ export const MovieInfo = styled.div`
     font-size: 16px;
 
     margin-right: 10px;
-
 `;
 
 export const MovieInfoIcon = styled(FontAwesomeIcon)`
     padding-right: 5px;
 `;
 
-
-export { }
+export {};

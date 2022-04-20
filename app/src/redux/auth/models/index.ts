@@ -21,4 +21,4 @@ export type loginResponse = {
     accessToken: string;
     refreshToken: string;
     user: userType;
-}
+};

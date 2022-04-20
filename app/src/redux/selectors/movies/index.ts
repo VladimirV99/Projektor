@@ -1,7 +1,8 @@
-import { MovieSliceType } from "@redux/reducers/Movie";
-import { createSelector } from "@reduxjs/toolkit";
+import { MovieSliceType } from '@redux/reducers/Movie';
+import { createSelector } from '@reduxjs/toolkit';
 
-const getCoreState = (state: any) : MovieSliceType => state.movies as MovieSliceType;
+const getCoreState = (state: any): MovieSliceType =>
+    state.movies as MovieSliceType;
 
 export const getMovies = createSelector(
     [getCoreState],
@@ -17,4 +18,3 @@ export const getMoviesCount = createSelector(
     [getCoreState],
     (state: MovieSliceType) => state.count
 );
-

@@ -1,7 +1,8 @@
-import { GenreSliceType } from "redux/reducers/Genre";
-import { createSelector } from "@reduxjs/toolkit";
+import { GenreSliceType } from 'redux/reducers/Genre';
+import { createSelector } from '@reduxjs/toolkit';
 
-const getCoreState = (state: any) : GenreSliceType => state.genres as GenreSliceType;
+const getCoreState = (state: any): GenreSliceType =>
+    state.genres as GenreSliceType;
 
 export const getGenresStatus = createSelector(
     [getCoreState],
@@ -17,4 +18,3 @@ export const getGenres = createSelector(
     [getCoreState],
     (state: GenreSliceType) => state.entities
 );
-

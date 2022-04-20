@@ -40,15 +40,17 @@ axiosAuthInstance.interceptors.request.use(
 axiosAuthInstance.interceptors.response.use(
     (response) => response,
     (error) => {
-        if (!error.response || error.response.status !== 401) {
-            return Promise.reject(error);
-        }
-        const originalRequest = error.config;
-        if (!error.response.headers['is-token-expired']) {
+        if (
+            !error.response ||
+            error.response.status !== 401 ||
+            !error.response.headers ||
+            !error.response.headers['is-token-expired']
+        ) {
             // Meaning the request was unauthorized or some other error occurred
             console.log('[response interceptor]: unauthorized, skip');
             return Promise.reject(error);
         }
+        const originalRequest = error.config;
         if (originalRequest._retry) {
             // Already retried
             console.log('[response interceptor]: already retried, skip');

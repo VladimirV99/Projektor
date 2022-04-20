@@ -1,4 +1,4 @@
-import { clearTokensAndUser, setTokensAndUser } from 'redux/auth/actions';
+import { logoutCustomer, setTokensAndUser } from 'redux/auth/actions';
 import axios from 'axios';
 import store from 'redux/store';
 
@@ -54,7 +54,7 @@ axiosAuthInstance.interceptors.response.use(
         if (originalRequest._retry) {
             // Already retried
             console.log('[response interceptor]: already retried, skip');
-            store.dispatch(clearTokensAndUser());
+            store.dispatch(logoutCustomer());
             localStorage.removeItem('accessToken');
             localStorage.removeItem('refreshToken');
 
@@ -94,7 +94,7 @@ axiosAuthInstance.interceptors.response.use(
                     localStorage.removeItem('accessToken');
                     localStorage.removeItem('refreshToken');
                     localStorage.removeItem('user');
-                    store.dispatch(clearTokensAndUser());
+                    store.dispatch(logoutCustomer());
                     reject(error);
                 });
         });

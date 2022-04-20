@@ -1,7 +1,6 @@
 import { createReducer } from '@reduxjs/toolkit';
 import { LoadingStatus } from '../../../constants/common';
 import {
-    clearTokensAndUser,
     loginError,
     loginFullfiled,
     loginPending,
@@ -48,11 +47,6 @@ const reducer = createReducer(initialState, (builder) => {
         state.accessToken = action.payload.accessToken;
         state.refreshToken = action.payload.refreshToken;
         state.user = action.payload.user;
-    });
-    builder.addCase(clearTokensAndUser, (state) => {
-        state.accessToken = null;
-        state.refreshToken = null;
-        state.user = null;
     });
 });
 

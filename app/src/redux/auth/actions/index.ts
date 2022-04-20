@@ -9,7 +9,6 @@ export const setTokensAndUser = createAction<{
     refreshToken: string | null;
     user: userType;
 }>('setTokensAndUser');
-export const clearTokensAndUser = createAction('clearTokensAndUser');
 
 export const loginPending = createAction('loginPending');
 export const loginFullfiled = createAction<loginResponse>('loginFullfiled');

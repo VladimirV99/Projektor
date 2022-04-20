@@ -1,7 +1,5 @@
-import Movie from ".";
+import Movie from '.'
 
 export class PaginatedMovieList {
-    constructor(public count: number,
-                public movies: Movie[]) {
-    }
+    constructor(public count: number, public movies: Movie[]) {}
 }

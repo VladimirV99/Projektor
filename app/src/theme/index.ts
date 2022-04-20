@@ -5,20 +5,19 @@ const theme = {
         tertiary: '#03dac6',
     },
     fonts: {
-        primary: '"Roboto", sans-serif'
+        primary: '"Roboto", sans-serif',
     },
     fontSizes: {
         small: '1.2rem',
         medium: '1.6rem',
-        large: '2.4rem'
+        large: '2.4rem',
     },
-    breakpoints:
-    {
+    breakpoints: {
         small: '576px',
         medium: '768px',
         large: '992px',
-        xlarge: '1200px'
+        xlarge: '1200px',
     },
-};
+}
 
-export default theme;
+export default theme

@@ -7,7 +7,6 @@ import { ErrorBoundary } from 'react-error-boundary';
 import SomethingWentWrong from 'components/SomethingWentWrong';
 
 function App() {
-
   return (
     <WithReduxProvider>
       <ErrorBoundary FallbackComponent={SomethingWentWrong}>

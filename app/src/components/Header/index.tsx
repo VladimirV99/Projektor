@@ -1,10 +1,10 @@
 import { Button } from "@mui/material";
 import { useDispatch, useSelector } from "react-redux";
-import { logoutCustomer } from "../../redux/auth/reducers";
 import { selectIsUserLoggedIn, selectUser } from "../../redux/auth/selectors";
 import SignIn from "../../features/authentication/SignIn";
 import SignUp from "../../features/authentication/SignUp";
 import { useEffect, useState } from "react";
+import { logoutCustomer } from "redux/auth/actions";
 
 const Header = (): JSX.Element => {
 

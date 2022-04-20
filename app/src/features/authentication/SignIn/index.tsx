@@ -14,8 +14,8 @@ type Props = {
 }
 
 const SignIn = ({ shouldRender, onModalClose, onSignUpLinkClicked }: Props) => {
-    const [email, setEmail] = useState<string>('')
-    const [password, setPassword] = useState<string>('')
+    const [email, setEmail] = useState<string>('admin@admin.com')
+    const [password, setPassword] = useState<string>('Admin_123')
 
     const dispatch = useDispatch()
 

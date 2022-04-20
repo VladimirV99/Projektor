@@ -7,6 +7,7 @@ import {
     loginPending,
     logoutCustomer,
     registerFailed,
+    registerPending,
     setTokensAndUser,
 } from '../actions'
 import { AuthenticationReducerType } from './types'
@@ -20,6 +21,9 @@ const initialState: AuthenticationReducerType = {
 }
 
 const reducer = createReducer(initialState, (builder) => {
+    builder.addCase(registerPending, (state) => {
+        state.loadingStatus = LoadingStatus.Initializing
+    })
     builder.addCase(registerFailed, (state, action) => {
         state.errors = action.payload
     })

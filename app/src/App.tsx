@@ -5,22 +5,25 @@ import WithReduxProvider from './config/withReduxProvider'
 import HomeScreen from './features/HomeScreen'
 import AppHeader from './components/Header'
 import BrowseMoviesScreen from './features/BrowseMoviesScreen'
+import WithLocalStorageFetcher from 'config/withLocalStorageFetcher'
 
 function App() {
     return (
         <WithReduxProvider>
-            <ErrorBoundary FallbackComponent={SomethingWentWrong}>
-                <AppHeader />
-                <BrowserRouter>
-                    <Routes>
-                        <Route path="/" element={<HomeScreen />} />
-                        <Route
-                            path="/movies"
-                            element={<BrowseMoviesScreen />}
-                        />
-                    </Routes>
-                </BrowserRouter>
-            </ErrorBoundary>
+            <WithLocalStorageFetcher>
+                <ErrorBoundary FallbackComponent={SomethingWentWrong}>
+                    <AppHeader />
+                    <BrowserRouter>
+                        <Routes>
+                            <Route path="/" element={<HomeScreen />} />
+                            <Route
+                                path="/movies"
+                                element={<BrowseMoviesScreen />}
+                            />
+                        </Routes>
+                    </BrowserRouter>
+                </ErrorBoundary>
+            </WithLocalStorageFetcher>
         </WithReduxProvider>
     )
 }

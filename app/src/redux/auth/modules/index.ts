@@ -14,6 +14,7 @@ export const loginCustomer = (user: userLoginRequest) => (dispatch: any) => {
             localStorage.setItem('user', JSON.stringify(response.data.user))
             localStorage.setItem('accessToken', response.data.accessToken)
             localStorage.setItem('refreshToken', response.data.refreshToken)
+
             dispatch(loginFullfiled(response.data))
         })
         .catch((error) => {

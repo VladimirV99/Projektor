@@ -23,7 +23,7 @@ namespace Common.Auth.Extensions
                         ValidateAudience = true,
                         ValidateLifetime = true,
                         ValidateIssuerSigningKey = true,
-                        //ClockSkew = TimeSpan.Zero,
+                        ClockSkew = TimeSpan.Zero,
 
                         ValidIssuer = jwtSettings.Issuer,
                         ValidAudience = jwtSettings.Audience,
@@ -35,6 +35,7 @@ namespace Common.Auth.Extensions
                         {
                             if (context.Exception.GetType() == typeof(SecurityTokenExpiredException))
                             {
+                                context.Response.Headers.Add("Access-Control-Expose-Headers", "Is-Token-Expired");
                                 context.Response.Headers.Add("Is-Token-Expired", "true");
                             }
                             return Task.CompletedTask;

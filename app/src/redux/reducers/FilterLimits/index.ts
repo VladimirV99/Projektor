@@ -1,6 +1,6 @@
 import { createAsyncThunk, createSlice } from '@reduxjs/toolkit';
-import { ApiSuccess } from '../../../models';
-import FilterLimits from '../../../models/FilterLimits';
+import { ApiSuccess } from 'models';
+import FilterLimits from 'models/FilterLimits';
 import * as API from '../../api';
 
 export type FilterLimitsSliceType = {

@@ -1,10 +1,10 @@
+import { useEffect, useState } from 'react';
 import { Button } from '@mui/material';
 import { useDispatch, useSelector } from 'react-redux';
-import { selectIsUserLoggedIn, selectUser } from '../../redux/auth/selectors';
-import SignIn from '../../features/authentication/SignIn';
-import SignUp from '../../features/authentication/SignUp';
-import { useEffect, useState } from 'react';
+import { selectIsUserLoggedIn, selectUser } from 'redux/auth/selectors';
 import { logoutCustomer } from 'redux/auth/actions';
+import SignIn from 'features/authentication/SignIn';
+import SignUp from 'features/authentication/SignUp';
 
 const Header = (): JSX.Element => {
     const [signInModal, setSignInModal] = useState<boolean>(false);

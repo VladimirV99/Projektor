@@ -1,16 +1,16 @@
 ﻿import { useCallback, useEffect, useMemo, useState } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
-import { filterMovies } from '../../redux/reducers/Movie';
-import { getGenres } from '../../redux/reducers/Genre';
-import { getFilterLimits } from '../../redux/reducers/FilterLimits';
+import { filterMovies } from 'redux/reducers/Movie';
+import { getGenres } from 'redux/reducers/Genre';
+import { getFilterLimits } from 'redux/reducers/FilterLimits';
 import { Backdrop, CircularProgress, Pagination } from '@mui/material';
 import { Col, Row } from 'react-bootstrap';
-import MovieCard from '../../components/MovieCard';
-import MovieFilters from '../../components/MovieFilters';
-import Movie from '../../models/Movie';
-import FilterMoviesRequest from '../../models/Movie/FilterMoviesRequest';
+import MovieCard from 'components/MovieCard';
+import MovieFilters from 'components/MovieFilters';
+import Movie from 'models/Movie';
+import FilterMoviesRequest from 'models/Movie/FilterMoviesRequest';
 import useAsyncError from 'hooks/useAsyncError';
-import * as selectors from '../../redux/selectors';
+import * as selectors from 'redux/selectors';
 import * as S from './index.styles';
 
 const BrowseMoviesScreen = (): JSX.Element => {

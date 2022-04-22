@@ -1,13 +1,10 @@
 import axios, { Axios, AxiosPromise } from 'axios';
-import { URL_PREFIX } from '../../../constants';
 import {
     loginResponse,
     userLoginRequest,
     userRegisterRequest,
 } from '../models';
-
-const registerUrl = `${URL_PREFIX}/api/v1/Authentication/RegisterCustomer`;
-const loginUrl = `${URL_PREFIX}/api/v1/Authentication/Login`;
+import * as ENDPOINTS from 'constants/api';
 
 export const createUser = ({
     firstName,
@@ -15,7 +12,7 @@ export const createUser = ({
     password,
     email,
 }: userRegisterRequest) =>
-    axios.post(registerUrl, {
+    axios.post(ENDPOINTS.REGISTER_URL, {
         firstName,
         lastName,
         password,
@@ -25,8 +22,10 @@ export const createUser = ({
 export const loginUser = ({
     email,
     password,
-}: userLoginRequest): AxiosPromise<loginResponse> =>
-    axios.post(loginUrl, {
+}: userLoginRequest): AxiosPromise<loginResponse> => {
+    console.log('Firing api request with', ENDPOINTS.LOGIN_URL);
+    return axios.post(ENDPOINTS.LOGIN_URL, {
         email,
         password,
     });
+};

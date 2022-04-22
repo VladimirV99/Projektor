@@ -3,7 +3,7 @@ import 'bootstrap/dist/css/bootstrap.min.css';
 import { faClapperboard } from '@fortawesome/free-solid-svg-icons/faClapperboard';
 import { faClock } from '@fortawesome/free-regular-svg-icons/faClock';
 import { faLink } from '@fortawesome/free-solid-svg-icons/faLink';
-import Movie from '@models/Movie';
+import Movie from 'models/Movie';
 import * as S from './index.styles';
 
 type MovieCardProps = {

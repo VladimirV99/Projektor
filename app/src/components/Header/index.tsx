@@ -35,6 +35,9 @@ const Header = (): JSX.Element => {
 
     const onLogOut = () => {
         dispatch(logoutCustomer());
+        window.localStorage.removeItem('accessToken');
+        window.localStorage.removeItem('refreshToken');
+        window.localStorage.removeItem('user');
     };
 
     return isUserLoggedIn && user ? (

@@ -23,7 +23,6 @@ export const loginUser = ({
     email,
     password,
 }: userLoginRequest): AxiosPromise<loginResponse> => {
-    console.log('Firing api request with', ENDPOINTS.LOGIN_URL);
     return axios.post(ENDPOINTS.LOGIN_URL, {
         email,
         password,

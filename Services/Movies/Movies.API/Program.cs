@@ -2,7 +2,6 @@ using System.Reflection;
 using System.Text.Json.Serialization;
 using Movies.API.Data;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.EntityFrameworkCore.SqlServer;
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.

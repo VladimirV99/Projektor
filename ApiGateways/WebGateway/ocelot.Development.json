@@ -1,7 +1,7 @@
 {
   "Routes": [
     {
-      "DownstreamPathTemplate": "/api/v1/Administrator/{everything}",
+      "DownstreamPathTemplate": "/api/{version}/Administrator/{everything}",
       "DownstreamScheme": "http",
       "DownstreamHostAndPorts": [
         {
@@ -9,11 +9,11 @@
           "Port": 80
         }
       ],
-      "UpstreamPathTemplate": "/api/v1/Administrator/{everything}",
-      "UpstreamHttpMethod": ["Get", "Post", "Delete"]
+      "UpstreamPathTemplate": "/api/{version}/Administrator/{everything}",
+      "UpstreamHttpMethod": [ "Get", "Post", "Delete" ]
     },
     {
-      "DownstreamPathTemplate": "/api/v1/Authentication/{everything}",
+      "DownstreamPathTemplate": "/api/{version}/Authentication/{everything}",
       "DownstreamScheme": "http",
       "DownstreamHostAndPorts": [
         {
@@ -21,11 +21,11 @@
           "Port": 80
         }
       ],
-      "UpstreamPathTemplate": "/api/v1/Authentication/{everything}",
-      "UpstreamHttpMethod": ["Get", "Post", "Options"]
+      "UpstreamPathTemplate": "/api/{version}/Authentication/{everything}",
+      "UpstreamHttpMethod": [ "Get", "Post", "Options" ]
     },
     {
-      "DownstreamPathTemplate": "/api/v1/User/{everything}",
+      "DownstreamPathTemplate": "/api/{version}/User/{everything}",
       "DownstreamScheme": "http",
       "DownstreamHostAndPorts": [
         {
@@ -33,11 +33,11 @@
           "Port": 80
         }
       ],
-      "UpstreamPathTemplate": "/api/v1/User/{everything}",
-      "UpstreamHttpMethod": ["Get", "Post", "Put", "Delete"]
+      "UpstreamPathTemplate": "/api/{version}/User/{everything}",
+      "UpstreamHttpMethod": [ "Get", "Post", "Put", "Delete" ]
     },
     {
-      "DownstreamPathTemplate": "/api/v1/Movies/{everything}",
+      "DownstreamPathTemplate": "/api/{version}/Movies/{everything}",
       "DownstreamScheme": "http",
       "DownstreamHostAndPorts": [
         {
@@ -45,8 +45,8 @@
           "Port": 80
         }
       ],
-      "UpstreamPathTemplate": "/api/v1/Movies/{everything}",
-      "UpstreamHttpMethod": ["Get", "Post"]
+      "UpstreamPathTemplate": "/api/{version}/Movies/{everything}",
+      "UpstreamHttpMethod": [ "Get", "Post" ]
     }
   ]
 }

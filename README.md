@@ -28,7 +28,7 @@ Projektor is a microservice application for managing basic cinema operations. It
    ```
    cd app
    npm install
-   npm start
+   npm run start:dev
    ```
 4. To stop the application run:
    ```

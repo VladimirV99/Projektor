@@ -6,16 +6,16 @@ EXPOSE 80
 
 FROM mcr.microsoft.com/dotnet/sdk:6.0 AS build
 WORKDIR /src
-COPY ["Services/Identity/Identity.csproj", "Services/Identity/"]
-RUN dotnet restore "Services/Identity/Identity.csproj"
+COPY ["ApiGateways/WebGateway/WebGateway.csproj", "ApiGateways/WebGateway/"]
+RUN dotnet restore "ApiGateways/WebGateway/WebGateway.csproj"
 COPY . .
-WORKDIR "/src/Services/Identity"
-RUN dotnet build "Identity.csproj" -c Release -o /app/build
+WORKDIR "/src/ApiGateways/WebGateway"
+RUN dotnet build "WebGateway.csproj" -c Release -o /app/build
 
 FROM build AS publish
-RUN dotnet publish "Identity.csproj" -c Release -o /app/publish
+RUN dotnet publish "WebGateway.csproj" -c Release -o /app/publish
 
 FROM base AS final
 WORKDIR /app
 COPY --from=publish /app/publish .
-ENTRYPOINT ["dotnet", "Identity.dll"]
+ENTRYPOINT ["dotnet", "WebGateway.dll"]

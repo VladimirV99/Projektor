@@ -17,7 +17,7 @@ services:
     image: ${DOCKER_REGISTRY-}identity
     build:
       context: .
-      dockerfile: Security/Identity/Dockerfile
+      dockerfile: Services/Identity/Dockerfile
 
   mailer:
     image: ${DOCKER_REGISTRY-}mailer
@@ -25,6 +25,11 @@ services:
       context: .
       dockerfile: Services/Mailer/Dockerfile
 
+  webgateway:
+    image: ${DOCKER_REGISTRY-}webgateway
+    build:
+      context: .
+      dockerfile: ApiGateways/WebGateway/Dockerfile
+
 volumes:
   mssql_data:
-

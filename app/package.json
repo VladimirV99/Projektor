@@ -37,11 +37,11 @@
         "web-vitals": "^2.1.4"
     },
     "scripts": {
-        "eject": "react-scripts eject",
         "start:dev": "env-cmd -f ./environments/.dev.env react-app-rewired start",
         "build:dev": "enc-cmd -f ./environments/.dev.env react-app-rewired build",
         "start:prod": "env-cmd -f ./environments/.prod.env react-app-rewired start",
-        "build:prod": "env-cmd -f ./environments/.prod.env react-app-rewired build"
+        "build:prod": "env-cmd -f ./environments/.prod.env react-app-rewired build",
+        "eject": "react-scripts eject"
     },
     "browserslist": {
         "production": [

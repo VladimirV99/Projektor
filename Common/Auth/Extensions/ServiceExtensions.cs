@@ -23,7 +23,7 @@ namespace Common.Auth.Extensions
                         ValidateAudience = true,
                         ValidateLifetime = true,
                         ValidateIssuerSigningKey = true,
-                        // ClockSkew = TimeSpan.Zero,
+                        ClockSkew = TimeSpan.Zero,
 
                         ValidIssuer = jwtSettings.Issuer,
                         ValidAudience = jwtSettings.Audience,

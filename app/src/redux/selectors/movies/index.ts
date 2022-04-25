@@ -1,4 +1,4 @@
-import { MovieSliceType } from '@redux/reducers/Movie';
+import { MovieSliceType } from 'redux/reducers/Movie';
 import { createSelector } from '@reduxjs/toolkit';
 
 const getCoreState = (state: any): MovieSliceType =>

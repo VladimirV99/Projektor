@@ -1,7 +1,11 @@
-export const MOVIES_BASE = 'http://localhost:5096/api/v1';
+import urlJoin from 'url-join';
+import URL_BASE from '../global';
 
-export const FILTER_MOVIES_URL = `${MOVIES_BASE}/Movies/FilterMovies`;
+export const FILTER_MOVIES_URL = urlJoin(URL_BASE, '/Movies/FilterMovies');
 
-export const GET_GENRES_URL = `${MOVIES_BASE}/Movies/GetGenres`;
+export const GET_GENRES_URL = urlJoin(URL_BASE, '/Movies/GetGenres');
 
-export const GET_FILTER_LIMITS_URL = `${MOVIES_BASE}/Movies/GetFilterLimits`;
+export const GET_FILTER_LIMITS_URL = urlJoin(
+    URL_BASE,
+    '/Movies/GetFilterLimits'
+);

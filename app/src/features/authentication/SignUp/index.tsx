@@ -1,17 +1,14 @@
 import { useState } from 'react';
 import { Formik } from 'formik';
 import { Button } from '@mui/material';
-import ModalCheKoV from '../../../components/Modal';
-import * as TRANSLATIONS from '../../../translations';
-import FormInput from '../../../components/FormInput';
+import ModalCheKoV from 'components/Modal';
+import * as TRANSLATIONS from 'translations';
+import FormInput from 'components/FormInput';
 import { useDispatch, useSelector } from 'react-redux';
-import { registerCustomer } from '../../../redux/auth/modules';
-import { MIN_PASSWORD_LENGTH } from '../../../constants';
-import { selectAuthErrors } from '../../../redux/auth/selectors';
-import {
-    PASSWORDS_DONT_MATCH,
-    PASSWORD_TOO_SHORT,
-} from '../../../translations';
+import { registerCustomer } from 'redux/auth/modules';
+import { MIN_PASSWORD_LENGTH } from 'constants/index';
+import { selectAuthErrors } from 'redux/auth/selectors';
+import { PASSWORDS_DONT_MATCH, PASSWORD_TOO_SHORT } from 'translations';
 
 type Props = {
     shouldRender: boolean;

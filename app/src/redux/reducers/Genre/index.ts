@@ -1,6 +1,6 @@
 import { createAsyncThunk, createSlice } from '@reduxjs/toolkit';
-import { ApiSuccess } from '../../../models';
-import Genre from '../../../models/Genre';
+import { ApiSuccess } from 'models';
+import Genre from 'models/Genre';
 import * as API from '../../api';
 
 export type GenreSliceType = {

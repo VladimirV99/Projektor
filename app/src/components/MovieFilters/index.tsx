@@ -3,7 +3,7 @@ import 'bootstrap/dist/css/bootstrap.min.css';
 import { Slider } from '@mui/material';
 import Genre from 'models/Genre';
 import * as S from './index.styles';
-import FilterLimits from '../../models/FilterLimits';
+import FilterLimits from 'models/FilterLimits';
 
 type MovieFiltersProps = {
     genres: Genre[];

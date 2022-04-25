@@ -1,0 +1,52 @@
+{
+  "Routes": [
+    {
+      "DownstreamPathTemplate": "/api/v1/Administrator/{everything}",
+      "DownstreamScheme": "http",
+      "DownstreamHostAndPorts": [
+        {
+          "Host": "identity",
+          "Port": 80
+        }
+      ],
+      "UpstreamPathTemplate": "/api/v1/Administrator/{everything}",
+      "UpstreamHttpMethod": ["Get", "Post", "Delete"]
+    },
+    {
+      "DownstreamPathTemplate": "/api/v1/Authentication/{everything}",
+      "DownstreamScheme": "http",
+      "DownstreamHostAndPorts": [
+        {
+          "Host": "identity",
+          "Port": 80
+        }
+      ],
+      "UpstreamPathTemplate": "/api/v1/Authentication/{everything}",
+      "UpstreamHttpMethod": ["Get", "Post", "Options"]
+    },
+    {
+      "DownstreamPathTemplate": "/api/v1/User/{everything}",
+      "DownstreamScheme": "http",
+      "DownstreamHostAndPorts": [
+        {
+          "Host": "identity",
+          "Port": 80
+        }
+      ],
+      "UpstreamPathTemplate": "/api/v1/User/{everything}",
+      "UpstreamHttpMethod": ["Get", "Post", "Put", "Delete"]
+    },
+    {
+      "DownstreamPathTemplate": "/api/v1/Movies/{everything}",
+      "DownstreamScheme": "http",
+      "DownstreamHostAndPorts": [
+        {
+          "Host": "movies.api",
+          "Port": 80
+        }
+      ],
+      "UpstreamPathTemplate": "/api/v1/Movies/{everything}",
+      "UpstreamHttpMethod": ["Get", "Post"]
+    }
+  ]
+}

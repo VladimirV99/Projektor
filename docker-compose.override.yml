@@ -47,3 +47,14 @@ services:
       - projektor_rabbitmq
     ports:
       - "5009:80"
+
+  webgateway:
+    container_name: webgateway
+    environment:
+      - ASPNETCORE_ENVIRONMENT=Development
+    depends_on:
+      - movies.api
+      - identity
+      - mailer
+    ports:
+      - "7060:80"

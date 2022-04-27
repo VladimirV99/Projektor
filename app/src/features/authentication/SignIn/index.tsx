@@ -1,11 +1,11 @@
 import { useState } from 'react';
 import { Formik } from 'formik';
 import { Button } from '@mui/material';
-import ModalCheKoV from '../../../components/Modal';
-import FormInput from '../../../components/FormInput';
-import * as TRANSLATIONS from '../../../translations';
+import ModalCheKoV from 'components/Modal';
+import FormInput from 'components/FormInput';
+import * as TRANSLATIONS from 'translations';
 import { useDispatch } from 'react-redux';
-import { loginCustomer } from '../../../redux/auth/modules';
+import { loginCustomer } from 'redux/auth/modules';
 
 type Props = {
     shouldRender: boolean;

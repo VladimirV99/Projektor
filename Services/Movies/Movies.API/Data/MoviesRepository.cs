@@ -1,5 +1,4 @@
-﻿using System;
-using Microsoft.EntityFrameworkCore;
+﻿using Microsoft.EntityFrameworkCore;
 using Movies.API.Constants;
 using Movies.API.Entities;
 using Movies.API.Models;
@@ -93,6 +92,111 @@ namespace Movies.API.Data
 
             return new Tuple<uint, uint, int, int>(yearMin, yearMax, lengthMin, lengthMax);
         }
+        
+        public async Task<string?> CreateMovie(CreateOrUpdateMovieRequest createOrUpdateMovieRequest)   
+        {
+            var movie = new Movie
+            {
+                Title = createOrUpdateMovieRequest.Title,
+                Year = createOrUpdateMovieRequest.Year,
+                Length = createOrUpdateMovieRequest.Length,
+                TrailerUrl = createOrUpdateMovieRequest.TrailerUrl,
+                ImdbUrl = createOrUpdateMovieRequest.ImdbUrl,
+                ImageUrl = createOrUpdateMovieRequest.ImageUrl,
+                Genres = new List<Genre>(),
+                People = new List<MoviePerson>()
+            }; 
+            foreach (var genreId in createOrUpdateMovieRequest.Genres)
+            {
+                var genre = await _dbContext.Genres.SingleOrDefaultAsync(g => g.Id == genreId);
+                if (genre == null)
+                {
+                    return "Genre not found";
+                }
+                movie.Genres.Add(genre);
+            }
+
+            Console.WriteLine("checking people");
+            Console.WriteLine(createOrUpdateMovieRequest.People);
+            foreach (var personAndRole in createOrUpdateMovieRequest.People)
+            {
+                var person = await _dbContext.People.SingleOrDefaultAsync(p => p.Id == personAndRole.PersonId);
+                if (person == null)
+                {
+                    return "Person not found";
+                }
+                var role = await _dbContext.Roles.SingleOrDefaultAsync(r => r.Id == personAndRole.RoleId);
+                if (role == null)
+                {
+                    return "Role not found";
+                }
+                movie.People.Add(new MoviePerson {Person = person, Role = role});
+            }
+            
+            _dbContext.Movies.Add(movie);
+            await _dbContext.SaveChangesAsync();
+            return null;
+        }
+        public async Task<string?> UpdateMovie(CreateOrUpdateMovieRequest createOrUpdateMovieRequest)
+        {
+            if (createOrUpdateMovieRequest.Id == null)
+            {
+                return "Id not provided.";
+            }
+            
+            var movie = await _dbContext.Movies.SingleOrDefaultAsync(m => m.Id == createOrUpdateMovieRequest.Id);
+            if (movie == null)
+            {
+                return "Movie not found.";
+            }
+            movie.Title = createOrUpdateMovieRequest.Title;
+            movie.Year = createOrUpdateMovieRequest.Year;
+            movie.Length = createOrUpdateMovieRequest.Length;
+            movie.TrailerUrl = createOrUpdateMovieRequest.TrailerUrl;
+            movie.ImdbUrl = createOrUpdateMovieRequest.ImdbUrl;
+            movie.ImageUrl = createOrUpdateMovieRequest.ImageUrl;
+            movie.Genres.Clear();
+            foreach (var genreId in createOrUpdateMovieRequest.Genres)
+            {
+                var genre = await _dbContext.Genres.SingleOrDefaultAsync(g => g.Id == genreId);
+                if (genre == null)
+                {
+                    return "Genre not found.";
+                }
+                movie.Genres.Add(genre);
+            }
+            movie.People.Clear();
+            foreach (var personAndRole in createOrUpdateMovieRequest.People)
+            {
+                var person = await _dbContext.People.SingleOrDefaultAsync(p => p.Id == personAndRole.PersonId);
+                if (person == null)
+                {
+                    return "Person not found.";
+                }
+                var role = await _dbContext.Roles.SingleOrDefaultAsync(r => r.Id == personAndRole.RoleId);
+                if (role == null)
+                {
+                    return "Role not found.";
+                }
+                movie.People.Add(new MoviePerson {Person = person, Role = role});
+            }
+
+            _dbContext.Movies.Update(movie);
+            await _dbContext.SaveChangesAsync();
+            return null;
+        }
+        public async Task DeleteMovie(int id)
+        {
+            var movie = await _dbContext.Movies.FindAsync(id);
+            if (movie == null)
+            {
+                return;
+            }
+            _dbContext.Movies.Remove(movie);
+            await _dbContext.SaveChangesAsync();
+        }
+        
+        
     }
 }
 

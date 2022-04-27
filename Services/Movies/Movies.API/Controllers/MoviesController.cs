@@ -1,4 +1,6 @@
 ﻿using AutoMapper;
+using Common.Auth;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Movies.API.Data;
 using Movies.API.Entities;
@@ -18,6 +20,8 @@ namespace Movies.API.Controllers
             _repository = repository ?? throw new ArgumentNullException(nameof(repository));
             _mapper = mapper ?? throw new ArgumentNullException(nameof(mapper));
         }
+        
+        // TODO: Most of these endpoints probably won't be needed anywhere
         
         [HttpGet("[action]/{id}")]
         public async Task<IActionResult> GetMovieById(int id)
@@ -60,6 +64,39 @@ namespace Movies.API.Controllers
             var (yearMin, yearMax, lengthMin, lengthMax) = await _repository.GetFilterLimits();
             return Ok(new FilterLimits{YearMax = yearMax, YearMin = yearMin, LengthMax = lengthMax, LengthMin = lengthMin});
         }
+        
+        [HttpPost("[action]")]
+        // [Authorize(Roles = Roles.ADMINISTRATOR)]
+        public async Task<IActionResult> CreateMovie([FromBody] CreateOrUpdateMovieRequest createOrUpdateMovieRequest)
+        {
+            var error = await _repository.CreateMovie(createOrUpdateMovieRequest);
+            if (error != null)
+            {
+                return BadRequest(error);
+            }
+            return Ok();
+        }
+        
+        [HttpPut("[action]")]
+        [Authorize(Roles = Roles.ADMINISTRATOR)]
+        public async Task<IActionResult> UpdateMovie([FromBody] CreateOrUpdateMovieRequest updateOrUpdateMovieRequest)
+        {
+            var result = await _repository.UpdateMovie(updateOrUpdateMovieRequest);
+            if (result != null)
+            {
+                return BadRequest(result);
+            }
+            return Ok();
+        }
+        
+        [HttpDelete("[action]/{id}")]
+        [Authorize(Roles = Roles.ADMINISTRATOR)]
+        public async Task<IActionResult> DeleteMovie(int id)
+        {
+            await _repository.DeleteMovie(id);
+            return Ok();
+        }
+        
     }
 }
 

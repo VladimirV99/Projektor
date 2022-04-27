@@ -1,8 +1,11 @@
 using System.Reflection;
 using System.Text.Json.Serialization;
+using Common.Auth.Extensions;
+using Common.Auth.Models;
 using Movies.API.Data;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.EntityFrameworkCore.SqlServer;
+using Microsoft.OpenApi.Models;
+
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
@@ -13,15 +16,23 @@ builder.Services.AddDbContext<MovieContext>(options =>
     options.EnableSensitiveDataLogging();
 });
 builder.Services.AddScoped<IMoviesRepository, MoviesRepository>();
-// Not sure if there is a better way to avoid cycle errors when populating related entities, this is kind of ugly because
-// it gives something like this: movie: {blabla, genres: [ {id, name, movies: [null]} ]}
-// The mapper will make it nice anyway so idk
 builder.Services.AddControllers()
     .AddJsonOptions(x => x.JsonSerializerOptions.ReferenceHandler = ReferenceHandler.IgnoreCycles);
 builder.Services.AddAutoMapper(Assembly.GetExecutingAssembly());
-// Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
+builder.Services.ConfigureJWT(builder.Configuration.GetSection("JWT").Get<JwtSettings>());
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
+builder.Services.AddSwaggerGen(options =>
+{
+    options.SwaggerDoc("v1", new OpenApiInfo
+    {
+        Version = "v1",
+        Title = "Movie API",
+        Description = "Movie API for Projektor Application"
+    });
+    options.AddJwtSecurityDefinition();
+    options.AddAuthOperationFilter();
+});
 
 
 var app = builder.Build();

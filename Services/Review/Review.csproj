@@ -22,4 +22,8 @@
       <Folder Include="Mapper\" />
     </ItemGroup>
 
+    <ItemGroup>
+      <ProjectReference Include="..\..\Common\Auth\Auth.csproj" />
+    </ItemGroup>
+
 </Project>

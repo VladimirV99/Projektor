@@ -1,4 +1,6 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Common.Auth;
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 using Review.Models;
 
 namespace Review.Controllers
@@ -16,7 +18,7 @@ namespace Review.Controllers
             throw new NotImplementedException();
         }
 
-        // [Authorize(Roles = Role.CUSTOMER)]
+        [Authorize(Roles = Roles.CUSTOMER)]
         [HttpPost("[action]")]
         // TODO Return 201
         [ProducesResponseType(typeof(MovieReviewModel), StatusCodes.Status200OK)]

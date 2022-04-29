@@ -24,13 +24,18 @@ Projektor is a microservice application for managing basic cinema operations. It
    // Using dotnet cli (requires dotnet-ef):
    dotnet ef database update
    ```
-3. Start the client:
+3. (Optional) Insert dummy data into database by running the seeder tool:
+   ```
+   cd Tools/Seeder
+   dotnet run
+   ```
+4. Start the client:
    ```
    cd app
    npm install
    npm run start:dev
    ```
-4. To stop the application run:
+5. To stop the application run:
    ```
    docker-compose down
    ```
@@ -50,7 +55,7 @@ When the service starts, an administrator account is created using the credentia
 ![Movies.API Workflow Status](https://img.shields.io/github/workflow/status/VladimirV99/Projektor/Movies.API/main?style=for-the-badge)
 
 #### Seeding the database:
-1. Start the container from the project root:
+1. Start the database container from the project root:
    ```
    docker-compose up --build -d projektor_mssql
    ```

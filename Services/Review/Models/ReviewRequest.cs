@@ -3,7 +3,7 @@ using System.ComponentModel.DataAnnotations;
 
 namespace Review.Models
 {
-    public class CreateReviewRequest
+    public class ReviewRequest
     {
         [Required(ErrorMessage = ErrorMessages.SUMMARY_REQUIRED)]
         [MaxLength(Settings.SUMMARY_MAX_LENGTH, ErrorMessage = ErrorMessages.SUMMARY_MAX_LENGTH)]

@@ -31,13 +31,6 @@ try
     DataTable dtMovieGenres = CsvReader.ReadCsv(movieGenresCsvPath) ?? throw new NullReferenceException(nameof(dtMovieGenres));
     DataTable dtMoviePeople = CsvReader.ReadCsv(moviePeopleCsvPath) ?? throw new NullReferenceException(nameof(dtMoviePeople));
 
-    // PrintDataTable(dtMovies);
-    // PrintDataTable(dtGenres);
-    // PrintDataTable(dtRoles);
-    // PrintDataTable(dtPeople);
-    // PrintDataTable(dtMovieGenres);
-    // PrintDataTable(dtMoviePeople);
-
     // Connect to database
     const string connectionString = "Server=localhost;Database=MoviesDb;User Id=sa;Password=MatfRs2_MSSQL;";
     using SqlConnection connection = new SqlConnection(connectionString);

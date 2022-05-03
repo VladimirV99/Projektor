@@ -31,5 +31,12 @@ services:
       context: .
       dockerfile: ApiGateways/WebGateway/Dockerfile
 
+  review:
+    image: ${DOCKER_REGISTRY-}review
+    build:
+      context: .
+      dockerfile: Services/Review/Dockerfile
+
 volumes:
   mssql_data:
+

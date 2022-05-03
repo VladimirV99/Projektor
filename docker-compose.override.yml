@@ -58,3 +58,14 @@ services:
       - mailer
     ports:
       - "7060:80"
+
+  review:
+    container_name: review
+    environment:
+      - ASPNETCORE_ENVIRONMENT=Development
+      - "ConnectionStrings:ReviewConnectionString=Server=localhost;Database=ReviewDB;User Id=sa;Password=MatfRs2_MSSQL;"
+    depends_on:
+      - projektor_mssql
+    ports:
+      - "5007:80"
+

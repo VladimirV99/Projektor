@@ -12,7 +12,7 @@ namespace Screening.Data
             _dbContext = dbContext ?? throw new ArgumentNullException(nameof(dbContext));
         }
 
-        async Task<List<Entities.Screening>> IScreeningRepository.GetAllScreenings()
+        async Task<List<Entities.Screening>> IScreeningRepository.GetScreenings()
         {
             return await _dbContext
                 .Screenings

@@ -25,6 +25,13 @@ services:
       context: .
       dockerfile: Services/Mailer/Dockerfile
 
+  screening:
+    image: ${DOCKER_REGISTRY-}screening
+    build:
+      context: .
+      dockerfile: Services/Screening/Dockerfile
+
 volumes:
   mssql_data:
+
 

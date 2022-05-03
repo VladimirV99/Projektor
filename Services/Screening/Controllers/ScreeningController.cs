@@ -21,5 +21,31 @@ namespace Screening.Controllers
             return screening == null ? NotFound() : Ok(screening);
         }
 
+        [HttpGet("[action]")]
+        public async Task<IActionResult> GetScreenings()
+        {
+            var screenings = await _repository.GetScreenings();
+            return screenings == null ? NotFound() : Ok(screenings);
+        }
+
+        [HttpGet("[action]/{id}")]
+        public async Task<IActionResult> GetScreeningsByHallId(int id)
+        {
+            var screenings = await _repository.GetScreeingsByHallId(id);
+            return screenings == null ? NotFound() : Ok(screenings);
+        }
+
+        [HttpGet("[action]/{id}")]
+        public async Task<IActionResult> GetScreeningsByMovieId(int id)
+        {
+            var screenings = await _repository.GetScreeningsByMovieId(id);
+            return screenings == null ? NotFound() : Ok(screenings);
+        }
+
+        [HttpDelete("[action]/{id}")]
+        public void DeleteScreeningById(int id)
+        {
+            _repository.DeleteScreening(id);
+        }
     }
 }

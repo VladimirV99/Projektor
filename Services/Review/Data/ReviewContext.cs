@@ -20,6 +20,7 @@ namespace Review.Data
 
             modelBuilder.ApplyConfiguration(new WatchedMovieEntityConfiguration());
             modelBuilder.ApplyConfiguration(new MovieReviewEntityConfiguration());
+            modelBuilder.ApplyConfiguration(new UserEntityConfiguration());
         }
     }
 }

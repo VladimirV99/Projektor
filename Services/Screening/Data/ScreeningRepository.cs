@@ -46,24 +46,66 @@ namespace Screening.Data
                 .ToListAsync();
         }
 
-        public void DeleteScreening(int id)
+        public bool DeleteScreening(int id)
         {
             var screening = _dbContext
                 .Screenings
                 .Where(m => m.Id == id)
-                .First();
+                .FirstOrDefault();
+
+            if(screening == null) return false;
 
             _dbContext.Screenings.Remove(screening);
             _dbContext.SaveChanges();
+
+            return true;
+        }
+
+        public bool DeleteMovie(int id)
+        {
+            var movie = _dbContext
+                .Movies
+                .Where(m => m.Id == id)
+                .FirstOrDefault();
+
+            if(movie == null) return false; 
+
+            _dbContext.Movies.Remove(movie);
+            _dbContext.SaveChanges();
+
+            return true;
         }
 
         public void InsertScreening(Entities.Screening screening)
         {
             _dbContext.Screenings.Add(screening);
             _dbContext.SaveChanges();
-
         }
 
+        public Entities.Screening? GetScreeningByHallIdInSpecificMoment(int id, DateTime moment)
+        {
+            return _dbContext
+                .Screenings
+                .Where(m => m.HallId == id)
+                .Where(m => m.MovieStart == moment)
+                .Include(m => m.Movie)
+                .FirstOrDefault();
+        }
+
+        public bool UpdateMovieStartTime(int id, DateTime moment)
+        {
+            var screening = _dbContext
+                .Screenings
+                .Where(m => m.Id == id)
+                .FirstOrDefault();
+
+            if (screening == null) return false;
+
+            screening.MovieStart = moment;
+            _dbContext.SaveChanges();
+
+            return true;
+        }
     }
 }
 

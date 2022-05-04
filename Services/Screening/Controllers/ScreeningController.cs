@@ -42,10 +42,29 @@ namespace Screening.Controllers
             return screenings == null ? NotFound() : Ok(screenings);
         }
 
-        [HttpDelete("[action]/{id}")]
-        public void DeleteScreeningById(int id)
+        [HttpGet("[action]/{id}/{moment}")]
+        public IActionResult GetScreeningsByHallIdAndTime(int id, DateTime moment)
         {
-            _repository.DeleteScreening(id);
+            var screenings = _repository.GetScreeningByHallIdInSpecificMoment(id, moment);
+            return screenings == null ? NotFound() : Ok(screenings);
+        }
+
+        [HttpPatch("[action]/{id}/{moment}")]
+        public bool UpdateMovieStartTime(int id, DateTime moment)
+        {
+            return _repository.UpdateMovieStartTime(id, moment);
+        }
+
+        [HttpDelete("[action]/{id}")]
+        public bool DeleteScreeningById(int id)
+        {
+            return _repository.DeleteScreening(id);
+        }
+
+        [HttpDelete("[action]/{id}")]
+        public bool DeleteMovieById(int id)
+        {
+            return _repository.DeleteMovie(id);
         }
     }
 }

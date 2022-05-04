@@ -63,7 +63,7 @@ services:
     container_name: review
     environment:
       - ASPNETCORE_ENVIRONMENT=Development
-      - "ConnectionStrings:ReviewConnectionString=Server=localhost;Database=ReviewDB;User Id=sa;Password=MatfRs2_MSSQL;"
+      - "ConnectionStrings:ReviewConnectionString=Server=projektor_mssql;Database=ReviewDB;User Id=sa;Password=MatfRs2_MSSQL;"
     depends_on:
       - projektor_mssql
     ports:

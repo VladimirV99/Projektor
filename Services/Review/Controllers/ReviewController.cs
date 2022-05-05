@@ -41,9 +41,9 @@ namespace Review.Controllers
                 await _repository.CreateUser(new User
                 {
                     Id = request.UserId,
-                    Email = "test@test.com",
-                    FirstName = "John",
-                    LastName = "Doe"
+                    Email = request.Email,
+                    FirstName = request.FirstName,
+                    LastName = request.LastName
                 });
             }
             

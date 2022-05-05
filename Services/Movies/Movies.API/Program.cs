@@ -10,6 +10,7 @@ var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddDbContext<MovieContext>(options =>
 {
     options.UseSqlServer(builder.Configuration.GetConnectionString("MoviesConnectionString"));
+    options.EnableSensitiveDataLogging();
 });
 
 builder.Services.AddScoped<IMoviesRepository, MoviesRepository>();

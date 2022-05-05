@@ -9,8 +9,8 @@ var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddDbContext<ScreeningContext>(options =>
 {
     options.UseSqlServer(builder.Configuration.GetConnectionString("ScreeningsConnectionString"));
-    options.EnableSensitiveDataLogging();
 });
+
 builder.Services.AddControllers();
 builder.Services.AddAutoMapper(Assembly.GetExecutingAssembly());
 builder.Services.AddScoped<IScreeningRepository, ScreeningRepository>();

@@ -22,38 +22,38 @@ namespace Screening.Controllers
         public async Task<ActionResult<ScreeningModel>> GetScreeningsById(int id)
         {
             var screening = await _repository.GetScreeningById(id);
-            return screening == null ? NotFound() : Ok(screening);
+            return screening == null ? NotFound() : Ok(_mapper.Map<ScreeningModel>(screening));
         }
 
         [HttpGet("[action]")]
         public async Task<IActionResult> GetScreenings()
         {
             var screenings = await _repository.GetScreenings();
-            return screenings == null ? NotFound() : Ok(screenings);
+            return screenings == null ? NotFound() : Ok(_mapper.Map<List<ScreeningModel>>(screenings));
         }
 
         [HttpGet("[action]/{id}")]
         public async Task<IActionResult> GetScreeningsByHallId(int id)
         {
             var screenings = await _repository.GetScreeingsByHallId(id);
-            return screenings == null ? NotFound() : Ok(screenings);
+            return screenings == null ? NotFound() : Ok(_mapper.Map<List<ScreeningModel>>(screenings));
         }
 
         [HttpGet("[action]/{id}")]
         public async Task<IActionResult> GetScreeningsByMovieId(int id)
         {
             var screenings = await _repository.GetScreeningsByMovieId(id);
-            return screenings == null ? NotFound() : Ok(screenings);
+            return screenings == null ? NotFound() : Ok(_mapper.Map<List<ScreeningModel>>(screenings));
         }
 
-        [HttpGet("[action]/{id}/{moment}")]
-        public async Task<IActionResult> GetScreeningsByHallIdAndTime(int id, DateTime moment)
+        [HttpGet("[action]/{id}/{start}/{end}")]
+        public async Task<IActionResult> GetScreeningsByHallIdAndTime(int id, DateTime start, DateTime end)
         {
-            var screenings = await _repository.GetScreeningByHallIdInSpecificMoment(id, moment);
-            return screenings == null ? NotFound() : Ok(screenings);
+            var screening = await _repository.GetScreeningByHallIdAtMoment(id, start, end);
+            return screening == null ? NotFound() : Ok(_mapper.Map<ScreeningModel>(screening));
         }
 
-        [HttpPost("[action]/{hallId}/{moment}/{movieId}")]
+        [HttpPost("[action]/{hallId}/{movieId}/{moment}")]
         public async Task<bool> InsertScreening(int hallId, int movieId, DateTime moment)
         {
             var movie = await _repository.GetMovieById(movieId);

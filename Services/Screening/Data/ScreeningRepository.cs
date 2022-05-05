@@ -13,7 +13,7 @@ namespace Screening.Data
             _dbContext = dbContext ?? throw new ArgumentNullException(nameof(dbContext));
         }
 
-        async Task<List<Entities.Screening>> IScreeningRepository.GetScreenings()
+        async Task<IEnumerable<Entities.Screening>> IScreeningRepository.GetScreenings()
         {
             return await _dbContext
                 .Screenings
@@ -29,7 +29,7 @@ namespace Screening.Data
                 .SingleOrDefaultAsync(m => m.Id == id);
         }
 
-        public async Task<List<Entities.Screening>> GetScreeingsByHallId(int id)
+        public async Task<IEnumerable<Entities.Screening>> GetScreeingsByHallId(int id)
         {
             return await _dbContext
                 .Screenings
@@ -38,7 +38,7 @@ namespace Screening.Data
                 .ToListAsync();
         }
 
-        public async Task<List<Entities.Screening>> GetScreeningsByMovieId(int id)
+        public async Task<IEnumerable<Entities.Screening>> GetScreeningsByMovieId(int id)
         {
             return await _dbContext
                 .Screenings
@@ -47,14 +47,17 @@ namespace Screening.Data
                 .ToListAsync();
         }
 
-        public async Task<List<Entities.Screening>> GetScreeningByHallIdInSpecificMoment(int id, DateTime moment)
+        public async Task<Entities.Screening?> GetScreeningByHallIdAtMoment(int id, DateTime start, DateTime end)
         {
             return await _dbContext
                 .Screenings
                 .Where(m => m.HallId == id)
-                .Where(m => m.MovieStart == moment)
                 .Include(m => m.Movie)
-                .ToListAsync();
+                .Where(
+                  m => (m.MovieStart > start && m.MovieStart < end) 
+                    || (m.MovieStart <= start && m.MovieStart.AddMinutes(m.Movie.Length) > start)
+                )
+                .SingleOrDefaultAsync();
         }
 
         public async Task<Entities.Movie?> GetMovieById(int id)

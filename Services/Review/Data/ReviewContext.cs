@@ -1,26 +1,19 @@
-﻿using Microsoft.EntityFrameworkCore;
-using Review.Data.EntityConfigurations;
-using Review.Entities;
+﻿using Npgsql;
 
 namespace Review.Data
 {
-    public class ReviewContext : DbContext
+    public class ReviewContext : IReviewContext
     {
-        public DbSet<WatchedMovie> WatchedMovies => Set<WatchedMovie>();
-        public DbSet<MovieReview> Reviews => Set<MovieReview>();
-        public DbSet<User> Users => Set<User>();
+        private readonly IConfiguration _configuration;
 
-        public ReviewContext(DbContextOptions options) : base(options)
+        public ReviewContext(IConfiguration configuration)
         {
+            _configuration = configuration ?? throw new ArgumentNullException(nameof(configuration));
         }
 
-        protected override void OnModelCreating(ModelBuilder modelBuilder)
+        public NpgsqlConnection GetConnection()
         {
-            base.OnModelCreating(modelBuilder);
-
-            modelBuilder.ApplyConfiguration(new WatchedMovieEntityConfiguration());
-            modelBuilder.ApplyConfiguration(new MovieReviewEntityConfiguration());
-            modelBuilder.ApplyConfiguration(new UserEntityConfiguration());
+            return new NpgsqlConnection(_configuration.GetConnectionString("ReviewConnectionString"));
         }
     }
 }

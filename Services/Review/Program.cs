@@ -1,6 +1,5 @@
 using Common.Auth.Extensions;
 using Common.Auth.Models;
-using Microsoft.EntityFrameworkCore;
 using Microsoft.OpenApi.Models;
 using Review.Data;
 using Review.Repositories;
@@ -11,10 +10,8 @@ var builder = WebApplication.CreateBuilder(args);
 // Add services to the container.
 builder.Services.ConfigureJWT(builder.Configuration.GetSection("JWT").Get<JwtSettings>());
 
-builder.Services.AddDbContext<ReviewContext>(options =>
-{
-    options.UseSqlServer(builder.Configuration.GetConnectionString("ReviewConnectionString"));
-});
+builder.Services.AddScoped<ReviewContext>();
+builder.Services.AddTransient<IDataSeeder, DataSeeder>();
 
 builder.Services.AddAutoMapper(Assembly.GetExecutingAssembly());
 
@@ -36,6 +33,15 @@ builder.Services.AddSwaggerGen(options =>
 });
 
 var app = builder.Build();
+
+using (var scope = app.Services.CreateScope())
+{
+    var seeder = scope.ServiceProvider.GetService<IDataSeeder>();
+    if (seeder != null)
+    {
+        seeder.Seed();
+    }
+}
 
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())

@@ -88,7 +88,6 @@ namespace Review.Controllers
                 Summary = request.Summary,
                 Body = request.Body,
                 Score = request.Score,
-                CreatedOn = DateTime.UtcNow,
                 MovieId = request.MovieId,
                 ReviewerId = userId
             };
@@ -166,13 +165,10 @@ namespace Review.Controllers
                 return NotFound();
             }
 
-            var review = await _repository.GetReview(movieId, user.Id);
-            if (review == null)
+            if (!await _repository.DeleteReview(movieId, user.Id))
             {
                 return NotFound();
             }
-
-            await _repository.DeleteReview(review);
             return Ok();
         }
         
@@ -182,8 +178,7 @@ namespace Review.Controllers
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         public async Task<IActionResult> RemoveReview([FromQuery] ReviewIdRequest request)
         {
-            var review = await _repository.GetReview(request.MovieId, request.ReviewerId);
-            if (review == null)
+            if (!await _repository.DeleteReview(request.MovieId, request.ReviewerId))
             {
                 return NotFound();
             }

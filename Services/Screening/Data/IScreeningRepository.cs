@@ -11,7 +11,8 @@ namespace Screening.Data
 		public Entities.Screening? GetScreeningByHallIdInSpecificMoment(int id, DateTime moment);
 		public bool UpdateMovieStartTime(int id, DateTime moment);
 		public bool DeleteScreening(int id);
+		public Entities.Movie? GetMovieById(int id);
 		public bool DeleteMovie(int id);
-		//public void InsertScreening(int hallId, int movieId, DateTime movieStart);
-	}
+        public void InsertScreening(Entities.Screening screening);
+    }
 }

@@ -49,6 +49,17 @@ namespace Screening.Controllers
             return screenings == null ? NotFound() : Ok(screenings);
         }
 
+        [HttpPost("[action]/{hallId}/{moment}/{movieId}")]
+        public bool InsertScreening(int hallId, int movieId, DateTime moment)
+        {
+            var movie = _repository.GetMovieById(movieId);
+
+            if (movie == null) return false;
+
+            _repository.InsertScreening(new Entities.Screening { Movie = movie, HallId = hallId, MovieStart = moment });
+            return true;
+        }
+
         [HttpPatch("[action]/{id}/{moment}")]
         public bool UpdateMovieStartTime(int id, DateTime moment)
         {

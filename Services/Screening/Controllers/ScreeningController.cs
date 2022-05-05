@@ -1,5 +1,7 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Screening.Data;
+using Screening.Models;
+using AutoMapper;
 
 namespace Screening.Controllers
 {
@@ -8,14 +10,16 @@ namespace Screening.Controllers
     public class ScreeningController : ControllerBase
     {
         private readonly IScreeningRepository _repository;
+        private readonly IMapper _mapper;
 
-        public ScreeningController(IScreeningRepository repository)
+        public ScreeningController(IScreeningRepository repository, IMapper mapper)
         {
             _repository = repository ?? throw new ArgumentNullException(nameof(repository));
+            _mapper = mapper ?? throw new ArgumentNullException(nameof(mapper));
         }
 
         [HttpGet("[action]/{id}")]
-        public async Task<IActionResult> GetScreeningsById(int id)
+        public async Task<ActionResult<ScreeningModel>> GetScreeningsById(int id)
         {
             var screening = await _repository.GetScreeningById(id);
             return screening == null ? NotFound() : Ok(screening);
@@ -43,39 +47,39 @@ namespace Screening.Controllers
         }
 
         [HttpGet("[action]/{id}/{moment}")]
-        public IActionResult GetScreeningsByHallIdAndTime(int id, DateTime moment)
+        public async Task<IActionResult> GetScreeningsByHallIdAndTime(int id, DateTime moment)
         {
-            var screenings = _repository.GetScreeningByHallIdInSpecificMoment(id, moment);
+            var screenings = await _repository.GetScreeningByHallIdInSpecificMoment(id, moment);
             return screenings == null ? NotFound() : Ok(screenings);
         }
 
         [HttpPost("[action]/{hallId}/{moment}/{movieId}")]
-        public bool InsertScreening(int hallId, int movieId, DateTime moment)
+        public async Task<bool> InsertScreening(int hallId, int movieId, DateTime moment)
         {
-            var movie = _repository.GetMovieById(movieId);
+            var movie = await _repository.GetMovieById(movieId);
 
             if (movie == null) return false;
 
-            _repository.InsertScreening(new Entities.Screening { Movie = movie, HallId = hallId, MovieStart = moment });
+            await _repository.InsertScreening(new Entities.Screening { Movie = movie, HallId = hallId, MovieStart = moment });
             return true;
         }
 
         [HttpPatch("[action]/{id}/{moment}")]
-        public bool UpdateMovieStartTime(int id, DateTime moment)
+        public async Task<bool> UpdateMovieStartTime(int id, DateTime moment)
         {
-            return _repository.UpdateMovieStartTime(id, moment);
+            return await _repository.UpdateMovieStartTime(id, moment);
         }
 
         [HttpDelete("[action]/{id}")]
-        public bool DeleteScreeningById(int id)
+        public async Task<bool> DeleteScreeningById(int id)
         {
-            return _repository.DeleteScreening(id);
+            return await _repository.DeleteScreening(id);
         }
 
         [HttpDelete("[action]/{id}")]
-        public bool DeleteMovieById(int id)
+        public async Task<bool> DeleteMovieById(int id)
         {
-            return _repository.DeleteMovie(id);
+            return await _repository.DeleteMovie(id);
         }
     }
 }

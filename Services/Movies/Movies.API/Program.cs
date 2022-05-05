@@ -2,6 +2,7 @@ using System.Reflection;
 using System.Text.Json.Serialization;
 using Movies.API.Data;
 using Microsoft.EntityFrameworkCore;
+
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
@@ -9,8 +10,8 @@ var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddDbContext<MovieContext>(options =>
 {
     options.UseSqlServer(builder.Configuration.GetConnectionString("MoviesConnectionString"));
-    options.EnableSensitiveDataLogging();
 });
+
 builder.Services.AddScoped<IMoviesRepository, MoviesRepository>();
 // Not sure if there is a better way to avoid cycle errors when populating related entities, this is kind of ugly because
 // it gives something like this: movie: {blabla, genres: [ {id, name, movies: [null]} ]}

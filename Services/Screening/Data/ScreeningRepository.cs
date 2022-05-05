@@ -1,5 +1,6 @@
 ﻿using System;
 using Microsoft.EntityFrameworkCore;
+using System.Threading.Tasks;
 
 namespace Screening.Data
 {
@@ -46,36 +47,34 @@ namespace Screening.Data
                 .ToListAsync();
         }
 
-        public Entities.Screening? GetScreeningByHallIdInSpecificMoment(int id, DateTime moment)
+        public async Task<List<Entities.Screening>> GetScreeningByHallIdInSpecificMoment(int id, DateTime moment)
         {
-            return _dbContext
+            return await _dbContext
                 .Screenings
                 .Where(m => m.HallId == id)
                 .Where(m => m.MovieStart == moment)
                 .Include(m => m.Movie)
-                .FirstOrDefault();
+                .ToListAsync();
         }
 
-        public Entities.Movie? GetMovieById(int id)
+        public async Task<Entities.Movie?> GetMovieById(int id)
         {
-            return _dbContext
+            return await _dbContext
                 .Movies
-                .Where(m => m.Id == id)
-                .FirstOrDefault();
+                .FindAsync(id);
         }
 
-        public void InsertScreening(Entities.Screening screening)
+        public async Task InsertScreening(Entities.Screening screening)
         {
-            _dbContext.Screenings.Add(screening);
+            await _dbContext.Screenings.AddAsync(screening);
             _dbContext.SaveChanges();
         }
 
-        public bool UpdateMovieStartTime(int id, DateTime moment)
+        public async Task<bool> UpdateMovieStartTime(int id, DateTime moment)
         {
-            var screening = _dbContext
+            var screening = await _dbContext
                 .Screenings
-                .Where(m => m.Id == id)
-                .FirstOrDefault();
+                .FindAsync(id);
 
             if (screening == null) return false;
 
@@ -85,12 +84,11 @@ namespace Screening.Data
             return true;
         }
 
-        public bool DeleteScreening(int id)
+        public async Task<bool> DeleteScreening(int id)
         {
-            var screening = _dbContext
+            var screening = await _dbContext
                 .Screenings
-                .Where(m => m.Id == id)
-                .FirstOrDefault();
+                .FindAsync(id);
 
             if (screening == null) return false;
 
@@ -100,12 +98,11 @@ namespace Screening.Data
             return true;
         }
 
-        public bool DeleteMovie(int id)
+        public async Task<bool> DeleteMovie(int id)
         {
-            var movie = _dbContext
+            var movie = await _dbContext
                 .Movies
-                .Where(m => m.Id == id)
-                .FirstOrDefault();
+                .FindAsync(id);
 
             if (movie == null) return false;
 

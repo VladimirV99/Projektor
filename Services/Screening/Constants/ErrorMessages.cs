@@ -1,6 +1,6 @@
 ﻿namespace Screening.Constants
 {
-	public class ErrorMessages
+	public static class ErrorMessages
 	{
 		public const string ID_REQUIRED = "Id is required";
 

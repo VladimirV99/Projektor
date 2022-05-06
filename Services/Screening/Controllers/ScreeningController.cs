@@ -47,7 +47,7 @@ namespace Screening.Controllers
         }
 
         [HttpGet("[action]/{id}/{start}/{end}")]
-        public async Task<ActionResult<List<ScreeningModel>>> GetScreeningsByHallIdAndTime(int id, DateTime start, DateTime end)
+        public async Task<ActionResult<List<ScreeningModel>>> GetScreeningsByHallIdAtTime(int id, DateTime start, DateTime end)
         {
             var screenings = await _repository.GetScreeningByHallIdAtMoment(id, start, end);
             return screenings == null ? NotFound() : Ok(_mapper.Map<List<ScreeningModel>>(screenings));

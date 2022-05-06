@@ -1,8 +1,8 @@
 import { Button } from '@mui/material';
 import { useDispatch, useSelector } from 'react-redux';
-import { selectIsUserLoggedIn, selectUser } from '../../redux/auth/selectors';
-import SignIn from '../../features/authentication/SignIn';
-import SignUp from '../../features/authentication/SignUp';
+import { selectIsUserLoggedIn, selectUser } from 'redux/auth/selectors';
+import SignIn from 'features/authentication/SignIn';
+import SignUp from 'features/authentication/SignUp';
 import { useEffect, useState } from 'react';
 import { logoutCustomer } from 'redux/auth/actions';
 
@@ -35,6 +35,9 @@ const Header = (): JSX.Element => {
 
     const onLogOut = () => {
         dispatch(logoutCustomer());
+        window.localStorage.removeItem('accessToken');
+        window.localStorage.removeItem('refreshToken');
+        window.localStorage.removeItem('user');
     };
 
     return isUserLoggedIn && user ? (

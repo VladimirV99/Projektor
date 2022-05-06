@@ -28,7 +28,7 @@ Projektor is a microservice application for managing basic cinema operations. It
    ```
    cd app
    npm install
-   npm start
+   npm run start:dev
    ```
 4. To stop the application run:
    ```
@@ -41,13 +41,15 @@ Projektor is a microservice application for managing basic cinema operations. It
 
 ![Identity Workflow Status](https://img.shields.io/github/workflow/status/VladimirV99/Projektor/Identity/main?style=for-the-badge)
 
-Identity server handles user and role managment. Authentication is done using JWT and refresh tokens, while authorization is done using roles. Supported roles are `Administrator` and `Customer`.
+Identity server handles user and role management. Authentication is done using JWT and refresh tokens, while authorization is done using roles. Supported roles are `Administrator` and `Customer`.
 
-When the service starts, an administrator account is created using the credentials specified in "Admin" section of the configuration file. For the development environment the default credentials are `admin@admin.com`/`Admin_123`. This account cannot be deleted as it will be recreated when the service restarts, so for better security the password should be changed on first login.
+When the service starts, an administrator account is created using the credentials specified in "Admin" section of the configuration file.
+For the development environment the default credentials are `admin@admin.com`/`Admin_123`.
+This account cannot be deleted as it will be recreated when the service restarts, so for better security the password should be changed on first login.
 
-### Movies.API
+### Movies
 
-![Movies.API Workflow Status](https://img.shields.io/github/workflow/status/VladimirV99/Projektor/Movies.API/main?style=for-the-badge)
+![Movies Workflow Status](https://img.shields.io/github/workflow/status/VladimirV99/Projektor/Movies/main?style=for-the-badge)
 
 #### Seeding the database:
 1. Start the container from the project root:
@@ -58,6 +60,17 @@ When the service starts, an administrator account is created using the credentia
    ```
    docker exec -it projektor_mssql opt/mssql-tools/bin/sqlcmd -S localhost -U sa -P MatfRs2_MSSQL -d MoviesDB -e -i /var/seed/seed_script.sql 
    ```
+
+### Review
+
+![Review Workflow Status](https://img.shields.io/github/workflow/status/VladimirV99/Projektor/Review/main?style=for-the-badge)
+
+Review service manages movie reviews that can be created by users after watching a movie.
+A review consists of a short summary, a body and a numeric score (0-10).
+Users can add a review only after the screening for which they purchased a ticket ends.
+
+This service is asynchronously notified by the reservation service when a user purchases or cancels a ticket.
+User information is received from the identity service using gRPC if a local copy doesn't exist.
 
 ### Mailer
 

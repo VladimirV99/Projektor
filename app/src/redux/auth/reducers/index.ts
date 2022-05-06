@@ -1,5 +1,5 @@
 import { createReducer } from '@reduxjs/toolkit';
-import { LoadingStatus } from '../../../constants/common';
+import { LoadingStatus } from 'constants/common';
 import {
     loginError,
     loginFullfiled,

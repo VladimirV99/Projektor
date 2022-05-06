@@ -1,18 +1,19 @@
 import { logoutCustomer, setTokensAndUser } from 'redux/auth/actions';
 import axios from 'axios';
 import store from 'redux/store';
+import urlJoin from 'url-join';
+import URL_BASE from 'constants/api/global';
 
 const axiosAuthInstance = axios.create();
+
+const REFRESH_SESSION_URL = urlJoin(URL_BASE, '/Authentication/RefreshSession');
 
 const refreshSession = () => {
     const refreshToken = window.localStorage.getItem('refreshToken');
     const userEncoded = window.localStorage.getItem('user');
     const email = JSON.parse(userEncoded || '')?.email;
 
-    return axios.post(
-        'http://localhost:5106/api/v1/Authentication/RefreshSession',
-        { email, refreshToken }
-    );
+    return axios.post(REFRESH_SESSION_URL, { email, refreshToken });
 };
 
 axiosAuthInstance.interceptors.request.use(

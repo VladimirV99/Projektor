@@ -1,4 +1,4 @@
-import { LoadingStatus } from '../../../constants/common';
+import { LoadingStatus } from 'constants/common';
 import { userType } from '../models';
 
 export const authenticationReducerName = 'authentication';

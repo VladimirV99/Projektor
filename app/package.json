@@ -32,13 +32,15 @@
         "redux-persist": "^6.0.0",
         "styled-components": "^5.3.5",
         "typescript": "^4.6.2",
+        "url-join": "^5.0.0",
         "use-breakpoint": "^3.0.2",
         "web-vitals": "^2.1.4"
     },
     "scripts": {
-        "start": "react-app-rewired start",
-        "build": "react-app-rewired build",
-        "test": "react-app-rewired test",
+        "start:dev": "env-cmd -f ./environments/.dev.env react-app-rewired start",
+        "build:dev": "enc-cmd -f ./environments/.dev.env react-app-rewired build",
+        "start:prod": "env-cmd -f ./environments/.prod.env react-app-rewired start",
+        "build:prod": "env-cmd -f ./environments/.prod.env react-app-rewired build",
         "eject": "react-scripts eject"
     },
     "browserslist": {
@@ -60,6 +62,7 @@
         "@typescript-eslint/parser": "^5.20.0",
         "babel-plugin-styled-components": "^2.0.7",
         "customize-cra": "^1.0.0",
+        "env-cmd": "^10.1.0",
         "prettier": "2.6.2",
         "react-app-rewired": "^2.2.1"
     }

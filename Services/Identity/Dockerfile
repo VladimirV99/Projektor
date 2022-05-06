@@ -6,10 +6,11 @@ EXPOSE 80
 
 FROM mcr.microsoft.com/dotnet/sdk:6.0 AS build
 WORKDIR /src
-COPY ["Security/Identity/Identity.csproj", "Security/Identity/"]
-RUN dotnet restore "Security/Identity/Identity.csproj"
+COPY ["Services/Identity/Identity.csproj", "Services/Identity/"]
+COPY ["Common/Auth/Auth.csproj", "Common/Auth/"]
+RUN dotnet restore "Services/Identity/Identity.csproj"
 COPY . .
-WORKDIR "/src/Security/Identity"
+WORKDIR "/src/Services/Identity"
 RUN dotnet build "Identity.csproj" -c Release -o /app/build
 
 FROM build AS publish

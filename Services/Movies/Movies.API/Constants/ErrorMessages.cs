@@ -19,6 +19,12 @@
 		
 		public const string PAGE_NUMBER_AT_LEAST_ONE = "Page number must be at least one";
 		public const string PER_PAGE_TOO_LARGE = "Maximum page size is 100";
+
+		public const string GENRE_NOT_FOUND = "Genre not found";
+		public const string PERSON_NOT_FOUND = "Person not found";
+		public const string MOVIE_NOT_FOUND = "Movie not found";
+		public const string ROLE_NOT_FOUND = "Role not found";
+		public const string MOVIE_ID_NOT_PROVIDED = "Id not provided";
 	}
 }
 

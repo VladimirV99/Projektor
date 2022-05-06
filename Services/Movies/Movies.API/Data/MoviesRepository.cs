@@ -77,7 +77,22 @@ namespace Movies.API.Data
         {
             return await _dbContext.Genres.ToListAsync();
         }
-
+        
+        public async Task<Genre?> GetGenreById(int id)
+        {
+            return await _dbContext.Genres.SingleOrDefaultAsync(g => g.Id == id);
+        }
+        
+        public async Task<Person?> GetPersonById(int id)
+        {
+            return await _dbContext.People.SingleOrDefaultAsync(p => p.Id == id);
+        }
+        
+        public async Task<Role?> GetRoleById(int id)
+        {
+            return await _dbContext.Roles.SingleOrDefaultAsync(r => r.Id == id);
+        }
+        
         public async Task<Tuple<uint, uint, int, int>> GetFilterLimits()
         {
             var moviesExist = await _dbContext.Movies.AnyAsync();
@@ -93,100 +108,15 @@ namespace Movies.API.Data
             return new Tuple<uint, uint, int, int>(yearMin, yearMax, lengthMin, lengthMax);
         }
         
-        public async Task<string?> CreateMovie(CreateOrUpdateMovieRequest createOrUpdateMovieRequest)   
+        public async Task CreateMovie(Movie movie)   
         {
-            var movie = new Movie
-            {
-                Title = createOrUpdateMovieRequest.Title,
-                Year = createOrUpdateMovieRequest.Year,
-                Length = createOrUpdateMovieRequest.Length,
-                TrailerUrl = createOrUpdateMovieRequest.TrailerUrl,
-                ImdbUrl = createOrUpdateMovieRequest.ImdbUrl,
-                ImageUrl = createOrUpdateMovieRequest.ImageUrl,
-                Genres = new List<Genre>(),
-                People = new List<MoviePerson>()
-            }; 
-            foreach (var genreId in createOrUpdateMovieRequest.Genres)
-            {
-                var genre = await _dbContext.Genres
-                    .SingleOrDefaultAsync(g => g.Id == genreId);
-                if (genre == null)
-                {
-                    return "Genre not found";
-                }
-                
-                movie.Genres.Add(genre);
-            }
-            
-            foreach (var personAndRole in createOrUpdateMovieRequest.People)
-            {
-                var person = await _dbContext.People.SingleOrDefaultAsync(p => p.Id == personAndRole.PersonId);
-                if (person == null)
-                {
-                    return "Person not found";
-                }
-                var role = await _dbContext.Roles.SingleOrDefaultAsync(r => r.Id == personAndRole.RoleId);
-                if (role == null)
-                {
-                    return "Role not found";
-                }
-                movie.People.Add(new MoviePerson {Person = person, Role = role});
-            }
-            
             _dbContext.Movies.Add(movie);
             await _dbContext.SaveChangesAsync();
-            return null;
         }
-        public async Task<string?> UpdateMovie(CreateOrUpdateMovieRequest createOrUpdateMovieRequest)
+        public async Task UpdateMovie(Movie movie)
         {
-            if (createOrUpdateMovieRequest.Id == null)
-            {
-                return "Id not provided.";
-            }
-            
-            var movie = await _dbContext.Movies
-                .Include(m => m.Genres)
-                .Include(m => m.People)
-                .SingleOrDefaultAsync(m => m.Id == createOrUpdateMovieRequest.Id);
-            if (movie == null)
-            {
-                return "Movie not found.";
-            }
-            movie.Title = createOrUpdateMovieRequest.Title;
-            movie.Year = createOrUpdateMovieRequest.Year;
-            movie.Length = createOrUpdateMovieRequest.Length;
-            movie.TrailerUrl = createOrUpdateMovieRequest.TrailerUrl;
-            movie.ImdbUrl = createOrUpdateMovieRequest.ImdbUrl;
-            movie.ImageUrl = createOrUpdateMovieRequest.ImageUrl;
-            movie.Genres.Clear();
-            foreach (var genreId in createOrUpdateMovieRequest.Genres)
-            {
-                var genre = await _dbContext.Genres.SingleOrDefaultAsync(g => g.Id == genreId);
-                if (genre == null)
-                {
-                    return "Genre not found.";
-                }
-                movie.Genres.Add(genre);
-            }
-            movie.People.Clear();
-            foreach (var personAndRole in createOrUpdateMovieRequest.People)
-            {
-                var person = await _dbContext.People.SingleOrDefaultAsync(p => p.Id == personAndRole.PersonId);
-                if (person == null)
-                {
-                    return "Person not found.";
-                }
-                var role = await _dbContext.Roles.SingleOrDefaultAsync(r => r.Id == personAndRole.RoleId);
-                if (role == null)
-                {
-                    return "Role not found.";
-                }
-                movie.People.Add(new MoviePerson {Person = person, Role = role});
-            }
-
             _dbContext.Movies.Update(movie);
             await _dbContext.SaveChangesAsync();
-            return null;
         }
         public async Task DeleteMovie(int id)
         {

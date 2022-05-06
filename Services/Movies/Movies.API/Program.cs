@@ -5,6 +5,7 @@ using Common.Auth.Models;
 using Movies.API.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.OpenApi.Models;
+using Movies.API.Services;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -16,12 +17,12 @@ builder.Services.AddDbContext<MovieContext>(options =>
     options.EnableSensitiveDataLogging();
 });
 builder.Services.AddScoped<IMoviesRepository, MoviesRepository>();
+builder.Services.AddScoped<IMoviesService, MoviesService>();
 builder.Services.AddControllers()
     .AddJsonOptions(x => x.JsonSerializerOptions.ReferenceHandler = ReferenceHandler.IgnoreCycles);
 builder.Services.AddAutoMapper(Assembly.GetExecutingAssembly());
 builder.Services.ConfigureJWT(builder.Configuration.GetSection("JWT").Get<JwtSettings>());
 builder.Services.AddEndpointsApiExplorer();
-builder.Services.AddSwaggerGen();
 builder.Services.AddSwaggerGen(options =>
 {
     options.SwaggerDoc("v1", new OpenApiInfo

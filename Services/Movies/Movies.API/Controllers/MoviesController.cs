@@ -2,8 +2,10 @@
 using Common.Auth;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Movies.API.Constants;
 using Movies.API.Data;
 using Movies.API.Models;
+using Movies.API.Services;
 
 namespace Movies.API.Controllers
 {
@@ -12,11 +14,13 @@ namespace Movies.API.Controllers
 	public class MoviesController : ControllerBase
 	{
         private readonly IMoviesRepository _repository;
+        private readonly IMoviesService _service;
         private readonly IMapper _mapper;
 
-        public MoviesController(IMoviesRepository repository, IMapper mapper)
+        public MoviesController(IMoviesRepository repository, IMoviesService service, IMapper mapper)
         {
             _repository = repository ?? throw new ArgumentNullException(nameof(repository));
+            _service = service ?? throw new ArgumentNullException(nameof(service));
             _mapper = mapper ?? throw new ArgumentNullException(nameof(mapper));
         }
         
@@ -69,7 +73,7 @@ namespace Movies.API.Controllers
         // [Authorize(Roles = Roles.ADMINISTRATOR)]
         public async Task<IActionResult> CreateMovie([FromBody] CreateOrUpdateMovieRequest createOrUpdateMovieRequest)
         {
-            var error = await _repository.CreateMovie(createOrUpdateMovieRequest);
+            var error = await _service.CreateMovie(createOrUpdateMovieRequest);
             if (error != null)
             {
                 return BadRequest(error);
@@ -81,9 +85,13 @@ namespace Movies.API.Controllers
         // [Authorize(Roles = Roles.ADMINISTRATOR)]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
-        public async Task<IActionResult> UpdateMovie([FromBody] CreateOrUpdateMovieRequest updateOrUpdateMovieRequest)
+        public async Task<IActionResult> UpdateMovie([FromBody] CreateOrUpdateMovieRequest updateMovieRequest)
         {
-            var error = await _repository.UpdateMovie(updateOrUpdateMovieRequest);
+            if (updateMovieRequest.Id == null)
+            {
+                return BadRequest(ErrorMessages.MOVIE_ID_NOT_PROVIDED);
+            }
+            var error = await _service.UpdateMovie(updateMovieRequest);
             if (error != null)
             {
                 return BadRequest(error);

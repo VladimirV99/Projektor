@@ -47,6 +47,18 @@
       ],
       "UpstreamPathTemplate": "/api/{version}/Movies/{everything}",
       "UpstreamHttpMethod": [ "Get", "Post" ]
+    },
+    {
+      "DownstreamPathTemplate": "/api/{version}/Review/{everything}",
+      "DownstreamScheme": "http",
+      "DownstreamHostAndPorts": [
+        {
+          "Host": "review",
+          "Port": 80
+        }
+      ],
+      "UpstreamPathTemplate": "/api/{version}/Review/{everything}",
+      "UpstreamHttpMethod": [ "Get", "Post", "Put", "Delete" ]
     }
   ]
 }

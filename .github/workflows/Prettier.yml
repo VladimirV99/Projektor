@@ -11,4 +11,4 @@ jobs:
     steps:
       - uses: actions/checkout@v3
       - name: Check if all files are formatted
-        run: npx prettier --check .
+        run: npx prettier --check "./app/**"

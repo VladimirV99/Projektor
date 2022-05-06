@@ -1,6 +1,4 @@
-﻿using Screening.Entities;
-
-namespace Screening.Data
+﻿namespace Screening.Data
 {
 	public interface IScreeningRepository
 	{

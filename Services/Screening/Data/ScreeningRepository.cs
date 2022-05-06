@@ -1,6 +1,4 @@
-﻿using System;
-using Microsoft.EntityFrameworkCore;
-using System.Threading.Tasks;
+﻿using Microsoft.EntityFrameworkCore;
 
 namespace Screening.Data
 {

@@ -26,60 +26,60 @@ namespace Screening.Controllers
         }
 
         [HttpGet("[action]")]
-        public async Task<IActionResult> GetScreenings()
+        public async Task<ActionResult<List<ScreeningModel>>> GetScreenings()
         {
             var screenings = await _repository.GetScreenings();
             return screenings == null ? NotFound() : Ok(_mapper.Map<List<ScreeningModel>>(screenings));
         }
 
         [HttpGet("[action]/{id}")]
-        public async Task<IActionResult> GetScreeningsByHallId(int id)
+        public async Task<ActionResult<List<ScreeningModel>>> GetScreeningsByHallId(int id)
         {
             var screenings = await _repository.GetScreeingsByHallId(id);
             return screenings == null ? NotFound() : Ok(_mapper.Map<List<ScreeningModel>>(screenings));
         }
 
         [HttpGet("[action]/{id}")]
-        public async Task<IActionResult> GetScreeningsByMovieId(int id)
+        public async Task<ActionResult<List<ScreeningModel>>> GetScreeningsByMovieId(int id)
         {
             var screenings = await _repository.GetScreeningsByMovieId(id);
             return screenings == null ? NotFound() : Ok(_mapper.Map<List<ScreeningModel>>(screenings));
         }
 
         [HttpGet("[action]/{id}/{start}/{end}")]
-        public async Task<IActionResult> GetScreeningsByHallIdAndTime(int id, DateTime start, DateTime end)
+        public async Task<ActionResult<List<ScreeningModel>>> GetScreeningsByHallIdAndTime(int id, DateTime start, DateTime end)
         {
-            var screening = await _repository.GetScreeningByHallIdAtMoment(id, start, end);
-            return screening == null ? NotFound() : Ok(_mapper.Map<ScreeningModel>(screening));
+            var screenings = await _repository.GetScreeningByHallIdAtMoment(id, start, end);
+            return screenings == null ? NotFound() : Ok(_mapper.Map<List<ScreeningModel>>(screenings));
         }
 
         [HttpPost("[action]/{hallId}/{movieId}/{moment}")]
-        public async Task<bool> InsertScreening(int hallId, int movieId, DateTime moment)
+        public async Task<ActionResult<bool>> InsertScreening(int hallId, int movieId, DateTime moment)
         {
             var movie = await _repository.GetMovieById(movieId);
 
-            if (movie == null) return false;
+            if (movie == null) return NotFound();
 
             await _repository.InsertScreening(new Entities.Screening { Movie = movie, HallId = hallId, MovieStart = moment });
-            return true;
+            return Ok();
         }
 
         [HttpPatch("[action]/{id}/{moment}")]
-        public async Task<bool> UpdateMovieStartTime(int id, DateTime moment)
+        public async Task<ActionResult<bool>> UpdateMovieStartTime(int id, DateTime moment)
         {
-            return await _repository.UpdateMovieStartTime(id, moment);
+            return await _repository.UpdateMovieStartTime(id, moment) ? Ok() : NotFound();
         }
 
         [HttpDelete("[action]/{id}")]
-        public async Task<bool> DeleteScreeningById(int id)
+        public async Task<ActionResult<bool>> DeleteScreeningById(int id)
         {
-            return await _repository.DeleteScreening(id);
+            return await _repository.DeleteScreening(id) ? Ok() : NotFound();
         }
 
         [HttpDelete("[action]/{id}")]
-        public async Task<bool> DeleteMovieById(int id)
+        public async Task<ActionResult<bool>> DeleteMovieById(int id)
         {
-            return await _repository.DeleteMovie(id);
+            return await _repository.DeleteMovie(id) ? Ok() : NotFound();
         }
     }
 }

@@ -3,7 +3,6 @@ using Common.Auth;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Movies.API.Data;
-using Movies.API.Entities;
 using Movies.API.Models;
 
 namespace Movies.API.Controllers
@@ -21,8 +20,7 @@ namespace Movies.API.Controllers
             _mapper = mapper ?? throw new ArgumentNullException(nameof(mapper));
         }
         
-        // TODO: Most of these endpoints probably won't be needed anywhere
-        
+        // TODO: Most of these endpoints probably won't be needed anywhere, but I'm leaving them here for now.
         [HttpGet("[action]/{id}")]
         public async Task<IActionResult> GetMovieById(int id)
         {
@@ -66,6 +64,8 @@ namespace Movies.API.Controllers
         }
         
         [HttpPost("[action]")]
+        [ProducesResponseType(StatusCodes.Status201Created)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
         // [Authorize(Roles = Roles.ADMINISTRATOR)]
         public async Task<IActionResult> CreateMovie([FromBody] CreateOrUpdateMovieRequest createOrUpdateMovieRequest)
         {
@@ -74,23 +74,26 @@ namespace Movies.API.Controllers
             {
                 return BadRequest(error);
             }
-            return Ok();
+            return StatusCode(StatusCodes.Status201Created);
         }
         
         [HttpPut("[action]")]
-        [Authorize(Roles = Roles.ADMINISTRATOR)]
+        // [Authorize(Roles = Roles.ADMINISTRATOR)]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
         public async Task<IActionResult> UpdateMovie([FromBody] CreateOrUpdateMovieRequest updateOrUpdateMovieRequest)
         {
-            var result = await _repository.UpdateMovie(updateOrUpdateMovieRequest);
-            if (result != null)
+            var error = await _repository.UpdateMovie(updateOrUpdateMovieRequest);
+            if (error != null)
             {
-                return BadRequest(result);
+                return BadRequest(error);
             }
             return Ok();
         }
         
         [HttpDelete("[action]/{id}")]
-        [Authorize(Roles = Roles.ADMINISTRATOR)]
+        // [Authorize(Roles = Roles.ADMINISTRATOR)]
+        [ProducesResponseType(StatusCodes.Status200OK)]
         public async Task<IActionResult> DeleteMovie(int id)
         {
             await _repository.DeleteMovie(id);

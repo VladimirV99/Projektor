@@ -108,16 +108,16 @@ namespace Movies.API.Data
             }; 
             foreach (var genreId in createOrUpdateMovieRequest.Genres)
             {
-                var genre = await _dbContext.Genres.SingleOrDefaultAsync(g => g.Id == genreId);
+                var genre = await _dbContext.Genres
+                    .SingleOrDefaultAsync(g => g.Id == genreId);
                 if (genre == null)
                 {
                     return "Genre not found";
                 }
+                
                 movie.Genres.Add(genre);
             }
-
-            Console.WriteLine("checking people");
-            Console.WriteLine(createOrUpdateMovieRequest.People);
+            
             foreach (var personAndRole in createOrUpdateMovieRequest.People)
             {
                 var person = await _dbContext.People.SingleOrDefaultAsync(p => p.Id == personAndRole.PersonId);
@@ -144,7 +144,10 @@ namespace Movies.API.Data
                 return "Id not provided.";
             }
             
-            var movie = await _dbContext.Movies.SingleOrDefaultAsync(m => m.Id == createOrUpdateMovieRequest.Id);
+            var movie = await _dbContext.Movies
+                .Include(m => m.Genres)
+                .Include(m => m.People)
+                .SingleOrDefaultAsync(m => m.Id == createOrUpdateMovieRequest.Id);
             if (movie == null)
             {
                 return "Movie not found.";

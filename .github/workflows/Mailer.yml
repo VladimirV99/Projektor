@@ -2,11 +2,21 @@ name: Mailer
 
 on:
   workflow_dispatch:
+  push:
+    branches:
+      - main
+    
+    paths:
+      - "Common/EventBus/**"
+      - "Services/Mailer/**"
+      - ".github/workflows/Mailer.yml"
+      
   pull_request:
     branches:
       - main
     
     paths:
+      - "Common/EventBus/**"
       - "Services/Mailer/**"
       - ".github/workflows/Mailer.yml"
 

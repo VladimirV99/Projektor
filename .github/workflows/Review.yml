@@ -2,11 +2,21 @@ name: Review
 
 on:
   workflow_dispatch:
+  push:
+    branches:
+      - main
+    
+    paths:
+      - "Common/Auth/**"
+      - "Services/Review/**"
+      - ".github/workflows/Review.yml"
+
   pull_request:
     branches:
       - main
     
     paths:
+      - "Common/Auth/**"
       - "Services/Review/**"
       - ".github/workflows/Review.yml"
 

@@ -2,6 +2,15 @@ name: Identity
 
 on:
   workflow_dispatch:
+  push:
+    branches:
+      - main
+    
+    paths:
+      - "Common/Auth/**"
+      - "Services/Identity/**"
+      - ".github/workflows/Identity.yml"
+      
   pull_request:
     branches:
       - main

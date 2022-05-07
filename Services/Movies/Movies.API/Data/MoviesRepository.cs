@@ -1,5 +1,4 @@
-﻿using System;
-using Microsoft.EntityFrameworkCore;
+﻿using Microsoft.EntityFrameworkCore;
 using Movies.API.Constants;
 using Movies.API.Entities;
 using Movies.API.Models;
@@ -78,7 +77,22 @@ namespace Movies.API.Data
         {
             return await _dbContext.Genres.ToListAsync();
         }
-
+        
+        public async Task<Genre?> GetGenreById(int id)
+        {
+            return await _dbContext.Genres.SingleOrDefaultAsync(g => g.Id == id);
+        }
+        
+        public async Task<Person?> GetPersonById(int id)
+        {
+            return await _dbContext.People.SingleOrDefaultAsync(p => p.Id == id);
+        }
+        
+        public async Task<Role?> GetRoleById(int id)
+        {
+            return await _dbContext.Roles.SingleOrDefaultAsync(r => r.Id == id);
+        }
+        
         public async Task<Tuple<uint, uint, int, int>> GetFilterLimits()
         {
             var moviesExist = await _dbContext.Movies.AnyAsync();
@@ -93,6 +107,29 @@ namespace Movies.API.Data
 
             return new Tuple<uint, uint, int, int>(yearMin, yearMax, lengthMin, lengthMax);
         }
+        
+        public async Task CreateMovie(Movie movie)   
+        {
+            _dbContext.Movies.Add(movie);
+            await _dbContext.SaveChangesAsync();
+        }
+        public async Task UpdateMovie(Movie movie)
+        {
+            _dbContext.Movies.Update(movie);
+            await _dbContext.SaveChangesAsync();
+        }
+        public async Task DeleteMovie(int id)
+        {
+            var movie = await _dbContext.Movies.FindAsync(id);
+            if (movie == null)
+            {
+                return;
+            }
+            _dbContext.Movies.Remove(movie);
+            await _dbContext.SaveChangesAsync();
+        }
+        
+        
     }
 }
 

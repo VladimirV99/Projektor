@@ -46,7 +46,7 @@
         }
       ],
       "UpstreamPathTemplate": "/api/{version}/Movies/{everything}",
-      "UpstreamHttpMethod": [ "Get", "Post" ]
+      "UpstreamHttpMethod": [ "Get", "Post", "Put", "Delete" ]
     },
     {
       "DownstreamPathTemplate": "/api/{version}/Review/{everything}",

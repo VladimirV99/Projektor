@@ -7,9 +7,9 @@ on:
       - main
     
     paths:
-      - Common/Auth/**
-      - Services/Identity/**
-      - .github/workflows/Identity.yml
+      - "Common/Auth/**"
+      - "Services/Identity/**"
+      - ".github/workflows/Identity.yml"
 
 jobs:
   build:

@@ -11,12 +11,34 @@ services:
     volumes:
       - mssql_data:/var/opt/mssql/data
       - ./Services/Movies/Movies.API/Seed:/var/seed
+      - ./Services/Screening/Seed:/var/seed_screening
 
   projektor_rabbitmq:
     container_name: projektor_rabbitmq
     ports:
-     - "5672:5672" 
-     - "15672:15672"
+      - "5672:5672"
+      - "15672:15672"
+
+  projektor_postgres:
+    container_name: projektor_postgres
+    environment:
+      - POSTGRES_USER=admin
+      - POSTGRES_PASSWORD=admin123
+      - POSTGRES_DB=ReviewDB
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data/
+
+  projektor_pgadmin:
+    container_name: projektor_pgadmin
+    environment:
+      - PGADMIN_DEFAULT_EMAIL=user@example.com
+      - PGADMIN_DEFAULT_PASSWORD=admin123
+    ports:
+      - "15432:80"
+    volumes:
+      - pgadmin_data:/var/lib/pgadmin
 
   movies.api:
     container_name: movies.api
@@ -48,6 +70,15 @@ services:
     ports:
       - "5009:80"
 
+  screening:
+    environment:
+      - ASPNETCORE_ENVIRONMENT=Development
+      - "ConnectionStrings:ScreeningsConnectionString=Server=projektor_mssql;Database=ScreeningDb;User Id=sa;Password=MatfRs2_MSSQL;"
+    ports:
+      - "5008:80"
+    depends_on:
+      - projektor_mssql
+
   webgateway:
     container_name: webgateway
     environment:
@@ -58,3 +89,13 @@ services:
       - mailer
     ports:
       - "7060:80"
+
+  review:
+    container_name: review
+    environment:
+      - ASPNETCORE_ENVIRONMENT=Development
+      - "ConnectionStrings:ReviewConnectionString=Server=projektor_postgres;Database=ReviewDB;User Id=admin;Password=admin123;"
+    depends_on:
+      - projektor_postgres
+    ports:
+      - "5007:80"

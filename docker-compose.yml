@@ -7,6 +7,12 @@ services:
   projektor_rabbitmq:
     image: rabbitmq:3-management-alpine
 
+  projektor_postgres:
+    image: postgres:14
+
+  projektor_pgadmin:
+    image: dpage/pgadmin4
+
   movies.api:
     image: ${DOCKER_REGISTRY-}moviesapi
     build:
@@ -25,11 +31,25 @@ services:
       context: .
       dockerfile: Services/Mailer/Dockerfile
 
+  screening:
+    image: ${DOCKER_REGISTRY-}screening
+    build:
+      context: .
+      dockerfile: Services/Screening/Dockerfile
+
   webgateway:
     image: ${DOCKER_REGISTRY-}webgateway
     build:
       context: .
       dockerfile: ApiGateways/WebGateway/Dockerfile
 
+  review:
+    image: ${DOCKER_REGISTRY-}review
+    build:
+      context: .
+      dockerfile: Services/Review/Dockerfile
+
 volumes:
   mssql_data:
+  postgres_data:
+  pgadmin_data:

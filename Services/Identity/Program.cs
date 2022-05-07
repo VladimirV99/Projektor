@@ -20,7 +20,6 @@ builder.Services.AddFluentValidation(fv =>
     fv.RegisterValidatorsFromAssembly(Assembly.GetExecutingAssembly());
 });
 
-
 builder.Services.AddScoped<IAuthenticationService, AuthenticationService>();
 
 builder.Services.AddControllers();

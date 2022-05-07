@@ -59,6 +59,18 @@
       ],
       "UpstreamPathTemplate": "/api/{version}/Review/{everything}",
       "UpstreamHttpMethod": [ "Get", "Post", "Put", "Delete" ]
+    },
+    {
+      "DownstreamPathTemplate": "/api/{version}/Screening/{everything}",
+      "DownstreamScheme": "http",
+      "DownstreamHostAndPorts": [
+        {
+          "Host": "screening",
+          "Port": 80
+        }
+      ],
+      "UpstreamPathTemplate": "/api/{version}/Screening/{everything}",
+      "UpstreamHttpMethod": [ "Get", "Post", "Patch", "Delete" ]
     }
   ]
 }

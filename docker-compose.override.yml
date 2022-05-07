@@ -87,6 +87,8 @@ services:
       - movies.api
       - identity
       - mailer
+      - review
+      - screening
     ports:
       - "7060:80"
 

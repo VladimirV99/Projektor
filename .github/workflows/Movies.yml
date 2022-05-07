@@ -1,0 +1,34 @@
+name: Movies
+
+on:
+  workflow_dispatch:
+  push:
+    branches:
+      - main
+    
+    paths:
+      - "Common/Auth/**"
+      - "Services/Movies/Movies.API/**"
+      - ".github/workflows/Movies.yml"
+
+  pull_request:
+    branches:
+      - main
+    
+    paths:
+      - "Common/Auth/**"
+      - "Services/Movies/Movies.API/**"
+      - ".github/workflows/Movies.yml"
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+      - name: Build the Movie service
+        shell: bash
+        run: |
+          cd Services/Movies/Movies.API
+          dotnet build

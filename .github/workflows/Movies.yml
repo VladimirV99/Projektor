@@ -1,4 +1,4 @@
-name: Identity
+name: Movies
 
 on:
   workflow_dispatch:
@@ -7,9 +7,8 @@ on:
       - main
     
     paths:
-      - "Common/Auth/**"
-      - "Services/Identity/**"
-      - ".github/workflows/Identity.yml"
+      - "Services/Movies/Movies.API/**"
+      - ".github/workflows/Movies.yml"
 
 jobs:
   build:
@@ -18,8 +17,8 @@ jobs:
     steps:
       - name: Checkout code
         uses: actions/checkout@v3
-      - name: Build the Identity service
+      - name: Build the Movie service
         shell: bash
         run: |
-          cd Services/Identity
+          cd Services/Movies/Movies.API
           dotnet build

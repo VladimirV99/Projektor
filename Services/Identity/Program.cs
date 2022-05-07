@@ -15,17 +15,14 @@ builder.Services.ConfigureJWT(builder.Configuration.GetSection("JWT").Get<JwtSet
 
 builder.Services.AddAutoMapper(Assembly.GetExecutingAssembly());
 
-builder.Services.AddFluentValidation(fv =>
+builder.Services.AddScoped<IAuthenticationService, AuthenticationService>();
+
+builder.Services.AddControllers().AddFluentValidation(fv =>
 {
     fv.RegisterValidatorsFromAssembly(Assembly.GetExecutingAssembly());
 });
-
-builder.Services.AddScoped<IAuthenticationService, AuthenticationService>();
-
-builder.Services.AddControllers();
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
-builder.Services.AddSwaggerGen();
 builder.Services.AddSwaggerGen(options =>
 {
     options.SwaggerDoc("v1", new OpenApiInfo
@@ -45,12 +42,13 @@ app.SeedDatabase();
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())
 {
-    app.UseCors(x => x.AllowAnyMethod()
-                      .AllowAnyHeader()
-                      .AllowAnyOrigin()
-               );
     app.UseSwagger();
     app.UseSwaggerUI();
+    app.UseCors(x => x
+        .AllowAnyMethod()
+        .AllowAnyHeader()
+        .AllowAnyOrigin()
+    );
 }
 
 app.UseAuthentication();

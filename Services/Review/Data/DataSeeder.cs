@@ -20,14 +20,15 @@ namespace Review.Data
             try
             {
                 const int retryCount = 5;
-                var retry = Policy.Handle<NpgsqlException>()
-                                .WaitAndRetry(
-                                    retryCount: retryCount,
-                                    sleepDurationProvider: retryAttempt => TimeSpan.FromSeconds(Math.Pow(2, retryAttempt)),
-                                    onRetry: (exception, sleepDuration, retryNumber, context) =>
-                                    {
-                                        _logger.LogWarning("Attempt {RetryNumber}/{RetryCount} to seed data", retryNumber, retryCount);
-                                    });
+                var retry = Policy
+                    .Handle<NpgsqlException>()
+                    .WaitAndRetry(
+                        retryCount: retryCount,
+                        sleepDurationProvider: retryAttempt => TimeSpan.FromSeconds(Math.Pow(2, retryAttempt)),
+                        onRetry: (exception, sleepDuration, retryNumber, context) =>
+                        {
+                            _logger.LogWarning("Retry {RetryNumber}/{RetryCount} to seed data", retryNumber, retryCount);
+                        });
                 retry.Execute(SeedFunction);
             }
             catch (Exception)

@@ -1,4 +1,4 @@
-name: Identity
+name: Screening
 
 on:
   workflow_dispatch:
@@ -8,9 +8,8 @@ on:
       - main
     
     paths:
-      - "Common/Auth/**"
-      - "Services/Identity/**"
-      - ".github/workflows/Identity.yml"
+      - "Services/Screening/**"
+      - ".github/workflows/Screening.yml"
 
 jobs:
   build:
@@ -19,8 +18,8 @@ jobs:
     steps:
       - name: Checkout code
         uses: actions/checkout@v3
-      - name: Build the Identity service
+      - name: Build the Screening service
         shell: bash
         run: |
-          cd Services/Identity
+          cd Services/Screening
           dotnet build

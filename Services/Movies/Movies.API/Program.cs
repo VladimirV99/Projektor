@@ -2,9 +2,10 @@ using System.Reflection;
 using System.Text.Json.Serialization;
 using Common.Auth.Extensions;
 using Common.Auth.Models;
-using Movies.API.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.OpenApi.Models;
+using Movies.API.Data;
+using Movies.API.Extensions;
 using Movies.API.Services;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -17,7 +18,10 @@ builder.Services.AddDbContext<MovieContext>(options =>
     options.EnableSensitiveDataLogging();
 });
 builder.Services.AddScoped<IMoviesRepository, MoviesRepository>();
+builder.Services.AddTransient<IDataSeeder, DataSeeder>();
+
 builder.Services.AddScoped<IMoviesService, MoviesService>();
+
 builder.Services.AddControllers()
     .AddJsonOptions(x => x.JsonSerializerOptions.ReferenceHandler = ReferenceHandler.IgnoreCycles);
 builder.Services.AddAutoMapper(Assembly.GetExecutingAssembly());
@@ -38,14 +42,18 @@ builder.Services.AddSwaggerGen(options =>
 
 var app = builder.Build();
 
+app.SeedDatabase();
+
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())
 {
     app.UseSwagger();
     app.UseSwaggerUI();
-    app.UseCors(x => x.AllowAnyMethod()
-                                    .AllowAnyHeader()
-                                    .AllowAnyOrigin());
+    app.UseCors(x => x
+        .AllowAnyMethod()
+        .AllowAnyHeader()
+        .AllowAnyOrigin()
+    );
 }
 
 app.UseAuthorization();

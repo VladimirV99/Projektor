@@ -16,26 +16,18 @@ Projektor is a microservice application for managing basic cinema operations. It
    ```
    docker-compose up --build -d
    ```
-2. Run migrations for Movie and Identity services:
-   ```
-   // Using package manager console:
-   Update-Database
-   
-   // Using dotnet cli (requires dotnet-ef):
-   dotnet ef database update
-   ```
-3. (Optional) Insert dummy data into database by running the seeder tool:
+2. (Optional) Insert dummy data into database by running the seeder tool:
    ```
    cd Tools/Seeder
    dotnet run
    ```
-4. Start the client:
+3. Start the client:
    ```
    cd app
    npm install
    npm run start:dev
    ```
-5. To stop the application run:
+4. To stop the application run:
    ```
    docker-compose down
    ```

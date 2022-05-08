@@ -4,22 +4,23 @@ using Identity.Entities;
 using Identity.Models;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.Data.SqlClient;
+using Microsoft.EntityFrameworkCore;
 using Polly;
 
 namespace Identity.Data
 {
     public class DataSeeder : IDataSeeder
     {
-        private readonly IIdentityRepository _identityRepository;
+        private readonly IdentityContext _dbContext;
         private readonly UserManager<User> _userManager;
         private readonly RoleManager<IdentityRole> _roleManager;
         private readonly IConfiguration _configuration;
         private readonly IMapper _mapper;
         private readonly ILogger<DataSeeder> _logger;
 
-        public DataSeeder(IIdentityRepository identityRepository, UserManager<User> userManager, RoleManager<IdentityRole> roleManager, IConfiguration configuration, IMapper mapper, ILogger<DataSeeder> logger)
+        public DataSeeder(IdentityContext dbContext, UserManager<User> userManager, RoleManager<IdentityRole> roleManager, IConfiguration configuration, IMapper mapper, ILogger<DataSeeder> logger)
         {
-            _identityRepository = identityRepository ?? throw new ArgumentNullException(nameof(identityRepository));
+            _dbContext = dbContext ?? throw new ArgumentNullException(nameof(dbContext));
             _userManager = userManager ?? throw new ArgumentNullException(nameof(userManager));
             _roleManager = roleManager ?? throw new ArgumentNullException(nameof(roleManager));
             _configuration = configuration ?? throw new ArgumentNullException(nameof(configuration));
@@ -31,16 +32,17 @@ namespace Identity.Data
         {
             try
             {
-                int retryCount = 5;
-                var retry = Policy.Handle<SqlException>()
-                                .WaitAndRetry(
-                                    retryCount: retryCount,
-                                    sleepDurationProvider: retryAttempt => TimeSpan.FromSeconds(Math.Pow(2, retryAttempt)),
-                                    onRetry: (exception, retryNumber, context) =>
-                                    {
-                                        _logger.LogWarning("Attempt {RetryNumber}/{RetryCount} to seed data", retryNumber, retryCount);
-                                    });
-                retry.Execute(() => SeedFunction().Wait());
+                const int retryCount = 5;
+                var retry = Policy
+                    .Handle<SqlException>()
+                    .WaitAndRetryAsync(
+                        retryCount: retryCount,
+                        sleepDurationProvider: retryAttempt => TimeSpan.FromSeconds(Math.Pow(2, retryAttempt)),
+                        onRetry: (exception, sleepDuration, retryNumber, context) =>
+                        {
+                            _logger.LogWarning("Retry {RetryNumber}/{RetryCount} to seed data", retryNumber, retryCount);
+                        });
+                retry.ExecuteAsync(SeedFunction).Wait();
             }
             catch (Exception)
             {
@@ -50,6 +52,9 @@ namespace Identity.Data
 
         private async Task SeedFunction()
         {
+            // Run migrations
+            await _dbContext.Database.MigrateAsync();
+
             // Seed roles
             string[] roles = new string[] { Roles.ADMINISTRATOR, Roles.CUSTOMER };
 
@@ -64,7 +69,7 @@ namespace Identity.Data
 
             // Seed admin account
             var adminSettings = _configuration.GetSection("Admin").Get<UserRegisterRequest>();
-            var admin = await _identityRepository.GetUserByEmail(adminSettings.Email);
+            var admin = await _userManager.FindByEmailAsync(adminSettings.Email);
             // Check if admin account exists
             if (admin == null)
             {

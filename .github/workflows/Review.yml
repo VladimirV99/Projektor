@@ -1,0 +1,34 @@
+name: Review
+
+on:
+  workflow_dispatch:
+  push:
+    branches:
+      - main
+    
+    paths:
+      - "Common/Auth/**"
+      - "Services/Review/**"
+      - ".github/workflows/Review.yml"
+
+  pull_request:
+    branches:
+      - main
+    
+    paths:
+      - "Common/Auth/**"
+      - "Services/Review/**"
+      - ".github/workflows/Review.yml"
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+      - name: Build the Review service
+        shell: bash
+        run: |
+          cd Services/Review
+          dotnet build

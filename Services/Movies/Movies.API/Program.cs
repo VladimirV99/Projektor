@@ -1,8 +1,12 @@
 using System.Reflection;
 using System.Text.Json.Serialization;
-using Movies.API.Data;
+using Common.Auth.Extensions;
+using Common.Auth.Models;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.OpenApi.Models;
+using Movies.API.Data;
 using Movies.API.Extensions;
+using Movies.API.Services;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -16,15 +20,24 @@ builder.Services.AddDbContext<MovieContext>(options =>
 builder.Services.AddScoped<IMoviesRepository, MoviesRepository>();
 builder.Services.AddTransient<IDataSeeder, DataSeeder>();
 
-// Not sure if there is a better way to avoid cycle errors when populating related entities, this is kind of ugly because
-// it gives something like this: movie: {blabla, genres: [ {id, name, movies: [null]} ]}
-// The mapper will make it nice anyway so idk
+builder.Services.AddScoped<IMoviesService, MoviesService>();
+
 builder.Services.AddControllers()
     .AddJsonOptions(x => x.JsonSerializerOptions.ReferenceHandler = ReferenceHandler.IgnoreCycles);
 builder.Services.AddAutoMapper(Assembly.GetExecutingAssembly());
-// Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
+builder.Services.ConfigureJWT(builder.Configuration.GetSection("JWT").Get<JwtSettings>());
 builder.Services.AddEndpointsApiExplorer();
-builder.Services.AddSwaggerGen();
+builder.Services.AddSwaggerGen(options =>
+{
+    options.SwaggerDoc("v1", new OpenApiInfo
+    {
+        Version = "v1",
+        Title = "Movie API",
+        Description = "Movie API for Projektor Application"
+    });
+    options.AddJwtSecurityDefinition();
+    options.AddAuthOperationFilter();
+});
 
 
 var app = builder.Build();

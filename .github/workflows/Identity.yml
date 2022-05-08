@@ -1,0 +1,34 @@
+name: Identity
+
+on:
+  workflow_dispatch:
+  push:
+    branches:
+      - main
+    
+    paths:
+      - "Common/Auth/**"
+      - "Services/Identity/**"
+      - ".github/workflows/Identity.yml"
+      
+  pull_request:
+    branches:
+      - main
+    
+    paths:
+      - "Common/Auth/**"
+      - "Services/Identity/**"
+      - ".github/workflows/Identity.yml"
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+      - name: Build the Identity service
+        shell: bash
+        run: |
+          cd Services/Identity
+          dotnet build

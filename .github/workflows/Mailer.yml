@@ -1,0 +1,34 @@
+name: Mailer
+
+on:
+  workflow_dispatch:
+  push:
+    branches:
+      - main
+    
+    paths:
+      - "Common/EventBus/**"
+      - "Services/Mailer/**"
+      - ".github/workflows/Mailer.yml"
+      
+  pull_request:
+    branches:
+      - main
+    
+    paths:
+      - "Common/EventBus/**"
+      - "Services/Mailer/**"
+      - ".github/workflows/Mailer.yml"
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+      - name: Build the Mailer service
+        shell: bash
+        run: |
+          cd Services/Mailer
+          dotnet build

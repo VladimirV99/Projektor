@@ -46,7 +46,7 @@
         }
       ],
       "UpstreamPathTemplate": "/api/{version}/Movies/{everything}",
-      "UpstreamHttpMethod": [ "Get", "Post" ]
+      "UpstreamHttpMethod": [ "Get", "Post", "Put", "Delete" ]
     },
     {
       "DownstreamPathTemplate": "/api/{version}/Review/{everything}",
@@ -59,6 +59,18 @@
       ],
       "UpstreamPathTemplate": "/api/{version}/Review/{everything}",
       "UpstreamHttpMethod": [ "Get", "Post", "Put", "Delete" ]
+    },
+    {
+      "DownstreamPathTemplate": "/api/{version}/Screening/{everything}",
+      "DownstreamScheme": "http",
+      "DownstreamHostAndPorts": [
+        {
+          "Host": "localhost",
+          "Port": 5299
+        }
+      ],
+      "UpstreamPathTemplate": "/api/{version}/Screening/{everything}",
+      "UpstreamHttpMethod": [ "Get", "Post", "Patch", "Delete" ]
     }
   ]
 }

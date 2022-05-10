@@ -1,14 +1,11 @@
 import { combineReducers } from 'redux';
 import { persistReducer } from 'redux-persist';
 import storage from 'redux-persist/lib/storage';
-import featuresReducer from '../auth/index';
-import { featuresReducerName } from '../auth/types';
-import moviesReducer from './Movie';
-import genresReducer from './Genre';
-import filterLimitsReducer from './FilterLimits';
+import moviesReducer from 'redux/movies/reducers/Movie';
+import genresReducer from 'redux/movies/reducers/Genre';
+import filterLimitsReducer from 'redux/movies/reducers/FilterLimits';
 
 const rootReducer = combineReducers({
-    [featuresReducerName]: featuresReducer,
     movies: moviesReducer,
     genres: genresReducer,
     filterLimits: filterLimitsReducer,

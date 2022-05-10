@@ -1,22 +1,26 @@
 import { configureStore } from '@reduxjs/toolkit';
+import { combineReducers } from 'redux';
+import {
+    authenticationReducerName,
+    AuthenticationReducerType,
+} from 'redux/auth/reducers/types';
+import authenticationReducer from 'redux/auth/reducers';
+import moviesReducer from 'redux/movies/reducers';
 
-import rootReducer from './reducers';
+export const featuresReducerName = 'featuresReducer';
+interface FeaturesReducerType {
+    [authenticationReducerName]: AuthenticationReducerType;
+    movies: any;
+}
 
-// TODO Add support for network middleware
-// const networkMiddleware =
-//   ({ getState }: MiddlewareAPI) =>
-//   (next: Middleware) =>
-//   (action: any) => {
-//     // check if action is thunk action -> if yes, first check connection
-//     if (typeof action === 'function') {
-//       const isConnected = selectIsConnected(getState());
-//       if (!isConnected) {
-//         return Promise.reject();
-//       }
-//       return next(action);
-//     }
-//     return next(action);
-//   };
+const featuresReducer = combineReducers<FeaturesReducerType>({
+    [authenticationReducerName]: authenticationReducer,
+    movies: moviesReducer,
+});
+
+const rootReducer = combineReducers({
+    [featuresReducerName]: featuresReducer,
+});
 
 const store = configureStore({
     reducer: rootReducer,

@@ -4,7 +4,7 @@ import {
     authenticationReducerName,
     AuthenticationReducerType,
 } from '../reducers/types';
-import { featuresReducerName } from '../types';
+import { featuresReducerName } from 'redux/store';
 
 export const getState = (state: RootStateOrAny) =>
     state[featuresReducerName][authenticationReducerName];

@@ -1,7 +1,7 @@
 import { createAsyncThunk, createSlice } from '@reduxjs/toolkit';
 import { ApiSuccess } from 'models';
 import FilterLimits from 'models/FilterLimits';
-import * as API from '../../api';
+import * as API from 'redux/movies/api';
 
 export type FilterLimitsSliceType = {
     limits: FilterLimits;

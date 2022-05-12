@@ -5,7 +5,6 @@ namespace Screening.Data
 {
 	public class ScreeningContext : DbContext
 	{
-
         public DbSet<Entities.Screening> Screenings { get; set; }
         public DbSet<Movie> Movies { get; set; }
 

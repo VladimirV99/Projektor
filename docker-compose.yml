@@ -5,13 +5,13 @@ services:
     image: mcr.microsoft.com/mssql/server:2017-latest
 
   projektor_rabbitmq:
-    image: rabbitmq:3-management-alpine
+    image: docker.io/rabbitmq:3-management-alpine
 
   projektor_postgres:
-    image: postgres:14
+    image: docker.io/postgres:14
 
   projektor_pgadmin:
-    image: dpage/pgadmin4
+    image: docker.io/dpage/pgadmin4
 
   movies.api:
     image: ${DOCKER_REGISTRY-}moviesapi

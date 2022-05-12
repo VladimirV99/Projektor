@@ -7,6 +7,7 @@ EXPOSE 80
 FROM mcr.microsoft.com/dotnet/sdk:6.0 AS build
 WORKDIR /src
 COPY ["Services/Screening/Screening.csproj", "Services/Screening/"]
+COPY ["Common/Auth/Auth.csproj", "Common/Auth/"]
 RUN dotnet restore "Services/Screening/Screening.csproj"
 COPY . .
 WORKDIR "/src/Services/Screening"

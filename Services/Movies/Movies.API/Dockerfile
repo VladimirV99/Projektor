@@ -7,6 +7,7 @@ EXPOSE 80
 FROM mcr.microsoft.com/dotnet/sdk:6.0 AS build
 WORKDIR /src
 COPY ["Services/Movies/Movies.API/Movies.API.csproj", "Services/Movies/Movies.API/"]
+COPY ["Common/Auth/Auth.csproj", "Common/Auth/"]
 RUN dotnet restore "Services/Movies/Movies.API/Movies.API.csproj"
 COPY . .
 WORKDIR "/src/Services/Movies/Movies.API"

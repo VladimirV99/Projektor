@@ -1,8 +1,9 @@
-import { GenreSliceType } from 'redux/reducers/Genre';
+import { GenreSliceType } from 'redux/movies/reducers/Genre';
 import { createSelector } from '@reduxjs/toolkit';
+import { featuresReducerName } from 'redux/store';
 
 const getCoreState = (state: any): GenreSliceType =>
-    state.genres as GenreSliceType;
+    state[featuresReducerName].movies.genres as GenreSliceType;
 
 export const getGenresStatus = createSelector(
     [getCoreState],
@@ -16,5 +17,8 @@ export const isGenresAlreadyLoaded = createSelector(
 
 export const getGenres = createSelector(
     [getCoreState],
-    (state: GenreSliceType) => state.entities
+    (state: GenreSliceType) => {
+        console.log('selecting from', state);
+        return state.entities;
+    }
 );

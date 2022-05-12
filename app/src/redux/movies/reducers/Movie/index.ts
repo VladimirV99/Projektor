@@ -2,7 +2,7 @@ import { createAsyncThunk, createSlice } from '@reduxjs/toolkit';
 import Movie from 'models/Movie';
 import FilterMoviesRequest from 'models/Movie/FilterMoviesRequest';
 import { ApiSuccess } from 'models';
-import * as API from 'redux/api';
+import * as API from 'redux/movies/api';
 import { PaginatedMovieList } from 'models/Movie/PaginatedMovieList';
 
 export type MovieSliceType = {

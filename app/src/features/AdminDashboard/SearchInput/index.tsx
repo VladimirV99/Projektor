@@ -6,14 +6,12 @@ import axios from 'axios';
 
 type Props = {
     searchEndpoint: string;
-    onResultsFound: (results: AnyArray) => void;
     onOptionClicked: (option: any) => void;
     getOptions: (results: any[]) => { id: any; label: string }[];
 };
 
 function SearchInput({
     searchEndpoint,
-    onResultsFound,
     onOptionClicked,
     getOptions,
 }: Props): JSX.Element {
@@ -33,7 +31,6 @@ function SearchInput({
             })
             .then((response) => {
                 setSearchResults(response.data);
-                onResultsFound(response.data);
             })
             .catch(() => {});
     }, [searchTerm]);

@@ -1,28 +1,26 @@
 import styled from '@emotion/styled';
 import Chip from '@mui/material/Chip/Chip';
+import { css } from 'styled-components';
 
 type Props = {
     options: { id: any; label: string }[];
     onDelete: (id: any) => void;
+    direction: 'row' | 'column';
 };
 
-const SelectedOptions = ({ options, onDelete }: Props) => (
-    <ChipContainer>
+const SelectedOptions = ({ options, onDelete, direction }: Props) => (
+    <div style={{ display: 'flex', flexDirection: direction }}>
         {options.map(({ id, label }) => (
-            <ChipWrapper>
+            <div
+                style={{
+                    paddingRight: direction === 'row' ? '10px' : '0',
+                    paddingBottom: direction === 'column' ? '10px' : '0',
+                }}
+            >
                 <Chip key={id} label={label} onDelete={() => onDelete(id)} />
-            </ChipWrapper>
+            </div>
         ))}
-    </ChipContainer>
+    </div>
 );
 
 export default SelectedOptions;
-
-const ChipContainer = styled.div`
-    display: flex;
-    flex-direction: row;
-`;
-
-const ChipWrapper = styled.div`
-    padding-right: 10px;
-`;

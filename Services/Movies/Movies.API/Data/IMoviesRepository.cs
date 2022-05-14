@@ -19,6 +19,7 @@ namespace Movies.API.Data
 		public Task DeleteMovie(int id);
 		public Task<List<Person>> SearchPeople(string searchString);
 		public Task<List<Role>> SearchRoles(string searchString);
+		public Task<List<Role>> GetRoles();
 	}
 }
 

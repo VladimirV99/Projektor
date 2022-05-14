@@ -59,6 +59,10 @@ namespace Movies.API.Data
                 .Where(request.LengthFrom == null ? m => true : m => m.Length >= request.LengthFrom)
                 .Where(request.LengthTo == null ? m => true : m => m.Length <= request.LengthTo)
                 .Include(m => m.Genres)
+                .Include(m => m.People)
+                .ThenInclude(mp => mp.Person)
+                .Include(m => m.People)
+                .ThenInclude(mp => mp.Role)
                 .Where(request.Genres == null
                     ? m => true
                     : m => m.Genres.Select(g => g.Id).Any(x => request.Genres.Contains(x)));
@@ -147,6 +151,12 @@ namespace Movies.API.Data
                 .Roles
                 .Where(r => $"{r.Name.ToString().ToLower()}".Contains(processedSearchString))
                 .ToListAsync();
+            return roles;
+        }
+
+        public async Task<List<Role>> GetRoles()
+        {
+            var roles = await _dbContext.Roles.ToListAsync();
             return roles;
         }
     }

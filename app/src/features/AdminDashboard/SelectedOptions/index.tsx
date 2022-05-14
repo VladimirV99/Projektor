@@ -9,12 +9,14 @@ type Props = {
 };
 
 const SelectedOptions = ({ options, onDelete, direction }: Props) => (
-    <div style={{ display: 'flex', flexDirection: direction }}>
+    <div
+        style={{ display: 'flex', flexDirection: direction, flexWrap: 'wrap' }}
+    >
         {options.map(({ id, label }) => (
             <div
                 style={{
-                    paddingRight: direction === 'row' ? '10px' : '0',
-                    paddingBottom: direction === 'column' ? '10px' : '0',
+                    paddingRight: direction === 'row' ? '10px' : '3px',
+                    paddingBottom: direction === 'column' ? '10px' : '3px',
                 }}
             >
                 <Chip key={id} label={label} onDelete={() => onDelete(id)} />

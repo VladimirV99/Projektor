@@ -28,6 +28,8 @@ namespace Movies.API.Mapper
 
             CreateMap<Person, PersonModel>();
 
+            CreateMap<Role, RoleModel>();
+
         }
 
     }

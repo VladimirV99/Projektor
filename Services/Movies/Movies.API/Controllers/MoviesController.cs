@@ -121,7 +121,13 @@ namespace Movies.API.Controllers
             var roles = await _repository.SearchRoles(searchString);
             return Ok(_mapper.Map<List<RoleModel>>(roles));
         }
-        
+
+        [HttpGet("[action]")]
+        public async Task<IActionResult> GetRoles()
+        {
+            var roles = await _repository.GetRoles();
+            return Ok(_mapper.Map<List<RoleModel>>(roles));
+        }
         
     }
 }

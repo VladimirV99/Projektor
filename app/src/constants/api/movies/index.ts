@@ -11,3 +11,5 @@ export const GET_FILTER_LIMITS_URL = urlJoin(
 );
 
 export const SEARCH_PEOPLE_URL = urlJoin(URL_BASE, '/Movies/SearchPeople');
+
+export const GET_ROLES_URL = urlJoin(URL_BASE, '/Movies/GetRoles');

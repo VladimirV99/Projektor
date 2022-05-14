@@ -7,7 +7,12 @@ export default class Movie {
         public trailerUrl: string | null = '',
         public imdbUrl: string | null = '',
         public imageUrl: string | null = '',
-        public people: { personId: number; name: string }[] = [],
+        public people: {
+            personId: number;
+            roleId: number;
+            name: string;
+            role: string;
+        }[] = [],
         public genres: { id: number; name: string }[] = []
     ) {}
 }

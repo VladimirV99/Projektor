@@ -262,6 +262,9 @@ const CreateOrEditMovie = (
                         }}
                     />
                     <SelectedValuesWrapper>
+                        {movieInput.genres.length === 0 && (
+                            <p>No genres added for this movie.</p>
+                        )}
                         <SelectedOptions
                             direction="row"
                             options={movieInput.genres.map(({ id, name }) => ({

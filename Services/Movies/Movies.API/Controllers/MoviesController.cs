@@ -108,6 +108,21 @@ namespace Movies.API.Controllers
             return Ok();
         }
         
+        [HttpGet("[action]")]
+        public async Task<IActionResult> SearchPeople([FromQuery] string searchString)
+        {
+            var people = await _repository.SearchPeople(searchString);
+            return Ok(_mapper.Map<List<PersonModel>>(people));
+        }
+        
+        [HttpGet("[action]")]
+        public async Task<IActionResult> SearchRoles([FromQuery] string searchString)
+        {
+            var roles = await _repository.SearchRoles(searchString);
+            return Ok(_mapper.Map<List<RoleModel>>(roles));
+        }
+        
+        
     }
 }
 

@@ -128,8 +128,27 @@ namespace Movies.API.Data
             _dbContext.Movies.Remove(movie);
             await _dbContext.SaveChangesAsync();
         }
-        
-        
+
+        public async Task<List<Person>> SearchPeople(string searchString)
+        {
+            var processedSearchString = searchString.ToLower().Replace(" ", "");
+            var people = await _dbContext
+                .People
+                .Where(p => (p.FirstName.ToLower() + p.LastName.ToLower()).Contains(processedSearchString))
+                .ToListAsync();
+            
+            return people;  
+        }
+
+        public async Task<List<Role>> SearchRoles(string searchString)
+        {
+            var processedSearchString = searchString.ToLower().Replace(" ", "");
+            var roles = await _dbContext
+                .Roles
+                .Where(r => $"{r.Name.ToString().ToLower()}".Contains(processedSearchString))
+                .ToListAsync();
+            return roles;
+        }
     }
 }
 

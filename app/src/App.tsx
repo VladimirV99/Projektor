@@ -3,6 +3,7 @@ import { ErrorBoundary } from 'react-error-boundary';
 import SomethingWentWrong from 'components/SomethingWentWrong';
 import WithReduxProvider from './config/withReduxProvider';
 import HomeScreen from './features/HomeScreen';
+import AdminDashboard from 'features/AdminDashboard';
 import AppHeader from './components/Header';
 import BrowseMoviesScreen from './features/BrowseMoviesScreen';
 import WithLocalStorageFetcher from 'config/withLocalStorageFetcher';
@@ -20,6 +21,7 @@ function App() {
                                 path="/movies"
                                 element={<BrowseMoviesScreen />}
                             />
+                            <Route path="/admin" element={<AdminDashboard />} />
                         </Routes>
                     </BrowserRouter>
                 </ErrorBoundary>

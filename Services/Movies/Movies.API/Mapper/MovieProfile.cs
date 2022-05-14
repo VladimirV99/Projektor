@@ -26,6 +26,8 @@ namespace Movies.API.Mapper
                 .ForMember(dest => dest.People,
                     opt => opt.MapFrom(src => src.People));
 
+            CreateMap<Person, PersonModel>();
+
         }
 
     }

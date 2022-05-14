@@ -154,12 +154,11 @@ const CreateOrEditMovie = (
                     <FormInputFieldTitle>People</FormInputFieldTitle>
                     {peopleByRoles.map(({ roleId, roleName, people }) => (
                         <Fragment key={roleId}>
-                            {people.length === 0 && (
-                                <p>No people with this role.</p>
-                            )}
                             <SelectedValuesWrapper>
                                 <RoleTitle>{roleName}</RoleTitle>
-
+                                {people.length === 0 && (
+                                    <p>No people with this role.</p>
+                                )}
                                 <SelectedOptions
                                     direction="row"
                                     options={people.map(

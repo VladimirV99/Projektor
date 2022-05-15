@@ -107,7 +107,10 @@ const CreateOrEditMovie = (
                 <Modal.Body>
                     {updateStatus === 'pending' && <div>Updating movie...</div>}
                     {updateStatus === 'success' && (
-                        <div>Movie updated successfully!</div>
+                        <div>
+                            Movie {movieInput.id === -1 ? 'created' : 'updated'}{' '}
+                            successfully!
+                        </div>
                     )}
                     {updateStatus === 'error' && (
                         <div>Something went wrong.</div>

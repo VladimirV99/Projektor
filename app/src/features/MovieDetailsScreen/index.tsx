@@ -9,9 +9,12 @@ import { getScreeningsForMovie } from 'redux/movie/reducers/Screenings';
 import * as selectors from 'redux/movie/selectors';
 import Movie from 'models/Movie';
 import Screening from 'models/Screening';
-import { removeTime, toDateString, toTimeString } from 'util/dateUtils';
+import { removeTime } from 'util/dateUtils';
+import ScheduleItem from 'models/Screening/ScreeningSchedule';
+import ScreeningSchedule from 'components/ScreeningSchedule';
 import SomethingWentWrong from 'components/SomethingWentWrong';
 import * as S from './index.styles';
+import EmbeddedVideo from 'components/EmbeddedVideo';
 
 const MovieDetailsScreen = (): JSX.Element => {
     const { id } = useParams();
@@ -24,12 +27,10 @@ const MovieDetailsScreen = (): JSX.Element => {
     const throwAsyncError = useAsyncError();
     const dispatch = useDispatch();
 
-    const movie: Movie | null = useSelector(selectors.getMovie);
+    const movie = useSelector(selectors.getMovie);
     const movieStatus = useSelector(selectors.getMovieStatus);
 
-    const movieScreenings: Screening[] = useSelector(
-        selectors.getScreeningsForMovie
-    );
+    const movieScreenings = useSelector(selectors.getScreeningsForMovie);
     const movieScreeningsStatus = useSelector(
         selectors.getScreeningsForMovieStatus
     );
@@ -62,14 +63,14 @@ const MovieDetailsScreen = (): JSX.Element => {
 
         // Convert dictionary to array of objects
         // [{ day: number, screenings: Screening[] }]
-        let groups: any[] = [];
-        Object.keys(dict).forEach((item) => {
-            groups.push({ day: item, screenings: dict[item] });
+        let groups: ScheduleItem[] = [];
+        Object.keys(dict).forEach((key) => {
+            groups.push(new ScheduleItem(key, dict[key]));
         });
 
         // Sort by day
-        groups.sort((a: any, b: any) => {
-            return parseInt(a.day) - parseInt(b.day);
+        groups.sort((a, b) => {
+            return parseInt(a.key) - parseInt(b.key);
         });
 
         return groups;
@@ -110,7 +111,7 @@ const MovieDetailsScreen = (): JSX.Element => {
                                     <th>Genres:</th>
                                     <td>
                                         {movie.genres
-                                            .map((g) => g.name)
+                                            .map((g) => g.name.trim())
                                             .join(', ')}
                                     </td>
                                 </tr>
@@ -119,7 +120,7 @@ const MovieDetailsScreen = (): JSX.Element => {
                                     <td>
                                         {movie.people
                                             .filter((p) => p.role === 'Actor')
-                                            .map((p) => p.name)
+                                            .map((p) => p.name.trim())
                                             .join(', ')}
                                     </td>
                                 </tr>
@@ -130,7 +131,7 @@ const MovieDetailsScreen = (): JSX.Element => {
                                             .filter(
                                                 (p) => p.role === 'Director'
                                             )
-                                            .map((p) => p.name)
+                                            .map((p) => p.name.trim())
                                             .join(', ')}
                                     </td>
                                 </tr>
@@ -139,7 +140,7 @@ const MovieDetailsScreen = (): JSX.Element => {
                                     <td>
                                         {movie.people
                                             .filter((p) => p.role === 'Writer')
-                                            .map((p) => p.name)
+                                            .map((p) => p.name.trim())
                                             .join(', ')}
                                     </td>
                                 </tr>
@@ -160,15 +161,7 @@ const MovieDetailsScreen = (): JSX.Element => {
 
                 {movie.trailerUrl && (
                     <S.MovieTrailerContainer>
-                        <iframe
-                            width="560"
-                            height="315"
-                            src={movie.trailerUrl}
-                            title="YouTube video player"
-                            frameBorder="0"
-                            allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-                            allowFullScreen
-                        ></iframe>
+                        <EmbeddedVideo src={movie.trailerUrl}></EmbeddedVideo>
                     </S.MovieTrailerContainer>
                 )}
             </Fragment>
@@ -187,50 +180,15 @@ const MovieDetailsScreen = (): JSX.Element => {
                 {areScreeningsLoading ? (
                     renderLoading()
                 ) : screeningGroups.length > 0 ? (
-                    <div>
-                        {screeningGroups.map((group: any, i: number) => {
-                            return (
-                                <Fragment>
-                                    <S.ScreeningDate>
-                                        {toDateString(
-                                            new Date(parseInt(group.day))
-                                        )}
-                                    </S.ScreeningDate>
-                                    <div>
-                                        {group.screenings.map(
-                                            (
-                                                screening: Screening,
-                                                i: number
-                                            ) => {
-                                                return (
-                                                    <S.ScreeningItem
-                                                        key={i}
-                                                        to={`/screening/${screening.id}`}
-                                                    >
-                                                        <S.ScreeningItemTime>
-                                                            {toTimeString(
-                                                                screening.movieStart
-                                                            )}
-                                                        </S.ScreeningItemTime>
-                                                        <S.ScreeningItemHall>
-                                                            Hall{' '}
-                                                            {screening.hallId}
-                                                        </S.ScreeningItemHall>
-                                                    </S.ScreeningItem>
-                                                );
-                                            }
-                                        )}
-                                    </div>
-                                </Fragment>
-                            );
-                        })}
-                    </div>
+                    <ScreeningSchedule
+                        schedule={screeningGroups}
+                    ></ScreeningSchedule>
                 ) : (
                     <h3>There are no screenings for this movie</h3>
                 )}
             </Fragment>
         );
-    }, [movieScreenings, areScreeningsLoading]);
+    }, [screeningGroups, areScreeningsLoading]);
 
     useEffect(() => {
         if (movieStatus !== 'idle') {

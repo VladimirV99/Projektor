@@ -6,7 +6,7 @@ import screeningsReducer from 'redux/movie/reducers/Screenings';
 
 const rootReducer = combineReducers({
     movie: movieReducer,
-    screenings: screeningsReducer
+    screenings: screeningsReducer,
 });
 
 const persistConfig = {

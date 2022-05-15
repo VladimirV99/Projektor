@@ -18,7 +18,7 @@ interface FeaturesReducerType {
 const featuresReducer = combineReducers<FeaturesReducerType>({
     [authenticationReducerName]: authenticationReducer,
     movies: moviesReducer,
-    movie: movieReducer
+    movie: movieReducer,
 });
 
 const rootReducer = combineReducers({

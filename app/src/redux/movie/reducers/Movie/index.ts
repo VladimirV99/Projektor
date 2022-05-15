@@ -11,9 +11,7 @@ export type MovieSliceType = {
 export const getMovie = createAsyncThunk(
     'movie/getMovie',
     async (id: number) => {
-        const { data }: ApiSuccess<Movie> = await API.getMovie(
-            id
-        );
+        const { data }: ApiSuccess<Movie> = await API.getMovie(id);
         return data;
     }
 );

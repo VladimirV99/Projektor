@@ -24,3 +24,8 @@ export const getDeleteStatus = createSelector(
     [getCoreState],
     (state: MovieSliceType) => state.deleteStatus
 );
+
+export const getUpdateStatus = createSelector(
+    [getCoreState],
+    (state: MovieSliceType) => state.updateStatus
+);

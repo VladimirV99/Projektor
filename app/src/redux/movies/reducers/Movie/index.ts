@@ -4,6 +4,7 @@ import FilterMoviesRequest from 'models/Movie/FilterMoviesRequest';
 import { ApiSuccess } from 'models';
 import * as API from 'redux/movies/api';
 import { PaginatedMovieList } from 'models/Movie/PaginatedMovieList';
+import CreateOrUpdateMovieRequest from 'models/Movie/CreateOrUpdateMovieRequest';
 
 export type MovieSliceType = {
     entities: Movie[];
@@ -32,6 +33,20 @@ export const deleteMovie = createAsyncThunk(
 );
 
 export const resetDeleteStatus = createAction('movies/resetDeleteStatus');
+
+export const createOrUpdateMovie = createAsyncThunk(
+    'movies/createOrUpdateMovie',
+    async (request: CreateOrUpdateMovieRequest) => {
+        const { data }: ApiSuccess<Movie> = await API.createOrUpdateMovie(
+            request
+        );
+        return data;
+    }
+);
+
+export const resetUpdateStatus = createAction('movies/resetUpdateStatus');
+
+export const patchMovie = createAction<Movie>('movies/patchMovie');
 
 const moviesSlice = createSlice({
     name: 'movies',
@@ -66,6 +81,26 @@ const moviesSlice = createSlice({
         });
         builder.addCase(resetDeleteStatus, (state, action) => {
             state.deleteStatus = 'idle';
+        });
+        builder.addCase(createOrUpdateMovie.pending, (state, action) => {
+            state.updateStatus = 'pending';
+        });
+        builder.addCase(createOrUpdateMovie.fulfilled, (state, action) => {
+            state.updateStatus = 'success';
+        });
+        builder.addCase(createOrUpdateMovie.rejected, (state, action) => {
+            state.updateStatus = 'error';
+        });
+        builder.addCase(resetUpdateStatus, (state, action) => {
+            state.updateStatus = 'idle';
+        });
+        builder.addCase(patchMovie, (state, action) => {
+            const index = state.entities.findIndex(
+                (movie) => movie.id === action.payload.id
+            );
+            if (index !== -1) {
+                state.entities[index] = action.payload;
+            }
         });
     },
 });

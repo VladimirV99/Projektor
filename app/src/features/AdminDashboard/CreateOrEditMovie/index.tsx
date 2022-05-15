@@ -1,20 +1,22 @@
 import { Fragment, useEffect, useMemo, useState } from 'react';
+import { useDispatch } from 'react-redux';
 import Movie from 'models/Movie';
+import CreateOrUpdateMovieRequest from 'models/Movie/CreateOrUpdateMovieRequest';
 import ModalCheKoV from 'components/Modal';
 import styled from 'styled-components';
-import {
-    Autocomplete,
-    Button,
-    MenuItem,
-    Select,
-    TextField,
-} from '@mui/material';
+import { Button, TextField } from '@mui/material';
 import * as selectors from 'redux/movies/selectors';
 import { useSelector } from 'react-redux';
 import StaticSearchInput from '../StaticSearchInput';
 import SelectedOptions from '../SelectedOptions';
 import SearchInput from '../SearchInput';
 import { SEARCH_PEOPLE_URL } from 'constants/api';
+import {
+    createOrUpdateMovie,
+    patchMovie,
+    resetUpdateStatus,
+} from 'redux/movies/reducers/Movie';
+import { Modal } from 'react-bootstrap';
 
 type Props = {
     movie: Movie;
@@ -37,6 +39,9 @@ const CreateOrEditMovie = (
         [genres]
     );
     const roles = useSelector(selectors.getRoles);
+
+    const dispatch = useDispatch();
+    const updateStatus = useSelector(selectors.getUpdateStatus);
 
     useEffect(() => {
         console.log('Movie:');
@@ -73,227 +78,295 @@ const CreateOrEditMovie = (
     }, [movieInput.people]);
 
     const handleSubmit = () => {
-        console.log('Dispatch create/update');
+        const movieRequest = new CreateOrUpdateMovieRequest(
+            movieInput.id,
+            movieInput.title,
+            movieInput.year,
+            movieInput.length,
+            movieInput.trailerUrl,
+            movieInput.imdbUrl,
+            movieInput.imageUrl,
+            movieInput.people
+                .filter(({ roleId }) => {
+                    return peopleByRoles.find(
+                        (role) =>
+                            role.roleId === roleId && role.people.length > 0
+                    );
+                })
+                .map(({ personId, roleId }) => ({ personId, roleId })),
+            movieInput.genres.map(({ id }) => id)
+        );
+
+        dispatch(createOrUpdateMovie(movieRequest));
     };
 
     return (
-        <ModalCheKoV shouldRender={true} onModalClose={onClose}>
-            <ModalContainer>
-                {movie.id != -1 ? (
-                    <h4>
-                        Editing: <i>{movieInput.title}</i> ({movieInput.year})
-                    </h4>
-                ) : (
-                    <FormInputFieldTitle>
-                        Create a new movie
-                    </FormInputFieldTitle>
-                )}
-                <hr />
-                <div>
-                    <FormInputFieldTitle>Title</FormInputFieldTitle>
-                    <TextField
-                        value={movieInput.title}
-                        onChange={(e) => {
-                            setMovieInput({
-                                ...movieInput,
-                                title: e.target.value,
-                            });
-                        }}
-                        fullWidth
-                    />
-                </div>
-                <div>
-                    <FormInputFieldTitle>Year</FormInputFieldTitle>
-                    <TextField
-                        value={movieInput.year}
-                        type="number"
-                        onChange={(e) => {
-                            setMovieInput({
-                                ...movieInput,
-                                year: parseInt(e.target.value, 10),
-                            });
-                        }}
-                        fullWidth
-                    />
-                </div>
-                <div>
-                    <FormInputFieldTitle>Length (minutes)</FormInputFieldTitle>
-                    <TextField
-                        value={movieInput.length}
-                        type="number"
-                        onChange={(e) =>
-                            setMovieInput({
-                                ...movieInput,
-                                length: parseInt(e.target.value, 10),
-                            })
-                        }
-                        fullWidth
-                    />
-                </div>
-                <div>
-                    <FormInputFieldTitle>Trailer URL</FormInputFieldTitle>
-                    <TextField
-                        value={movieInput.trailerUrl}
-                        onChange={(e) => {
-                            setMovieInput({
-                                ...movieInput,
-                                trailerUrl: e.target.value,
-                            });
-                        }}
-                        fullWidth
-                    />
-                </div>
-                <div>
-                    <FormInputFieldTitle>Imdb URL</FormInputFieldTitle>
-                    <TextField
-                        value={movieInput.imdbUrl}
-                        onChange={(e) => {
-                            setMovieInput({
-                                ...movieInput,
-                                imdbUrl: e.target.value,
-                            });
-                        }}
-                        fullWidth
-                    />
-                </div>
-                <div>
-                    <FormInputFieldTitle>People</FormInputFieldTitle>
-                    {peopleByRoles.map(({ roleId, roleName, people }) => (
-                        <Fragment key={roleId}>
-                            <SelectedValuesWrapper>
-                                <RoleTitle>{roleName}</RoleTitle>
-                                {people.length === 0 && (
-                                    <p>No people with this role.</p>
-                                )}
-                                <SelectedOptions
-                                    direction="row"
-                                    options={people.map(
-                                        ({ personId, name }) => ({
-                                            id: personId,
-                                            label: name,
-                                        })
-                                    )}
-                                    onDelete={(deletedPersonId) => {
-                                        // console.log(
-                                        //     'Removing person id: ',
-                                        //     deletedPersonId,
-                                        //     ' from role id ',
-                                        //     roleId
-                                        // );
-                                        setMovieInput({
-                                            ...movieInput,
-                                            people: movieInput.people.filter(
-                                                ({
-                                                    personId: currentPersonId,
-                                                    roleId: currentRoleId,
-                                                }) => {
-                                                    if (
-                                                        currentPersonId ===
-                                                            deletedPersonId &&
-                                                        currentRoleId === roleId
-                                                    ) {
-                                                        return false;
-                                                    }
-                                                    return true;
-                                                }
-                                            ),
-                                        });
-                                    }}
-                                />
-                                <div>Add {roleName}: </div>
-                                <SearchInput
-                                    searchEndpoint={SEARCH_PEOPLE_URL}
-                                    getOptions={(people) =>
-                                        people.map(
-                                            ({ id, firstName, lastName }) => ({
-                                                id,
-                                                label: `${firstName} ${lastName}`,
-                                            })
-                                        )
-                                    }
-                                    onOptionClicked={({
-                                        id: clickedPersonId,
-                                        label: clickedPersonName,
-                                    }) => {
-                                        // console.log('Option has been clicked.');
-                                        if (
-                                            movieInput.people.find(
-                                                ({
-                                                    personId,
-                                                    roleId: currentRoleId,
-                                                }) =>
-                                                    clickedPersonId ===
-                                                        personId &&
-                                                    currentRoleId === roleId
-                                            )
-                                        ) {
-                                            // console.log(
-                                            //     'Option already present, aborting...'
-                                            // );
-                                            return;
-                                        }
-                                        setMovieInput({
-                                            ...movieInput,
-                                            people: [
-                                                ...movieInput.people,
-                                                {
-                                                    personId: clickedPersonId,
-                                                    roleId: roleId,
-                                                    role: roleName,
-                                                    name: clickedPersonName,
-                                                },
-                                            ],
-                                        });
-                                    }}
-                                />
-                            </SelectedValuesWrapper>
-                        </Fragment>
-                    ))}
-                </div>
-                <div>
-                    <FormInputFieldTitle>Genres</FormInputFieldTitle>
-                    <StaticSearchInput
-                        staticOptions={genreOptions}
-                        onOptionClicked={({ id, label }) => {
-                            if (movieInput.genres.find((g) => g.id === id)) {
-                                return;
+        <Fragment>
+            <Modal show={updateStatus !== 'idle'}>
+                <Modal.Header>Updating movie</Modal.Header>
+                <Modal.Body>
+                    {updateStatus === 'pending' && <div>Updating movie...</div>}
+                    {updateStatus === 'success' && (
+                        <div>Movie updated successfully!</div>
+                    )}
+                    {updateStatus === 'error' && (
+                        <div>Something went wrong.</div>
+                    )}
+                </Modal.Body>
+                <Modal.Footer>
+                    <Button
+                        disabled={updateStatus === 'pending'}
+                        onClick={() => {
+                            if (updateStatus === 'success') {
+                                dispatch(patchMovie(movieInput));
+                                onClose();
                             }
-                            setMovieInput({
-                                ...movieInput,
-                                genres: [
-                                    ...movieInput.genres,
-                                    { id, name: label },
-                                ],
-                            });
+                            dispatch(resetUpdateStatus());
                         }}
-                    />
-                    <SelectedValuesWrapper>
-                        {movieInput.genres.length === 0 && (
-                            <p>No genres added for this movie.</p>
-                        )}
-                        <SelectedOptions
-                            direction="row"
-                            options={movieInput.genres.map(({ id, name }) => ({
-                                id,
-                                label: name,
-                            }))}
-                            onDelete={(id) => {
+                    >
+                        Close
+                    </Button>
+                </Modal.Footer>
+            </Modal>
+            <ModalCheKoV
+                shouldRender={updateStatus === 'idle'}
+                onModalClose={onClose}
+            >
+                <ModalContainer>
+                    {movie.id != -1 ? (
+                        <h4>
+                            Editing: <i>{movieInput.title}</i> (
+                            {movieInput.year})
+                        </h4>
+                    ) : (
+                        <FormInputFieldTitle>
+                            Create a new movie
+                        </FormInputFieldTitle>
+                    )}
+                    <hr />
+                    <div>
+                        <FormInputFieldTitle>Title</FormInputFieldTitle>
+                        <TextField
+                            value={movieInput.title}
+                            onChange={(e) => {
                                 setMovieInput({
                                     ...movieInput,
-                                    genres: movieInput.genres.filter(
-                                        (g) => g.id !== id
-                                    ),
+                                    title: e.target.value,
+                                });
+                            }}
+                            fullWidth
+                        />
+                    </div>
+                    <div>
+                        <FormInputFieldTitle>Year</FormInputFieldTitle>
+                        <TextField
+                            value={movieInput.year}
+                            type="number"
+                            onChange={(e) => {
+                                setMovieInput({
+                                    ...movieInput,
+                                    year: parseInt(e.target.value, 10),
+                                });
+                            }}
+                            fullWidth
+                        />
+                    </div>
+                    <div>
+                        <FormInputFieldTitle>
+                            Length (minutes)
+                        </FormInputFieldTitle>
+                        <TextField
+                            value={movieInput.length}
+                            type="number"
+                            onChange={(e) =>
+                                setMovieInput({
+                                    ...movieInput,
+                                    length: parseInt(e.target.value, 10),
+                                })
+                            }
+                            fullWidth
+                        />
+                    </div>
+                    <div>
+                        <FormInputFieldTitle>Trailer URL</FormInputFieldTitle>
+                        <TextField
+                            value={movieInput.trailerUrl}
+                            onChange={(e) => {
+                                setMovieInput({
+                                    ...movieInput,
+                                    trailerUrl: e.target.value,
+                                });
+                            }}
+                            fullWidth
+                        />
+                    </div>
+                    <div>
+                        <FormInputFieldTitle>Imdb URL</FormInputFieldTitle>
+                        <TextField
+                            value={movieInput.imdbUrl}
+                            onChange={(e) => {
+                                setMovieInput({
+                                    ...movieInput,
+                                    imdbUrl: e.target.value,
+                                });
+                            }}
+                            fullWidth
+                        />
+                    </div>
+                    <div>
+                        <FormInputFieldTitle>People</FormInputFieldTitle>
+                        {peopleByRoles.map(({ roleId, roleName, people }) => (
+                            <Fragment key={roleId}>
+                                <SelectedValuesWrapper>
+                                    <RoleTitle>{roleName}</RoleTitle>
+                                    {people.length === 0 && (
+                                        <p>No people with this role.</p>
+                                    )}
+                                    <SelectedOptions
+                                        direction="row"
+                                        options={people.map(
+                                            ({ personId, name }) => ({
+                                                id: personId,
+                                                label: name,
+                                            })
+                                        )}
+                                        onDelete={(deletedPersonId) => {
+                                            // console.log(
+                                            //     'Removing person id: ',
+                                            //     deletedPersonId,
+                                            //     ' from role id ',
+                                            //     roleId
+                                            // );
+                                            setMovieInput({
+                                                ...movieInput,
+                                                people: movieInput.people.filter(
+                                                    ({
+                                                        personId:
+                                                            currentPersonId,
+                                                        roleId: currentRoleId,
+                                                    }) => {
+                                                        if (
+                                                            currentPersonId ===
+                                                                deletedPersonId &&
+                                                            currentRoleId ===
+                                                                roleId
+                                                        ) {
+                                                            return false;
+                                                        }
+                                                        return true;
+                                                    }
+                                                ),
+                                            });
+                                        }}
+                                    />
+                                    <div>Add {roleName}: </div>
+                                    <SearchInput
+                                        searchEndpoint={SEARCH_PEOPLE_URL}
+                                        getOptions={(people) =>
+                                            people.map(
+                                                ({
+                                                    id,
+                                                    firstName,
+                                                    lastName,
+                                                }) => ({
+                                                    id,
+                                                    label: `${firstName} ${lastName}`,
+                                                })
+                                            )
+                                        }
+                                        onOptionClicked={({
+                                            id: clickedPersonId,
+                                            label: clickedPersonName,
+                                        }) => {
+                                            // console.log('Option has been clicked.');
+                                            if (
+                                                movieInput.people.find(
+                                                    ({
+                                                        personId,
+                                                        roleId: currentRoleId,
+                                                    }) =>
+                                                        clickedPersonId ===
+                                                            personId &&
+                                                        currentRoleId === roleId
+                                                )
+                                            ) {
+                                                // console.log(
+                                                //     'Option already present, aborting...'
+                                                // );
+                                                return;
+                                            }
+                                            setMovieInput({
+                                                ...movieInput,
+                                                people: [
+                                                    ...movieInput.people,
+                                                    {
+                                                        personId:
+                                                            clickedPersonId,
+                                                        roleId: roleId,
+                                                        role: roleName,
+                                                        name: clickedPersonName,
+                                                    },
+                                                ],
+                                            });
+                                        }}
+                                    />
+                                </SelectedValuesWrapper>
+                            </Fragment>
+                        ))}
+                    </div>
+                    <div>
+                        <FormInputFieldTitle>Genres</FormInputFieldTitle>
+                        <StaticSearchInput
+                            staticOptions={genreOptions}
+                            onOptionClicked={({ id, label }) => {
+                                if (
+                                    movieInput.genres.find((g) => g.id === id)
+                                ) {
+                                    return;
+                                }
+                                setMovieInput({
+                                    ...movieInput,
+                                    genres: [
+                                        ...movieInput.genres,
+                                        { id, name: label },
+                                    ],
                                 });
                             }}
                         />
-                    </SelectedValuesWrapper>
-                </div>
-                <hr />
-                <Button variant="contained" fullWidth onClick={handleSubmit}>
-                    {movieInput.id != -1 ? 'Update movie' : 'Create movie'}
-                </Button>
-            </ModalContainer>
-        </ModalCheKoV>
+                        <SelectedValuesWrapper>
+                            {movieInput.genres.length === 0 && (
+                                <p>No genres added for this movie.</p>
+                            )}
+                            <SelectedOptions
+                                direction="row"
+                                options={movieInput.genres.map(
+                                    ({ id, name }) => ({
+                                        id,
+                                        label: name,
+                                    })
+                                )}
+                                onDelete={(id) => {
+                                    setMovieInput({
+                                        ...movieInput,
+                                        genres: movieInput.genres.filter(
+                                            (g) => g.id !== id
+                                        ),
+                                    });
+                                }}
+                            />
+                        </SelectedValuesWrapper>
+                    </div>
+                    <hr />
+                    <Button
+                        variant="contained"
+                        fullWidth
+                        onClick={handleSubmit}
+                    >
+                        {movieInput.id != -1 ? 'Update movie' : 'Create movie'}
+                    </Button>
+                </ModalContainer>
+            </ModalCheKoV>
+        </Fragment>
     );
 };
 

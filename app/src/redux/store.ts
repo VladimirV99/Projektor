@@ -6,16 +6,19 @@ import {
 } from 'redux/auth/reducers/types';
 import authenticationReducer from 'redux/auth/reducers';
 import moviesReducer from 'redux/movies/reducers';
+import movieReducer from 'redux/movie/reducers';
 
 export const featuresReducerName = 'featuresReducer';
 interface FeaturesReducerType {
     [authenticationReducerName]: AuthenticationReducerType;
     movies: any;
+    movie: any;
 }
 
 const featuresReducer = combineReducers<FeaturesReducerType>({
     [authenticationReducerName]: authenticationReducer,
     movies: moviesReducer,
+    movie: movieReducer
 });
 
 const rootReducer = combineReducers({

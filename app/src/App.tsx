@@ -6,6 +6,7 @@ import HomeScreen from './features/HomeScreen';
 import AppHeader from './components/Header';
 import BrowseMoviesScreen from './features/BrowseMoviesScreen';
 import WithLocalStorageFetcher from 'config/withLocalStorageFetcher';
+import MovieDetailsScreen from 'features/MovieDetailsScreen';
 
 function App() {
     return (
@@ -19,6 +20,10 @@ function App() {
                             <Route
                                 path="/movies"
                                 element={<BrowseMoviesScreen />}
+                            />
+                            <Route
+                                path="/movie/:id"
+                                element={<MovieDetailsScreen />}
                             />
                         </Routes>
                     </BrowserRouter>

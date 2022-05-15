@@ -9,3 +9,5 @@ export const GET_FILTER_LIMITS_URL = urlJoin(
     URL_BASE,
     '/Movies/GetFilterLimits'
 );
+
+export const MOVIE_DETAILS_URL = (movieId: number) => urlJoin(URL_BASE, '/Movies/GetMovieById', movieId.toString());

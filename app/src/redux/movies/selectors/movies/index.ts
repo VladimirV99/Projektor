@@ -19,3 +19,8 @@ export const getMoviesCount = createSelector(
     [getCoreState],
     (state: MovieSliceType) => state.count
 );
+
+export const getDeleteStatus = createSelector(
+    [getCoreState],
+    (state: MovieSliceType) => state.deleteStatus
+);

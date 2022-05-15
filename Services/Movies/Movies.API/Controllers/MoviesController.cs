@@ -100,11 +100,12 @@ namespace Movies.API.Controllers
         }
         
         [HttpDelete("[action]/{id}")]
-        [Authorize(Roles = Roles.ADMINISTRATOR)]
+        // [Authorize(Roles = Roles.ADMINISTRATOR)]
         [ProducesResponseType(StatusCodes.Status200OK)]
         public async Task<IActionResult> DeleteMovie(int id)
         {
             await _repository.DeleteMovie(id);
+            return Ok();
             return Ok();
         }
         

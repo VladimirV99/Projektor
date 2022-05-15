@@ -14,6 +14,9 @@ public class FilterMoviesRequest
     [Range(1, Settings.MAX_PAGE_SIZE, ErrorMessage=ErrorMessages.PER_PAGE_TOO_LARGE)]
     public int? PerPage { get; set; }
     
+    [FromQuery(Name="SearchString")]
+    public string? SearchString { get; set; }
+    
     [FromQuery(Name="YearFrom")]
     public int? YearFrom { get; set; }
     

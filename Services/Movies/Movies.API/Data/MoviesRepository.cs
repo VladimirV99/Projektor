@@ -58,6 +58,7 @@ namespace Movies.API.Data
                 .Where(request.YearTo == null ? m => true : m => m.Year <= request.YearTo)
                 .Where(request.LengthFrom == null ? m => true : m => m.Length >= request.LengthFrom)
                 .Where(request.LengthTo == null ? m => true : m => m.Length <= request.LengthTo)
+                .Where(request.SearchString == null ? m => true: m => m.Title.ToLower().Replace(" ", "").Contains(request.SearchString.ToLower().Replace(" ", "")))
                 .Include(m => m.Genres)
                 .Include(m => m.People)
                 .ThenInclude(mp => mp.Person)

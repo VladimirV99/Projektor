@@ -14,6 +14,7 @@ const SelectedOptions = ({ options, onDelete, direction }: Props) => (
     >
         {options.map(({ id, label }) => (
             <div
+                key={id}
                 style={{
                     paddingRight: direction === 'row' ? '10px' : '3px',
                     paddingBottom: direction === 'column' ? '10px' : '3px',

@@ -103,7 +103,9 @@ const CreateOrEditMovie = (
     return (
         <Fragment>
             <Modal show={updateStatus !== 'idle'}>
-                <Modal.Header>Updating movie</Modal.Header>
+                <Modal.Header>
+                    {movie.id == -1 ? 'Creating' : 'Updating'} a movie
+                </Modal.Header>
                 <Modal.Body>
                     {updateStatus === 'pending' && <div>Updating movie...</div>}
                     {updateStatus === 'success' && (

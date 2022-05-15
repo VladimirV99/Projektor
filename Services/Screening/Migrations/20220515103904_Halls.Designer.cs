@@ -12,8 +12,8 @@ using Screening.Data;
 namespace Screening.Migrations
 {
     [DbContext(typeof(ScreeningContext))]
-    [Migration("20220503084740_Screening")]
-    partial class Screening
+    [Migration("20220515103904_Halls")]
+    partial class Halls
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -24,13 +24,27 @@ namespace Screening.Migrations
 
             SqlServerModelBuilderExtensions.UseIdentityColumns(modelBuilder, 1L, 1);
 
-            modelBuilder.Entity("Screening.Entities.Movie", b =>
+            modelBuilder.Entity("Screening.Entities.Hall", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("int");
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"), 1L, 1);
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("Halls");
+                });
+
+            modelBuilder.Entity("Screening.Entities.Movie", b =>
+                {
+                    b.Property<int>("Id")
+                        .HasColumnType("int");
 
                     b.Property<int>("Length")
                         .HasColumnType("int");

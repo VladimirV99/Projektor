@@ -1,4 +1,5 @@
 ﻿using Microsoft.EntityFrameworkCore;
+using Screening.Entities;
 
 namespace Screening.Data
 {
@@ -11,11 +12,17 @@ namespace Screening.Data
             _dbContext = dbContext ?? throw new ArgumentNullException(nameof(dbContext));
         }
 
-        async Task<IEnumerable<Entities.Screening>> IScreeningRepository.GetScreenings()
+        public async Task<IEnumerable<Entities.Screening>> GetScreenings()
         {
             return await _dbContext
                 .Screenings
                 .Include(m => m.Movie)
+                .ToListAsync();
+        }
+        public async Task<IEnumerable<Hall>> GetAllHalls()
+        {
+            return await _dbContext
+                .Halls
                 .ToListAsync();
         }
 
@@ -40,7 +47,6 @@ namespace Screening.Data
         {
             return await _dbContext
                 .Screenings
-                .Include(m => m.Movie)
                 .Where(m => m.Movie.Id == id)
                 .ToListAsync();
         }
@@ -58,17 +64,34 @@ namespace Screening.Data
                 .SingleOrDefaultAsync();
         }
 
-        public async Task<Entities.Movie?> GetMovieById(int id)
+        public async Task<Movie?> GetMovieById(int id)
         {
             return await _dbContext
                 .Movies
                 .FindAsync(id);
         }
 
+        public async Task<Hall?> GetHallById(int id)
+        {
+            return await _dbContext
+                .Halls
+                .FindAsync(id);
+        }
+
         public async Task InsertScreening(Entities.Screening screening)
         {
             await _dbContext.Screenings.AddAsync(screening);
-            _dbContext.SaveChanges();
+            await _dbContext.SaveChangesAsync();
+        }
+        public async Task InsertMovie(Movie movie)
+        {
+            await _dbContext.Movies.AddAsync(movie);
+            await _dbContext.SaveChangesAsync();
+        }
+        public async Task InsertHall(Hall hall)
+        {
+            await _dbContext.Halls.AddAsync(hall);
+            await _dbContext.SaveChangesAsync();
         }
 
         public async Task<bool> UpdateMovieStartTime(int id, DateTime moment)

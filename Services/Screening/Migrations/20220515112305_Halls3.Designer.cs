@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Screening.Data;
 
@@ -11,9 +12,10 @@ using Screening.Data;
 namespace Screening.Migrations
 {
     [DbContext(typeof(ScreeningContext))]
-    partial class ScreeningContextModelSnapshot : ModelSnapshot
+    [Migration("20220515112305_Halls3")]
+    partial class Halls3
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder

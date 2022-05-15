@@ -80,8 +80,10 @@ namespace Reservation.Migrations
                     b.Property<int>("HallId")
                         .HasColumnType("int");
 
-                    b.Property<float>("Coeff")
-                        .HasColumnType("real");
+                    b.Property<float>("PriceMultiplier")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("real")
+                        .HasDefaultValue(1f);
 
                     b.HasKey("Row", "Column", "HallId");
 
@@ -150,8 +152,9 @@ namespace Reservation.Migrations
                                 .IsRequired()
                                 .HasColumnType("nvarchar(max)");
 
-                            b1.Property<int>("Id")
-                                .HasColumnType("int");
+                            b1.Property<string>("Id")
+                                .IsRequired()
+                                .HasColumnType("nvarchar(max)");
 
                             b1.Property<string>("Lastname")
                                 .IsRequired()

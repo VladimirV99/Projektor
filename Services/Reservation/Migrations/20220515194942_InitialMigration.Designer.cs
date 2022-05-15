@@ -12,8 +12,8 @@ using Reservation.Data;
 namespace Reservation.Migrations
 {
     [DbContext(typeof(ReservationContext))]
-    [Migration("20220512171559_Reservation1")]
-    partial class Reservation1
+    [Migration("20220515194942_InitialMigration")]
+    partial class InitialMigration
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -47,23 +47,6 @@ namespace Reservation.Migrations
                     b.ToTable("Halls");
                 });
 
-            modelBuilder.Entity("Reservation.Entities.Movie", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"), 1L, 1);
-
-                    b.Property<string>("Name")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.HasKey("Id");
-
-                    b.ToTable("Movie");
-                });
-
             modelBuilder.Entity("Reservation.Entities.Reservation", b =>
                 {
                     b.Property<int>("Id")
@@ -71,12 +54,6 @@ namespace Reservation.Migrations
                         .HasColumnType("int");
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"), 1L, 1);
-
-                    b.Property<int>("MovieId")
-                        .HasColumnType("int");
-
-                    b.Property<int>("ScreeningId")
-                        .HasColumnType("int");
 
                     b.Property<int>("SeatColumn")
                         .HasColumnType("int");
@@ -89,29 +66,9 @@ namespace Reservation.Migrations
 
                     b.HasKey("Id");
 
-                    b.HasIndex("MovieId");
-
-                    b.HasIndex("ScreeningId");
-
                     b.HasIndex("SeatRow", "SeatColumn", "SeatHallId");
 
                     b.ToTable("Reservations");
-                });
-
-            modelBuilder.Entity("Reservation.Entities.Screening", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"), 1L, 1);
-
-                    b.Property<DateTime>("MovieStart")
-                        .HasColumnType("datetime2");
-
-                    b.HasKey("Id");
-
-                    b.ToTable("Screening");
                 });
 
             modelBuilder.Entity("Reservation.Entities.Seat", b =>
@@ -125,8 +82,10 @@ namespace Reservation.Migrations
                     b.Property<int>("HallId")
                         .HasColumnType("int");
 
-                    b.Property<float>("Coeff")
-                        .HasColumnType("real");
+                    b.Property<float>("PriceMultiplier")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("real")
+                        .HasDefaultValue(1f);
 
                     b.HasKey("Row", "Column", "HallId");
 
@@ -137,23 +96,50 @@ namespace Reservation.Migrations
 
             modelBuilder.Entity("Reservation.Entities.Reservation", b =>
                 {
-                    b.HasOne("Reservation.Entities.Movie", "Movie")
-                        .WithMany()
-                        .HasForeignKey("MovieId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.HasOne("Reservation.Entities.Screening", "Screening")
-                        .WithMany()
-                        .HasForeignKey("ScreeningId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
                     b.HasOne("Reservation.Entities.Seat", "Seat")
                         .WithMany()
                         .HasForeignKey("SeatRow", "SeatColumn", "SeatHallId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
+
+                    b.OwnsOne("Reservation.Entities.Movie", "Movie", b1 =>
+                        {
+                            b1.Property<int>("ReservationId")
+                                .HasColumnType("int");
+
+                            b1.Property<int>("Id")
+                                .HasColumnType("int");
+
+                            b1.Property<string>("Name")
+                                .IsRequired()
+                                .HasColumnType("nvarchar(max)");
+
+                            b1.HasKey("ReservationId");
+
+                            b1.ToTable("Reservations");
+
+                            b1.WithOwner()
+                                .HasForeignKey("ReservationId");
+                        });
+
+                    b.OwnsOne("Reservation.Entities.Screening", "Screening", b1 =>
+                        {
+                            b1.Property<int>("ReservationId")
+                                .HasColumnType("int");
+
+                            b1.Property<int>("Id")
+                                .HasColumnType("int");
+
+                            b1.Property<DateTime>("MovieStart")
+                                .HasColumnType("datetime2");
+
+                            b1.HasKey("ReservationId");
+
+                            b1.ToTable("Reservations");
+
+                            b1.WithOwner()
+                                .HasForeignKey("ReservationId");
+                        });
 
                     b.OwnsOne("Reservation.Entities.User", "User", b1 =>
                         {
@@ -168,9 +154,9 @@ namespace Reservation.Migrations
                                 .IsRequired()
                                 .HasColumnType("nvarchar(max)");
 
-                            b1.Property<int>("Id")
-                                .HasColumnType("int")
-                                .HasColumnName("userId");
+                            b1.Property<string>("Id")
+                                .IsRequired()
+                                .HasColumnType("nvarchar(max)");
 
                             b1.Property<string>("Lastname")
                                 .IsRequired()
@@ -184,9 +170,11 @@ namespace Reservation.Migrations
                                 .HasForeignKey("ReservationId");
                         });
 
-                    b.Navigation("Movie");
+                    b.Navigation("Movie")
+                        .IsRequired();
 
-                    b.Navigation("Screening");
+                    b.Navigation("Screening")
+                        .IsRequired();
 
                     b.Navigation("Seat");
 

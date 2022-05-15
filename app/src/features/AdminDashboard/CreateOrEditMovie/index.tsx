@@ -1,4 +1,4 @@
-import { Fragment, useMemo, useState } from 'react';
+import { Fragment, useEffect, useMemo, useState } from 'react';
 import Movie from 'models/Movie';
 import ModalCheKoV from 'components/Modal';
 import styled from 'styled-components';
@@ -37,9 +37,11 @@ const CreateOrEditMovie = (
         [genres]
     );
     const roles = useSelector(selectors.getRoles);
-    const roleOptions = useMemo(() => {
-        return roles.map(({ id, name }) => ({ id, label: name }));
-    }, [roles]);
+
+    useEffect(() => {
+        console.log('Movie:');
+        console.log(movieInput);
+    }, [movieInput]);
 
     const peopleByRoles = useMemo<PeopleByRolesType>(() => {
         const peopleByRolesTmp = [] as PeopleByRolesType;
@@ -69,6 +71,10 @@ const CreateOrEditMovie = (
         });
         return peopleByRolesTmp;
     }, [movieInput.people]);
+
+    const handleSubmit = () => {
+        console.log('Dispatch create/update');
+    };
 
     return (
         <ModalCheKoV shouldRender={true} onModalClose={onClose}>
@@ -101,12 +107,12 @@ const CreateOrEditMovie = (
                     <TextField
                         value={movieInput.year}
                         type="number"
-                        onChange={(e) =>
+                        onChange={(e) => {
                             setMovieInput({
                                 ...movieInput,
                                 year: parseInt(e.target.value, 10),
-                            })
-                        }
+                            });
+                        }}
                         fullWidth
                     />
                 </div>
@@ -168,12 +174,12 @@ const CreateOrEditMovie = (
                                         })
                                     )}
                                     onDelete={(deletedPersonId) => {
-                                        console.log(
-                                            'Removing person id: ',
-                                            deletedPersonId,
-                                            ' from role id ',
-                                            roleId
-                                        );
+                                        // console.log(
+                                        //     'Removing person id: ',
+                                        //     deletedPersonId,
+                                        //     ' from role id ',
+                                        //     roleId
+                                        // );
                                         setMovieInput({
                                             ...movieInput,
                                             people: movieInput.people.filter(
@@ -209,7 +215,7 @@ const CreateOrEditMovie = (
                                         id: clickedPersonId,
                                         label: clickedPersonName,
                                     }) => {
-                                        console.log('Option has been clicked.');
+                                        // console.log('Option has been clicked.');
                                         if (
                                             movieInput.people.find(
                                                 ({
@@ -221,9 +227,9 @@ const CreateOrEditMovie = (
                                                     currentRoleId === roleId
                                             )
                                         ) {
-                                            console.log(
-                                                'Option already present, aborting...'
-                                            );
+                                            // console.log(
+                                            //     'Option already present, aborting...'
+                                            // );
                                             return;
                                         }
                                         setMovieInput({
@@ -283,7 +289,7 @@ const CreateOrEditMovie = (
                     </SelectedValuesWrapper>
                 </div>
                 <hr />
-                <Button variant="contained" fullWidth>
+                <Button variant="contained" fullWidth onClick={handleSubmit}>
                     {movieInput.id != -1 ? 'Update movie' : 'Create movie'}
                 </Button>
             </ModalContainer>

@@ -1,69 +1,69 @@
-import { Fragment, useEffect, useState } from 'react';
-import { Container } from 'react-bootstrap';
-import FilterMoviesRequest from 'models/Movie/FilterMoviesRequest';
-import { filterMovies } from 'redux/movies/reducers/Movie';
-import { getGenres } from 'redux/movies/reducers/Genre';
-import { getRoles } from 'redux/movies/reducers/Roles';
-import useAsyncError from 'hooks/useAsyncError';
-import { useDispatch, useSelector } from 'react-redux';
-import Movie from 'models/Movie';
-import * as selectors from 'redux/movies/selectors';
-import MovieCard from 'components/MovieCard';
-import CreateOrEditMovie from './CreateOrEditMovie';
-import Genre from 'models/Genre';
-import Role from 'models/Role';
-import { Backdrop, CircularProgress } from '@mui/material';
-import { Helmet } from 'react-helmet';
+import { Fragment, useState } from 'react';
+import Tabs from '@mui/material/Tabs';
+import Tab from '@mui/material/Tab';
+import { Box, Typography } from '@mui/material';
+import ManageMovies from './ManageMovies';
 
-const AdminDashboard = () => {
-    const [filterMovieRequest, setFilterMovieRequest] =
-        useState<FilterMoviesRequest>(new FilterMoviesRequest());
+interface TabPanelProps {
+    children?: React.ReactNode;
+    index: number;
+    value: number;
+}
 
-    const dispatch = useDispatch();
-    const movies: Movie[] = useSelector(selectors.getMovies);
-
-    const genresStatus = useSelector(selectors.getGenresStatus);
-    const rolesStatus = useSelector(selectors.getRolesStatus);
-
-    const isDataLoaded =
-        genresStatus === 'success' && rolesStatus === 'success';
-
-    const [selectedMovie, setSelectedMovie] = useState<Movie | null>(null);
-
-    useEffect(() => {
-        dispatch(filterMovies(filterMovieRequest));
-        dispatch(getGenres());
-        dispatch(getRoles());
-    }, [filterMovieRequest, dispatch]);
-
-    if (!isDataLoaded) {
-        return (
-            <Backdrop open={true}>
-                <CircularProgress />
-            </Backdrop>
-        );
-    }
+function TabPanel(props: TabPanelProps) {
+    const { children, value, index, ...other } = props;
 
     return (
-        <Fragment>
-            <Helmet>
-                <title>Admin dashboard | Projektor</title>
-            </Helmet>
-            <Container>
-                {movies.map((movie) => (
-                    <MovieCard
-                        movie={movie}
-                        onClick={() => setSelectedMovie(movie)}
-                    />
-                ))}
-                {selectedMovie && (
-                    <CreateOrEditMovie
-                        movie={selectedMovie}
-                        onClose={() => setSelectedMovie(null)}
-                    />
-                )}
-            </Container>
-        </Fragment>
+        <div
+            role="tabpanel"
+            hidden={value !== index}
+            id={`simple-tabpanel-${index}`}
+            aria-labelledby={`simple-tab-${index}`}
+            {...other}
+        >
+            {value === index && (
+                <Box sx={{ p: 3 }}>
+                    <Typography>{children}</Typography>
+                </Box>
+            )}
+        </div>
+    );
+}
+
+const AdminDashboard = () => {
+    const [value, setValue] = useState(0);
+
+    const handleChange = (event: React.SyntheticEvent, newValue: number) => {
+        setValue(newValue);
+    };
+
+    return (
+        <Box sx={{ width: '100%' }}>
+            <Box sx={{ borderBottom: 1, borderColor: 'divider' }}>
+                <Tabs
+                    value={value}
+                    onChange={handleChange}
+                    aria-label="basic tabs example"
+                >
+                    <Tab label="Movies" />
+                    <Tab label="People" />
+                    <Tab label="Users" />
+                    <Tab label="Screenings" />
+                </Tabs>
+            </Box>
+            <TabPanel value={value} index={0}>
+                <ManageMovies />
+            </TabPanel>
+            <TabPanel value={value} index={1}>
+                Dashboard for managing people
+            </TabPanel>
+            <TabPanel value={value} index={2}>
+                Dashboard for managing users
+            </TabPanel>
+            <TabPanel value={value} index={3}>
+                Dashboard for managing screenings
+            </TabPanel>
+        </Box>
     );
 };
 

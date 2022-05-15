@@ -42,7 +42,7 @@ function SearchInput({
                     if (!selectedOption) {
                         return;
                     }
-                    console.log('CLICKED OPTION', selectedOption);
+                    // console.log('CLICKED OPTION', selectedOption);
                     onOptionClicked({
                         id: selectedOption.id,
                         label: selectedOption.label,

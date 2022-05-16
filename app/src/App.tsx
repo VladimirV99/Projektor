@@ -7,7 +7,7 @@ import HomeScreen from './features/HomeScreen';
 import AppHeader from './components/Header';
 import BrowseMoviesScreen from './features/BrowseMoviesScreen';
 import WithLocalStorageFetcher from 'config/withLocalStorageFetcher';
-import UserProfile from 'features/UserProfile';
+import UserProfileSettings from 'features/UserProfileSettings';
 import theme from 'theme';
 
 function App() {
@@ -25,8 +25,8 @@ function App() {
                                     element={<BrowseMoviesScreen />}
                                 />
                                 <Route
-                                    path="/profile"
-                                    element={<UserProfile />}
+                                    path="/profile_settings"
+                                    element={<UserProfileSettings />}
                                 />
                             </Routes>
                         </BrowserRouter>

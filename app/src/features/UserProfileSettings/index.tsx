@@ -5,31 +5,27 @@ import { selectIsUserLoggedIn, selectUser } from 'redux/auth/selectors';
 import Helmet from 'react-helmet';
 import { Col, Row } from 'react-bootstrap';
 import { HideAt, ShowAt } from 'react-with-breakpoints';
-import { Button, Divider, TextField } from '@mui/material';
+import { Alert, Button, Divider, TextField } from '@mui/material';
+import {
+    ChangeUserNameRequest,
+    ChangeUserNameErrors,
+    ChangePasswordRequest,
+    ChangePasswordErrors,
+    RequestState,
+} from './types';
+import axiosAuthInstance from 'axios/instance';
+import { UPDATE_NAME, UPDATE_PASSWPRD } from 'constants/api';
 
-type ChangeUserNameRequest = {
-    firstName: string;
-    lastName: string;
+const getErrorsFromResponse = (errors: any) => {
+    if (!errors.response) {
+        return ['Something went wrong'];
+    }
+    return Object.values(errors.response.data.errors)
+        .map((e) => (Array.isArray(e) ? e.join(', ') : null))
+        .filter((e) => e !== null);
 };
 
-type ChangeUserNameErrors = {
-    firstName: string | undefined;
-    lastName: string | undefined;
-};
-
-type ChangePasswordRequest = {
-    oldPassword: string;
-    newPassword: string;
-    repeatNewPassword: string;
-};
-
-type ChangePasswordErrors = {
-    oldPassword: string | undefined;
-    newPassword: string | undefined;
-    repeatNewPassword: string | undefined;
-};
-
-const UserProfile = () => {
+const UserProfileSettings = () => {
     const isLoggedIn = useSelector(selectIsUserLoggedIn);
     const user = useSelector(selectUser);
     const firstName = user?.firstName ?? '';
@@ -54,10 +50,6 @@ const UserProfile = () => {
             lastName,
         });
     }, [user]);
-
-    useEffect(() => {
-        console.log('Mounted with fname, lname: ', firstName, lastName);
-    }, []);
 
     const nameValidationErrors = useMemo<ChangeUserNameErrors>(() => {
         const errors: ChangeUserNameErrors = {
@@ -123,6 +115,67 @@ const UserProfile = () => {
         );
     }, [passwordValidationErrors]);
 
+    const fullName = `${firstName} ${lastName}`;
+    const initials = `${firstName.length > 0 ? firstName[0] : ''}${
+        lastName.length > 0 ? lastName[0] : ''
+    }`;
+
+    const [changeNameRequestState, setChangeNameRequestState] =
+        useState<RequestState>({
+            status: 'idle',
+            errors: [],
+        });
+
+    const [changePasswordRequestState, setChangePasswordRequestState] =
+        useState<RequestState>({
+            status: 'idle',
+            errors: [],
+        });
+
+    const changeName = () => {
+        setChangeNameRequestState({
+            status: 'pending',
+            errors: [],
+        });
+        axiosAuthInstance
+            .put(UPDATE_NAME, changeUserNameRequest)
+            .then(() => {
+                setChangeNameRequestState({
+                    status: 'success',
+                    errors: [],
+                });
+            })
+            .catch((error) => {
+                const errors = getErrorsFromResponse(error);
+                setChangeNameRequestState({
+                    status: 'idle',
+                    errors: (errors as string[]) ?? ['Something went wrong'],
+                });
+            });
+    };
+
+    const changePassword = () => {
+        setChangePasswordRequestState({
+            status: 'pending',
+            errors: [],
+        });
+        axiosAuthInstance
+            .put(UPDATE_PASSWPRD, changePasswordRequest)
+            .then(() => {
+                setChangePasswordRequestState({
+                    status: 'success',
+                    errors: [],
+                });
+            })
+            .catch((error) => {
+                const errors = getErrorsFromResponse(error);
+                setChangePasswordRequestState({
+                    status: 'idle',
+                    errors: (errors as string[]) ?? ['Something went wrong'],
+                });
+            });
+    };
+
     if (!isLoggedIn) {
         return (
             <p>
@@ -131,11 +184,6 @@ const UserProfile = () => {
             </p>
         );
     }
-
-    const fullName = `${firstName} ${lastName}`;
-    const initials = `${firstName.length > 0 ? firstName[0] : ''}${
-        lastName.length > 0 ? lastName[0] : ''
-    }`;
 
     const renderNameInfo = () => (
         <Fragment>
@@ -163,13 +211,25 @@ const UserProfile = () => {
                     })
                 }
             />
+            {changeNameRequestState.errors.length > 0 && (
+                <Alert severity="error">
+                    {changeNameRequestState.errors.map((error) => (
+                        <div>{error}</div>
+                    ))}
+                </Alert>
+            )}
+            {changeNameRequestState.status === 'success' && (
+                <Alert severity="success">Name changed successfully</Alert>
+            )}
             <ChangeButton
-                disabled={!hasNameChanged || hasNameValidationErrors}
+                disabled={
+                    !hasNameChanged ||
+                    hasNameValidationErrors ||
+                    changeNameRequestState.status === 'pending'
+                }
                 variant="contained"
                 color="primary"
-                onClick={() => {
-                    console.log('change name request: ', changeUserNameRequest);
-                }}
+                onClick={changeName}
             >
                 Submit
             </ChangeButton>
@@ -218,16 +278,24 @@ const UserProfile = () => {
                     })
                 }
             />
+            {changePasswordRequestState.errors.length > 0 && (
+                <Alert severity="error">
+                    {changePasswordRequestState.errors.map((error) => (
+                        <div>{error}</div>
+                    ))}
+                </Alert>
+            )}
+            {changePasswordRequestState.status === 'success' && (
+                <Alert severity="success">Password changed successfully</Alert>
+            )}
             <ChangeButton
-                disabled={hasPasswordValidationErrors}
+                disabled={
+                    hasPasswordValidationErrors ||
+                    changePasswordRequestState.status === 'pending'
+                }
                 variant="contained"
                 color="primary"
-                onClick={() => {
-                    console.log(
-                        'change password request: ',
-                        changePasswordRequest
-                    );
-                }}
+                onClick={changePassword}
             >
                 Submit
             </ChangeButton>
@@ -246,7 +314,7 @@ const UserProfile = () => {
         <Fragment>
             <Container>
                 <Helmet>
-                    <title>{fullName} - User Profile</title>
+                    <title>{fullName} - Profile Settings</title>
                 </Helmet>
                 <ProfileContainer>
                     <Row>
@@ -281,7 +349,7 @@ const UserProfile = () => {
     );
 };
 
-export default UserProfile;
+export default UserProfileSettings;
 
 const Container = styled.div`
     margin: 0 auto;

@@ -8,9 +8,6 @@ export const REGISTER_URL = urlJoin(
 
 export const LOGIN_URL = urlJoin(URL_BASE, '/Authentication/Login');
 
-export const UPDATE_NAME = urlJoin(URL_BASE, '/Authentication/UpdateName');
+export const UPDATE_NAME = urlJoin(URL_BASE, '/User/UpdateName');
 
-export const UPDATE_PASSWPRD = urlJoin(
-    URL_BASE,
-    '/Authentication/UpdatePassword'
-);
+export const UPDATE_PASSWPRD = urlJoin(URL_BASE, '/User/UpdatePassword');

@@ -20,9 +20,17 @@ const getErrorsFromResponse = (errors: any) => {
     if (!errors.response) {
         return ['Something went wrong'];
     }
-    return Object.values(errors.response.data.errors)
-        .map((e) => (Array.isArray(e) ? e.join(', ') : null))
-        .filter((e) => e !== null);
+
+    const allErrors: any = [];
+
+    Object.values(errors.response.data.errors)
+        .map((e) => (Array.isArray(e) ? e : null))
+        .filter((e) => e !== null)
+        .forEach((e) => {
+            e?.forEach((ee) => allErrors.push(ee));
+        });
+
+    return allErrors;
 };
 
 const UserProfileSettings = () => {

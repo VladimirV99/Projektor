@@ -13,10 +13,10 @@ const theme = {
         large: '2.4rem',
     },
     breakpoints: {
-        small: '576px',
-        medium: '768px',
-        large: '992px',
-        xlarge: '1200px',
+        small: 576,
+        medium: 768,
+        large: 992,
+        xlarge: 1200,
     },
 };
 

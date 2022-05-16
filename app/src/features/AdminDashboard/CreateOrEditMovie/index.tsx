@@ -16,11 +16,12 @@ import {
     patchMovie,
     resetUpdateStatus,
 } from 'redux/movies/reducers/Movie';
-import { Modal } from 'react-bootstrap';
+import { Col, Modal, Row } from 'react-bootstrap';
 
 type Props = {
     movie: Movie;
     onClose: () => void;
+    onBackdropClick: () => void;
 };
 
 type PeopleByRolesType = {
@@ -29,9 +30,7 @@ type PeopleByRolesType = {
     people: { personId: number; name: string }[];
 }[];
 
-const CreateOrEditMovie = (
-    { movie, onClose }: Props = { movie: new Movie(), onClose: () => {} }
-) => {
+const CreateOrEditMovie = ({ movie, onClose, onBackdropClick }: Props) => {
     const [movieInput, setMovieInput] = useState({ ...movie });
     const genres = useSelector(selectors.getGenres);
     const genreOptions = useMemo(
@@ -104,7 +103,9 @@ const CreateOrEditMovie = (
         <Fragment>
             <Modal show={updateStatus !== 'idle'}>
                 <Modal.Header>
-                    {movie.id == -1 ? 'Creating' : 'Updating'} a movie
+                    <Modal.Title>
+                        {movie.id == -1 ? 'Creating' : 'Updating'} a movie
+                    </Modal.Title>
                 </Modal.Header>
                 <Modal.Body>
                     {updateStatus === 'pending' && <div>Updating movie...</div>}
@@ -133,11 +134,11 @@ const CreateOrEditMovie = (
                     </Button>
                 </Modal.Footer>
             </Modal>
-            <ModalCheKoV
-                shouldRender={updateStatus === 'idle'}
-                onModalClose={onClose}
+            <Modal
+                show={updateStatus === 'idle'}
+                onBackdropClick={onBackdropClick}
             >
-                <ModalContainer>
+                <Modal.Header>
                     {movie.id != -1 ? (
                         <h4>
                             Editing: <i>{movieInput.title}</i> (
@@ -148,11 +149,13 @@ const CreateOrEditMovie = (
                             Create a new movie
                         </FormInputFieldTitle>
                     )}
-                    <hr />
-                    <div>
-                        <FormInputFieldTitle>Title</FormInputFieldTitle>
+                </Modal.Header>
+
+                <Modal.Body>
+                    <FormTextInputField>
                         <TextField
                             value={movieInput.title}
+                            label="Title"
                             onChange={(e) => {
                                 setMovieInput({
                                     ...movieInput,
@@ -161,11 +164,11 @@ const CreateOrEditMovie = (
                             }}
                             fullWidth
                         />
-                    </div>
-                    <div>
-                        <FormInputFieldTitle>Year</FormInputFieldTitle>
+                    </FormTextInputField>
+                    <FormTextInputField>
                         <TextField
                             value={movieInput.year}
+                            label="Year"
                             type="number"
                             onChange={(e) => {
                                 setMovieInput({
@@ -175,14 +178,12 @@ const CreateOrEditMovie = (
                             }}
                             fullWidth
                         />
-                    </div>
-                    <div>
-                        <FormInputFieldTitle>
-                            Length (minutes)
-                        </FormInputFieldTitle>
+                    </FormTextInputField>
+                    <FormTextInputField>
                         <TextField
                             value={movieInput.length}
                             type="number"
+                            label="length"
                             onChange={(e) =>
                                 setMovieInput({
                                     ...movieInput,
@@ -191,11 +192,12 @@ const CreateOrEditMovie = (
                             }
                             fullWidth
                         />
-                    </div>
-                    <div>
+                    </FormTextInputField>
+                    <FormTextInputField>
                         <FormInputFieldTitle>Trailer URL</FormInputFieldTitle>
                         <TextField
-                            value={movieInput.trailerUrl}
+                            value={movieInput.trailerUrl ?? ''}
+                            label="Trailer URL"
                             onChange={(e) => {
                                 setMovieInput({
                                     ...movieInput,
@@ -204,11 +206,11 @@ const CreateOrEditMovie = (
                             }}
                             fullWidth
                         />
-                    </div>
-                    <div>
-                        <FormInputFieldTitle>Imdb URL</FormInputFieldTitle>
+                    </FormTextInputField>
+                    <FormTextInputField>
                         <TextField
-                            value={movieInput.imdbUrl}
+                            label="IMDB URL"
+                            value={movieInput.imdbUrl ?? ''}
                             onChange={(e) => {
                                 setMovieInput({
                                     ...movieInput,
@@ -217,7 +219,20 @@ const CreateOrEditMovie = (
                             }}
                             fullWidth
                         />
-                    </div>
+                    </FormTextInputField>
+                    <FormTextInputField>
+                        <TextField
+                            label="Image URL"
+                            value={movieInput.imageUrl ?? ''}
+                            onChange={(e) => {
+                                setMovieInput({
+                                    ...movieInput,
+                                    imageUrl: e.target.value,
+                                });
+                            }}
+                            fullWidth
+                        />
+                    </FormTextInputField>
                     <div>
                         <FormInputFieldTitle>People</FormInputFieldTitle>
                         {peopleByRoles.map(({ roleId, roleName, people }) => (
@@ -236,12 +251,6 @@ const CreateOrEditMovie = (
                                             })
                                         )}
                                         onDelete={(deletedPersonId) => {
-                                            // console.log(
-                                            //     'Removing person id: ',
-                                            //     deletedPersonId,
-                                            //     ' from role id ',
-                                            //     roleId
-                                            // );
                                             setMovieInput({
                                                 ...movieInput,
                                                 people: movieInput.people.filter(
@@ -283,7 +292,6 @@ const CreateOrEditMovie = (
                                             id: clickedPersonId,
                                             label: clickedPersonName,
                                         }) => {
-                                            // console.log('Option has been clicked.');
                                             if (
                                                 movieInput.people.find(
                                                     ({
@@ -295,10 +303,6 @@ const CreateOrEditMovie = (
                                                         currentRoleId === roleId
                                                 )
                                             ) {
-                                                // console.log(
-                                                //     'Option already present, aborting...'
-                                                // );
-                                                return;
                                             }
                                             setMovieInput({
                                                 ...movieInput,
@@ -361,16 +365,26 @@ const CreateOrEditMovie = (
                             />
                         </SelectedValuesWrapper>
                     </div>
-                    <hr />
-                    <Button
-                        variant="contained"
-                        fullWidth
-                        onClick={handleSubmit}
+                </Modal.Body>
+
+                <Modal.Footer>
+                    <div
+                        style={{
+                            display: 'flex',
+                            justifyContent: 'space-between',
+                        }}
                     >
-                        {movieInput.id != -1 ? 'Update movie' : 'Create movie'}
-                    </Button>
-                </ModalContainer>
-            </ModalCheKoV>
+                        <Button variant="contained" onClick={handleSubmit}>
+                            {movieInput.id != -1
+                                ? 'Update movie'
+                                : 'Create movie'}
+                        </Button>
+                        <Button variant="contained" onClick={onClose}>
+                            Close
+                        </Button>
+                    </div>
+                </Modal.Footer>
+            </Modal>
         </Fragment>
     );
 };
@@ -388,6 +402,11 @@ const ModalContainer = styled.div`
 const FormInputFieldTitle = styled.div`
     font-size: 20px;
     font-weight: bold;
+`;
+
+const FormTextInputField = styled.div`
+    padding-top: 10px;
+    padding-bottom: 10px;
 `;
 
 export const SelectedValuesWrapper = styled.div`

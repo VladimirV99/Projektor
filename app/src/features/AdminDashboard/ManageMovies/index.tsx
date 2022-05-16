@@ -281,6 +281,7 @@ const ManageMovies = () => {
                 <CreateOrEditMovie
                     movie={selectedMovie}
                     onClose={() => setSelectedMovie(null)}
+                    onBackdropClick={() => setSelectedMovie(null)}
                 />
             )}
             <Modal show={deleteMovieId !== null}>

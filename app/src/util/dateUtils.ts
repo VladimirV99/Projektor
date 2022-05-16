@@ -32,5 +32,4 @@ export const toTimeString = (date: Date) => {
     let minutes = date.getMinutes().toString();
     if (minutes.length == 1) minutes = '0' + minutes;
     return `${hours}:${minutes}`;
-    // return date.toLocaleTimeString();
 };

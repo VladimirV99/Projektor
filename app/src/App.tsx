@@ -9,6 +9,7 @@ import BrowseMoviesScreen from './features/BrowseMoviesScreen';
 import WithLocalStorageFetcher from 'config/withLocalStorageFetcher';
 import WithAuthorization from 'config/withAuthorization';
 import { ROLE_ADMINISTRATOR } from 'constants/index';
+import NotFound from 'components/NotFound';
 
 function App() {
     return (
@@ -33,11 +34,8 @@ function App() {
                                     </WithAuthorization>
                                 }
                             />
-                            <Route
-                                path="/not-found"
-                                element={<div>Not Found</div>}
-                            />
-                            <Route path="*" element={<div>Not Found</div>} />
+                            <Route path="/not-found" element={<NotFound />} />
+                            <Route path="*" element={<NotFound />} />
                         </Routes>
                     </BrowserRouter>
                 </ErrorBoundary>

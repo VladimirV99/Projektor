@@ -49,7 +49,14 @@ services:
       context: .
       dockerfile: Services/Review/Dockerfile
 
+  reservation:
+    image: ${DOCKER_REGISTRY-}reservation
+    build:
+      context: .
+      dockerfile: Services/Reservation/Dockerfile
+
 volumes:
   mssql_data:
   postgres_data:
   pgadmin_data:
+

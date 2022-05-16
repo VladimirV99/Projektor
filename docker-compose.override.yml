@@ -90,6 +90,7 @@ services:
       - mailer
       - review
       - screening
+      - reservation
     ports:
       - "7060:80"
 
@@ -102,3 +103,14 @@ services:
       - projektor_postgres
     ports:
       - "5007:80"
+
+  reservation:
+    container_name: reservation
+    environment:
+      - ASPNETCORE_ENVIRONMENT=Development
+      - "ConnectionStrings:ReservationsConnectionString=Server=localhost;Database=ReservationDB;User Id=sa;Password=MatfRs2_MSSQL;"
+    depends_on:
+      - projektor_mssql
+    ports:
+      - "5006:80"
+

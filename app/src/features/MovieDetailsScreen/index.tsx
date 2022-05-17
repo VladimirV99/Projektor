@@ -40,16 +40,11 @@ const MovieDetailsScreen = (): JSX.Element => {
         movieScreeningsStatus === 'pending' || movieScreeningsStatus === 'idle';
 
     const screeningGroups = useMemo(() => {
-        // Filter out screenings that have ended
-        // let filteredScreenings = movieScreenings.filter(
-        //     (s) => s.movieStart.getTime() >= Date.now()
-        // );
-        let filteredScreenings = movieScreenings;
-
-        // group screening by date
+        // Filter out screenings that have ended and group the rest by date
         // returns Dictionary<date: string, screenings: Screenings[]>
-        let dict = filteredScreenings.reduce(
-            (groups: any, screening: Screening): any => {
+        const dict = movieScreenings
+            //.filter((s) => s.movieStart.getTime() >= Date.now())
+            .reduce((groups: any, screening: Screening): any => {
                 let day = new Date(screening.movieStart.getTime());
                 removeTime(day);
                 let key = day.getTime().toString();
@@ -57,13 +52,11 @@ const MovieDetailsScreen = (): JSX.Element => {
                 if (!groups.hasOwnProperty(key)) groups[key] = [];
                 groups[key].push(screening);
                 return groups;
-            },
-            {}
-        );
+            }, {});
 
         // Convert dictionary to array of objects
         // returns [{ key: number, screenings: Screening[] }]
-        let groups = Object.entries(dict).map(
+        const groups = Object.entries(dict).map(
             ([key, value]) => new ScheduleItem(key, value as Screening[])
         );
 
@@ -103,58 +96,70 @@ const MovieDetailsScreen = (): JSX.Element => {
                                 <div>
                                     <h1>{movie.title}</h1>
                                     <S.MovieInfoTable>
-                                        <tr>
-                                            <th>Year:</th>
-                                            <td>{movie.year}</td>
-                                        </tr>
-                                        <tr>
-                                            <th>Length:</th>
-                                            <td>{movie.length} min</td>
-                                        </tr>
-                                        <tr>
-                                            <th>Genres:</th>
-                                            <td>
-                                                {movie.genres
-                                                    .map((g) => g.name.trim())
-                                                    .join(', ')}
-                                            </td>
-                                        </tr>
-                                        <tr>
-                                            <th>Actors:</th>
-                                            <td>
-                                                {movie.people
-                                                    .filter(
-                                                        ({ role }) =>
-                                                            role === 'Actor'
-                                                    )
-                                                    .map((p) => p.name.trim())
-                                                    .join(', ')}
-                                            </td>
-                                        </tr>
-                                        <tr>
-                                            <th>Directors:</th>
-                                            <td>
-                                                {movie.people
-                                                    .filter(
-                                                        ({ role }) =>
-                                                            role === 'Director'
-                                                    )
-                                                    .map((p) => p.name.trim())
-                                                    .join(', ')}
-                                            </td>
-                                        </tr>
-                                        <tr>
-                                            <th>Writers:</th>
-                                            <td>
-                                                {movie.people
-                                                    .filter(
-                                                        ({ role }) =>
-                                                            role === 'Writer'
-                                                    )
-                                                    .map((p) => p.name.trim())
-                                                    .join(', ')}
-                                            </td>
-                                        </tr>
+                                        <tbody>
+                                            <tr>
+                                                <th>Year:</th>
+                                                <td>{movie.year}</td>
+                                            </tr>
+                                            <tr>
+                                                <th>Length:</th>
+                                                <td>{movie.length} min</td>
+                                            </tr>
+                                            <tr>
+                                                <th>Genres:</th>
+                                                <td>
+                                                    {movie.genres
+                                                        .map((g) =>
+                                                            g.name.trim()
+                                                        )
+                                                        .join(', ')}
+                                                </td>
+                                            </tr>
+                                            <tr>
+                                                <th>Actors:</th>
+                                                <td>
+                                                    {movie.people
+                                                        .filter(
+                                                            ({ role }) =>
+                                                                role === 'Actor'
+                                                        )
+                                                        .map((p) =>
+                                                            p.name.trim()
+                                                        )
+                                                        .join(', ')}
+                                                </td>
+                                            </tr>
+                                            <tr>
+                                                <th>Directors:</th>
+                                                <td>
+                                                    {movie.people
+                                                        .filter(
+                                                            ({ role }) =>
+                                                                role ===
+                                                                'Director'
+                                                        )
+                                                        .map((p) =>
+                                                            p.name.trim()
+                                                        )
+                                                        .join(', ')}
+                                                </td>
+                                            </tr>
+                                            <tr>
+                                                <th>Writers:</th>
+                                                <td>
+                                                    {movie.people
+                                                        .filter(
+                                                            ({ role }) =>
+                                                                role ===
+                                                                'Writer'
+                                                        )
+                                                        .map((p) =>
+                                                            p.name.trim()
+                                                        )
+                                                        .join(', ')}
+                                                </td>
+                                            </tr>
+                                        </tbody>
                                     </S.MovieInfoTable>
                                 </div>
 

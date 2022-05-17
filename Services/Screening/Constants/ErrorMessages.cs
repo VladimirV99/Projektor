@@ -11,8 +11,8 @@
 
 		public const string HALL_ID_REQUIRED = "Hall id is required";
 		public const string HALL_NAME_REQUIRED = "Hall name is required";
-		public const string STARTING_MOMENT_REQUIRED = "Starting moment required";
-		public const string ENDING_MOMENT_REQUIRED = "Ending moment required";
+		public const string STARTING_MOMENT_REQUIRED = "Starting moment is required";
+		public const string ENDING_MOMENT_REQUIRED = "Ending moment is required";
 	}
 }
 

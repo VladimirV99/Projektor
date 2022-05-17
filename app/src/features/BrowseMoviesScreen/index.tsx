@@ -105,17 +105,16 @@ const BrowseMoviesScreen = (): JSX.Element => {
     }, [filterMovieRequest, dispatch]);
 
     useEffect(() => {
-        if (genresStatus === 'success') {
+        if (genresStatus !== 'idle') {
             return;
         }
         dispatch(getGenres());
     }, [dispatch, genresStatus]);
 
     useEffect(() => {
-        if (filterLimitsStatus === 'success') {
+        if (filterLimitsStatus !== 'idle') {
             return;
         }
-
         dispatch(getFilterLimits());
     }, [dispatch, filterLimitsStatus]);
 

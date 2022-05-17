@@ -4,7 +4,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import { selectIsUserLoggedIn, selectUser } from 'redux/auth/selectors';
 import Helmet from 'react-helmet';
 import { Col, Row } from 'react-bootstrap';
-import { HideAt, ShowAt } from 'react-with-breakpoints';
+import { HideAt } from 'react-with-breakpoints';
 import { Alert, Button, Divider, TextField } from '@mui/material';
 import {
     ChangeUserNameRequest,
@@ -14,12 +14,14 @@ import {
     RequestState,
 } from './types';
 import axiosAuthInstance from 'axios/instance';
-import { UPDATE_NAME, UPDATE_PASSWPRD } from 'constants/api';
+import { UPDATE_NAME, UPDATE_PASSWORD } from 'constants/api';
 import { updateName } from 'redux/auth/actions';
+import * as E from 'constants/errors';
+import * as F from 'constants/forms';
 
 const getErrorsFromResponse = (errors: any) => {
     if (!errors.response) {
-        return ['Something went wrong'];
+        return [E.SOMETHING_WENT_WRONG];
     }
 
     const allErrors: any = [];
@@ -68,10 +70,10 @@ const UserProfileSettings = () => {
             lastName: undefined,
         };
         if (changeUserNameRequest.firstName.trim().length === 0) {
-            errors.firstName = 'First name is required';
+            errors.firstName = E.FIRST_NAME_REQUIRED;
         }
         if (changeUserNameRequest.lastName.trim().length === 0) {
-            errors.lastName = 'Last name is required';
+            errors.lastName = E.LAST_NAME_REQUIRED;
         }
         return errors;
     }, [changeUserNameRequest]);
@@ -101,19 +103,19 @@ const UserProfileSettings = () => {
             return errors;
         }
         if (changePasswordRequest.oldPassword.trim().length === 0) {
-            errors.oldPassword = 'Old password is required';
+            errors.oldPassword = E.OLD_PASSWORD_REQUIRED;
         }
         if (changePasswordRequest.newPassword.trim().length === 0) {
-            errors.newPassword = 'New password is required';
+            errors.newPassword = E.NEW_PASSWORD_REQUIRED;
         }
         if (changePasswordRequest.repeatNewPassword.trim().length === 0) {
-            errors.repeatNewPassword = 'Please repeat new password';
+            errors.repeatNewPassword = E.REPEAT_NEW_PASSWORD_REQUIRED;
         }
         if (
             changePasswordRequest.newPassword !==
             changePasswordRequest.repeatNewPassword
         ) {
-            errors.repeatNewPassword = 'Passwords do not match';
+            errors.repeatNewPassword = E.PASSWORDS_DO_NOT_MATCH;
         }
         return errors;
     }, [changePasswordRequest]);
@@ -166,7 +168,7 @@ const UserProfileSettings = () => {
                 const errors = getErrorsFromResponse(error);
                 setChangeNameRequestState({
                     status: 'idle',
-                    errors: (errors as string[]) ?? ['Something went wrong'],
+                    errors: (errors as string[]) ?? [E.SOMETHING_WENT_WRONG],
                 });
             });
     };
@@ -177,7 +179,7 @@ const UserProfileSettings = () => {
             errors: [],
         });
         axiosAuthInstance
-            .put(UPDATE_PASSWPRD, changePasswordRequest)
+            .put(UPDATE_PASSWORD, changePasswordRequest)
             .then(() => {
                 setChangePasswordRequestState({
                     status: 'success',
@@ -188,7 +190,7 @@ const UserProfileSettings = () => {
                 const errors = getErrorsFromResponse(error);
                 setChangePasswordRequestState({
                     status: 'idle',
-                    errors: (errors as string[]) ?? ['Something went wrong'],
+                    errors: (errors as string[]) ?? [E.SOMETHING_WENT_WRONG],
                 });
             });
     };
@@ -204,9 +206,11 @@ const UserProfileSettings = () => {
 
     const renderNameInfo = () => (
         <Fragment>
-            <FormTitle>Change name</FormTitle>
+            <FormTitle>{F.CHANGE_NAME_FORM_TITLE}</FormTitle>
             <PaddedTextField
-                label={nameValidationErrors.firstName ?? 'First name'}
+                label={
+                    nameValidationErrors.firstName ?? F.FIRST_NAME_INPUT_TITLE
+                }
                 error={nameValidationErrors.firstName !== undefined}
                 value={changeUserNameRequest.firstName}
                 onChange={(e) =>
@@ -218,7 +222,7 @@ const UserProfileSettings = () => {
             />
 
             <PaddedTextField
-                label={nameValidationErrors.lastName ?? 'LastName'}
+                label={nameValidationErrors.lastName ?? F.LAST_NAME_INPUT_TITLE}
                 error={nameValidationErrors.lastName !== undefined}
                 value={changeUserNameRequest.lastName}
                 onChange={(e) =>
@@ -236,7 +240,7 @@ const UserProfileSettings = () => {
                 </Alert>
             )}
             {changeNameRequestState.status === 'success' && (
-                <Alert severity="success">Name changed successfully</Alert>
+                <Alert severity="success">{F.NAME_CHANGED_SUCCESSFULLY}</Alert>
             )}
             <ChangeButton
                 disabled={
@@ -255,9 +259,12 @@ const UserProfileSettings = () => {
 
     const renderPassword = () => (
         <Fragment>
-            <FormTitle>Change password</FormTitle>
+            <FormTitle>{F.CHANGE_PASSWORD_FORM_TITLE}</FormTitle>
             <PaddedTextField
-                label={passwordValidationErrors.oldPassword ?? 'Old password'}
+                label={
+                    passwordValidationErrors.oldPassword ??
+                    F.OLD_PASSWORD_INPUT_TITLE
+                }
                 error={passwordValidationErrors.oldPassword !== undefined}
                 type="password"
                 value={changePasswordRequest.oldPassword}
@@ -269,7 +276,10 @@ const UserProfileSettings = () => {
                 }
             />
             <PaddedTextField
-                label={passwordValidationErrors.newPassword ?? 'New password'}
+                label={
+                    passwordValidationErrors.newPassword ??
+                    F.NEW_PASSWORD_INPUT_TITLE
+                }
                 error={passwordValidationErrors.newPassword !== undefined}
                 type="password"
                 value={changePasswordRequest.newPassword}
@@ -283,7 +293,7 @@ const UserProfileSettings = () => {
             <PaddedTextField
                 label={
                     passwordValidationErrors.repeatNewPassword ??
-                    'Repeat new password'
+                    F.REPEAT_NEW_PASSWORD_INPUT_TITLE
                 }
                 error={passwordValidationErrors.repeatNewPassword !== undefined}
                 type="password"
@@ -303,7 +313,9 @@ const UserProfileSettings = () => {
                 </Alert>
             )}
             {changePasswordRequestState.status === 'success' && (
-                <Alert severity="success">Password changed successfully</Alert>
+                <Alert severity="success">
+                    {F.PASSWORD_CHANGED_SUCCESSFULLY}
+                </Alert>
             )}
             <ChangeButton
                 disabled={
@@ -322,7 +334,7 @@ const UserProfileSettings = () => {
     const renderUserInfo = () => (
         <UserInfoForm>
             {renderNameInfo()}
-            <Divider style={{ marginBottom: '16px' }} />
+            <SectionDivider />
             {renderPassword()}
         </UserInfoForm>
     );
@@ -426,4 +438,8 @@ const ChangeButton = styled(Button)`
 
 const FormTitle = styled.h5`
     margin-bottom: 12px;
+`;
+
+const SectionDivider = styled(Divider)`
+    margin-bottom: 16px;
 `;

@@ -1,6 +1,6 @@
 import { Fragment, useEffect, useMemo, useState } from 'react';
 import styled from 'styled-components';
-import { useSelector } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import { selectIsUserLoggedIn, selectUser } from 'redux/auth/selectors';
 import Helmet from 'react-helmet';
 import { Col, Row } from 'react-bootstrap';
@@ -15,6 +15,7 @@ import {
 } from './types';
 import axiosAuthInstance from 'axios/instance';
 import { UPDATE_NAME, UPDATE_PASSWPRD } from 'constants/api';
+import { updateName } from 'redux/auth/actions';
 
 const getErrorsFromResponse = (errors: any) => {
     if (!errors.response) {
@@ -38,6 +39,8 @@ const UserProfileSettings = () => {
     const user = useSelector(selectUser);
     const firstName = user?.firstName ?? '';
     const lastName = user?.lastName ?? '';
+
+    const dispatch = useDispatch();
 
     const [changeUserNameRequest, setChangeUserNameRequest] =
         useState<ChangeUserNameRequest>({
@@ -152,6 +155,12 @@ const UserProfileSettings = () => {
                     status: 'success',
                     errors: [],
                 });
+                dispatch(
+                    updateName({
+                        firstName: changeUserNameRequest.firstName,
+                        lastName: changeUserNameRequest.lastName,
+                    })
+                );
             })
             .catch((error) => {
                 const errors = getErrorsFromResponse(error);

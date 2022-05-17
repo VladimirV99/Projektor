@@ -7,7 +7,6 @@ import useAsyncError from 'hooks/useAsyncError';
 import { getMovie } from 'redux/movie/reducers/Movie';
 import { getScreeningsForMovie } from 'redux/movie/reducers/Screenings';
 import * as selectors from 'redux/movie/selectors';
-import Movie from 'models/Movie';
 import Screening from 'models/Screening';
 import { removeTime } from 'util/dateUtils';
 import ScheduleItem from 'models/Screening/ScreeningSchedule';
@@ -204,25 +203,28 @@ const MovieDetailsScreen = (): JSX.Element => {
                         schedule={screeningGroups}
                     ></ScreeningSchedule>
                 ) : (
-                    <h3>There are no screenings for this movie</h3>
+                    <h5>There are no screenings for this movie</h5>
                 )}
             </Fragment>
         );
     }, [screeningGroups, areScreeningsLoading]);
 
     useEffect(() => {
-        if (movieStatus !== 'idle') {
+        if (movieStatus !== 'idle' && movie?.id === parseInt(id)) {
             return;
         }
         dispatch(getMovie(parseInt(id)));
-    }, [dispatch, movieStatus]);
+    }, [dispatch, movieStatus, movie]);
 
     useEffect(() => {
-        if (movieStatus !== 'success' || movieScreeningsStatus !== 'idle') {
+        if (
+            (movieStatus !== 'success' || movieScreeningsStatus !== 'idle') &&
+            movie?.id === parseInt(id)
+        ) {
             return;
         }
         dispatch(getScreeningsForMovie(parseInt(id)));
-    }, [dispatch, movieStatus, movieScreeningsStatus]);
+    }, [dispatch, movieStatus, movieScreeningsStatus, movie]);
 
     useEffect(() => {
         if (movieStatus === 'error' || movieScreeningsStatus === 'error') {

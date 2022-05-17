@@ -9,6 +9,7 @@ import * as S from './index.styles';
 
 type MovieCardProps = {
     movie: Movie;
+    onClick: () => void;
 };
 
 const MovieCard = ({ movie }: MovieCardProps): JSX.Element => {

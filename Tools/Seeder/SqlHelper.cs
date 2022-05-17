@@ -69,12 +69,13 @@ namespace Seeder
             reseedCommand.ExecuteNonQuery();
         }
 
-        public static bool BulkInsert(SqlConnection connection, DataTable data, string tableName)
+        public static bool BulkInsert(SqlConnection connection, DataTable data, string tableName, bool overrideKey = false)
         {
-            using (SqlBulkCopy bulkCopy = new SqlBulkCopy(connection))
+            var options = overrideKey ? SqlBulkCopyOptions.KeepIdentity : SqlBulkCopyOptions.Default;
+            using (SqlBulkCopy bulkCopy = new SqlBulkCopy(connection, options, null))
             {
                 bulkCopy.DestinationTableName = tableName;
-                
+
                 foreach (DataColumn column in data.Columns)
                 {
                     bulkCopy.ColumnMappings.Add(column.ColumnName, column.ColumnName);

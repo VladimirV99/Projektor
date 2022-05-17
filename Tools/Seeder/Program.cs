@@ -60,11 +60,14 @@ try
             // Clear the table if it contains data
             if (SqlHelper.TableHasData(connection, tableName))
                 SqlHelper.TruncateTable(connection, tableName);
+
+            bool hasKey = data.Columns.Contains("Id");
             // Reset id counter for the table
-            if (data.Columns.Contains("Id"))
+            if (hasKey)
                 SqlHelper.ResetIds(connection, tableName);
+            
             // Insert seed data (Note: The data ID column is ignored. IDs are genereated by the database)
-            SqlHelper.BulkInsert(connection, data, tableName);
+            SqlHelper.BulkInsert(connection, data, tableName, hasKey);
         }
         else
         {

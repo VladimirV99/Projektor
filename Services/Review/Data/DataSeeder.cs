@@ -41,7 +41,7 @@ namespace Review.Data
         {
             using var connection = _dbContext.GetConnection();
 
-            const int DATABASE_VERSION = 3;
+            const int DATABASE_VERSION = 4;
 
             var infoTableExists = connection.ExecuteScalar<bool>(
                 "SELECT EXISTS (SELECT FROM information_schema.tables WHERE table_schema LIKE 'public' AND table_type LIKE 'BASE TABLE' AND table_name = 'dbinfo')"
@@ -73,11 +73,11 @@ namespace Review.Data
                 );
 
                 connection.Execute(
-                    "CREATE TABLE WatchedMovies (MovieId INT NOT NULL, UserId VARCHAR(100) NOT NULL, WatchedOn TIMESTAMP NOT NULL, PRIMARY KEY (MovieId, UserId))"
+                    "CREATE TABLE WatchedMovies (MovieId INT NOT NULL, UserId VARCHAR(100) NOT NULL REFERENCES Users(Id) ON DELETE CASCADE, WatchedOn TIMESTAMP NOT NULL, PRIMARY KEY (MovieId, UserId))"
                 );
 
                 connection.Execute(
-                    "CREATE TABLE Reviews (MovieId INT NOT NULL, ReviewerId VARCHAR(100) NOT NULL REFERENCES Users(Id), Summary VARCHAR(50) NOT NULL, Body TEXT NOT NULL, Score INT NOT NULL CHECK(Score >= 0 AND Score <= 10) , CreatedOn TIMESTAMP DEFAULT CURRENT_TIMESTAMP, PRIMARY KEY (MovieId, ReviewerId))"
+                    "CREATE TABLE Reviews (MovieId INT NOT NULL, ReviewerId VARCHAR(100) NOT NULL REFERENCES Users(Id) ON DELETE CASCADE, Summary VARCHAR(50) NOT NULL, Body TEXT NOT NULL, Score INT NOT NULL CHECK(Score >= 0 AND Score <= 10) , CreatedOn TIMESTAMP DEFAULT CURRENT_TIMESTAMP, PRIMARY KEY (MovieId, ReviewerId))"
                 );
 
                 connection.Execute("INSERT INTO DbInfo (Version) VALUES (@Version)", new { Version = DATABASE_VERSION });

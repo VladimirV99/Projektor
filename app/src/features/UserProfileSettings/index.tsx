@@ -179,11 +179,19 @@ const UserProfileSettings = () => {
             errors: [],
         });
         axiosAuthInstance
-            .put(UPDATE_PASSWORD, changePasswordRequest)
+            .put(UPDATE_PASSWORD, {
+                currentPassword: changePasswordRequest.oldPassword,
+                newPassword: changePasswordRequest.newPassword,
+            })
             .then(() => {
                 setChangePasswordRequestState({
                     status: 'success',
                     errors: [],
+                });
+                setChangePasswordRequest({
+                    oldPassword: '',
+                    newPassword: '',
+                    repeatNewPassword: '',
                 });
             })
             .catch((error) => {

@@ -7,6 +7,6 @@ namespace Screening.Models
         public int Id { get; set; }
         public MovieModel Movie { get; set; }
         public DateTime MovieStart { get; set; }
-        public int HallId { get; set; }
+        public HallModel Hall { get; set; }
     }
 }

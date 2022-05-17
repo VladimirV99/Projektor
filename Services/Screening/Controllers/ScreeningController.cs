@@ -82,12 +82,13 @@ namespace Screening.Controllers
         public async Task<ActionResult<HallModel>> GetHallById(int id)
         {
             var hall = await _repository.GetHallById(id);
+            if(hall == null) return NotFound();
+
             return Ok(_mapper.Map<HallModel>(hall));
         }
 
         [HttpGet("[action]")]
         [ProducesResponseType(typeof(IEnumerable<HallModel>), StatusCodes.Status200OK)]
-        [ProducesResponseType(StatusCodes.Status404NotFound)]
         public async Task<ActionResult<HallModel>> GetHalls()
         {
             var halls = await _repository.GetAllHalls();

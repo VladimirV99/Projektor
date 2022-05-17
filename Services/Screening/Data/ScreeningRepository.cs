@@ -17,6 +17,7 @@ namespace Screening.Data
             return await _dbContext
                 .Screenings
                 .Include(m => m.Movie)
+                .Include(h => h.Hall)
                 .ToListAsync();
         }
         public async Task<IEnumerable<Hall>> GetAllHalls()
@@ -31,6 +32,7 @@ namespace Screening.Data
             return await _dbContext
                 .Screenings
                 .Include(m => m.Movie)
+                .Include(h => h.Hall)
                 .SingleOrDefaultAsync(m => m.Id == id);
         }
 
@@ -38,7 +40,7 @@ namespace Screening.Data
         {
             return await _dbContext
                 .Screenings
-                .Where(m => m.HallId == id)
+                .Where(m => m.Hall.Id == id)
                 .Include(m => m.Movie)
                 .ToListAsync();
         }
@@ -48,6 +50,7 @@ namespace Screening.Data
             return await _dbContext
                 .Screenings
                 .Where(m => m.Movie.Id == id)
+                .Include(h => h.Hall)
                 .ToListAsync();
         }
 
@@ -55,7 +58,7 @@ namespace Screening.Data
         {
             return await _dbContext
                 .Screenings
-                .Where(m => m.HallId == id)
+                .Where(m => m.Hall.Id == id)
                 .Include(m => m.Movie)
                 .Where(
                   m => (m.MovieStart > start && m.MovieStart < end) 

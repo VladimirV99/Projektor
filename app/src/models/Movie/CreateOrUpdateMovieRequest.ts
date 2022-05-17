@@ -1,4 +1,4 @@
-export default class Movie {
+export default class CreateOrUpdateMovieRequest {
     constructor(
         public id: number = -1,
         public title: string = '',
@@ -10,9 +10,7 @@ export default class Movie {
         public people: {
             personId: number;
             roleId: number;
-            name: string;
-            role: string;
         }[] = [],
-        public genres: { id: number; name: string }[] = []
+        public genres: number[]
     ) {}
 }

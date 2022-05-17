@@ -66,7 +66,7 @@ const BrowseMoviesScreen = (): JSX.Element => {
         ) : movies.length > 0 ? (
             movies.map((movie) => (
                 <S.MovieCardWrapper key={movie.id}>
-                    <MovieCard movie={movie} />
+                    <MovieCard movie={movie} onClick={() => {}} />
                 </S.MovieCardWrapper>
             ))
         ) : (

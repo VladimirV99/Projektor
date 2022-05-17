@@ -8,9 +8,10 @@ import * as S from './index.styles';
 
 type MovieCardProps = {
     movie: Movie;
+    onClick: () => void;
 };
 
-const MovieCard = ({ movie }: MovieCardProps): JSX.Element => {
+const MovieCard = ({ movie, onClick }: MovieCardProps): JSX.Element => {
     const { title, year, length, genres, imdbUrl, imageUrl } = movie;
     const genresDisplayString =
         genres.length > 0
@@ -18,7 +19,7 @@ const MovieCard = ({ movie }: MovieCardProps): JSX.Element => {
             : 'Other';
 
     return (
-        <S.MovieCardContainer>
+        <S.MovieCardContainer onClick={onClick}>
             <S.MovieCardRow>
                 <S.MovieCardCol xs={3}>
                     <S.MovieCoverImageContainer>

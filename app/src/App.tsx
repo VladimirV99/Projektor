@@ -17,8 +17,8 @@ function App() {
         <WithReduxProvider>
             <WithLocalStorageFetcher>
                 <ErrorBoundary FallbackComponent={SomethingWentWrong}>
-                    <AppHeader />
                     <BrowserRouter>
+                        <AppHeader />
                         <Routes>
                             <Route path="/" element={<HomeScreen />} />
                             <Route

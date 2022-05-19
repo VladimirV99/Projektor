@@ -20,39 +20,42 @@ function App() {
         <WithReduxProvider>
             <WithLocalStorageFetcher>
                 <BreakpointsProvider breakpoints={theme.breakpoints}>
-                <ErrorBoundary FallbackComponent={SomethingWentWrong}>
-                    <BrowserRouter>
-                        <AppHeader />
-                        <Routes>
-                            <Route path="/" element={<HomeScreen />} />
-                            <Route
-                                path="/movies"
-                                element={<BrowseMoviesScreen />}
-                            />
-                            <Route
-                                path="/movie/:id"
-                                element={<MovieDetailsScreen />}
-                            />
-                            <Route
-                                path="/admin"
-                                element={
-                                    <WithAuthorization
-                                        role={ROLE_ADMINISTRATOR}
-                                    >
-                                        <AdminDashboard />
-                                    </WithAuthorization>
-                                }
-                            />
-                            <Route
-                                path="/profile_settings"
-                                element={<UserProfileSettings />}
-                            />
-                            <Route path="/not-found" element={<NotFound />} />
-                            <Route path="*" element={<NotFound />} />
-                        </Routes>
-                    </BrowserRouter>
-                </ErrorBoundary>
-                <BreakpointsProvider />
+                    <ErrorBoundary FallbackComponent={SomethingWentWrong}>
+                        <BrowserRouter>
+                            <AppHeader />
+                            <Routes>
+                                <Route path="/" element={<HomeScreen />} />
+                                <Route
+                                    path="/movies"
+                                    element={<BrowseMoviesScreen />}
+                                />
+                                <Route
+                                    path="/movie/:id"
+                                    element={<MovieDetailsScreen />}
+                                />
+                                <Route
+                                    path="/admin"
+                                    element={
+                                        <WithAuthorization
+                                            role={ROLE_ADMINISTRATOR}
+                                        >
+                                            <AdminDashboard />
+                                        </WithAuthorization>
+                                    }
+                                />
+                                <Route
+                                    path="/profile_settings"
+                                    element={<UserProfileSettings />}
+                                />
+                                <Route
+                                    path="/not-found"
+                                    element={<NotFound />}
+                                />
+                                <Route path="*" element={<NotFound />} />
+                            </Routes>
+                        </BrowserRouter>
+                    </ErrorBoundary>
+                </BreakpointsProvider>
             </WithLocalStorageFetcher>
         </WithReduxProvider>
     );

@@ -10,7 +10,7 @@
         }
       ],
       "UpstreamPathTemplate": "/api/{version}/Administrator/{everything}",
-      "UpstreamHttpMethod": [ "Get", "Post", "Delete" ]
+      "UpstreamHttpMethod": [ "Get", "Post", "Delete", "Options" ]
     },
     {
       "DownstreamPathTemplate": "/api/{version}/Authentication/{everything}",
@@ -34,7 +34,7 @@
         }
       ],
       "UpstreamPathTemplate": "/api/{version}/User/{everything}",
-      "UpstreamHttpMethod": [ "Get", "Post", "Put", "Delete" ]
+      "UpstreamHttpMethod": [ "Get", "Post", "Put", "Delete", "Options" ]
     },
     {
       "DownstreamPathTemplate": "/api/{version}/Movies/{everything}",
@@ -58,7 +58,7 @@
         }
       ],
       "UpstreamPathTemplate": "/api/{version}/Review/{everything}",
-      "UpstreamHttpMethod": [ "Get", "Post", "Put", "Delete" ]
+      "UpstreamHttpMethod": [ "Get", "Post", "Put", "Delete", "Options" ]
     },
     {
       "DownstreamPathTemplate": "/api/{version}/Screening/{everything}",
@@ -70,7 +70,7 @@
         }
       ],
       "UpstreamPathTemplate": "/api/{version}/Screening/{everything}",
-      "UpstreamHttpMethod": [ "Get", "Post", "Patch", "Delete" ]
+      "UpstreamHttpMethod": [ "Get", "Post", "Patch", "Delete", "Options" ]
     }
   ]
 }

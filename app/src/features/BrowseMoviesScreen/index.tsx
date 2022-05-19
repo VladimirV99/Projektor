@@ -66,7 +66,7 @@ const BrowseMoviesScreen = (): JSX.Element => {
         ) : movies.length > 0 ? (
             movies.map((movie) => (
                 <S.MovieCardWrapper key={movie.id}>
-                    <MovieCard movie={movie} />
+                    <MovieCard movie={movie} onClick={() => {}} />
                 </S.MovieCardWrapper>
             ))
         ) : (
@@ -105,17 +105,16 @@ const BrowseMoviesScreen = (): JSX.Element => {
     }, [filterMovieRequest, dispatch]);
 
     useEffect(() => {
-        if (genresStatus === 'success') {
+        if (genresStatus !== 'idle') {
             return;
         }
         dispatch(getGenres());
     }, [dispatch, genresStatus]);
 
     useEffect(() => {
-        if (filterLimitsStatus === 'success') {
+        if (filterLimitsStatus !== 'idle') {
             return;
         }
-
         dispatch(getFilterLimits());
     }, [dispatch, filterLimitsStatus]);
 

@@ -18,7 +18,6 @@ export const isGenresAlreadyLoaded = createSelector(
 export const getGenres = createSelector(
     [getCoreState],
     (state: GenreSliceType) => {
-        console.log('selecting from', state);
         return state.entities;
     }
 );

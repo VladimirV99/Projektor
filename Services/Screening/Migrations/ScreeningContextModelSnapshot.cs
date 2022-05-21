@@ -72,6 +72,8 @@ namespace Screening.Migrations
 
                     b.HasKey("Id");
 
+                    b.HasIndex("HallId");
+
                     b.HasIndex("MovieId");
 
                     b.ToTable("Screenings");
@@ -79,11 +81,19 @@ namespace Screening.Migrations
 
             modelBuilder.Entity("Screening.Entities.Screening", b =>
                 {
+                    b.HasOne("Screening.Entities.Hall", "Hall")
+                        .WithMany()
+                        .HasForeignKey("HallId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
                     b.HasOne("Screening.Entities.Movie", "Movie")
                         .WithMany()
                         .HasForeignKey("MovieId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
+
+                    b.Navigation("Hall");
 
                     b.Navigation("Movie");
                 });

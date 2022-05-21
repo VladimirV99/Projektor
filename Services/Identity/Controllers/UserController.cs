@@ -1,8 +1,8 @@
 ﻿using AutoMapper;
 using Common.Auth;
 using Identity.Constants;
-using Identity.Data;
 using Identity.Models;
+using Identity.Repositories;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using System.Security.Claims;
@@ -11,7 +11,7 @@ namespace Identity.Controllers
 {
     [Authorize]
     [ApiController]
-    [Route("api/v1/[Controller]")]
+    [Route("api/v1/[controller]")]
     public class UserController : ControllerBase
     {
         private readonly IMapper _mapper;

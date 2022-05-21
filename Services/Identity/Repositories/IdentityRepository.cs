@@ -1,9 +1,10 @@
-﻿using Identity.Entities;
+﻿using Identity.Data;
+using Identity.Entities;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using System.Linq.Expressions;
 
-namespace Identity.Data
+namespace Identity.Repositories
 {
     public class IdentityRepository : IIdentityRepository
     {

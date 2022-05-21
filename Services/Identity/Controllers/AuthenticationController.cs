@@ -1,7 +1,7 @@
 ﻿using AutoMapper;
 using Common.Auth;
-using Identity.Data;
 using Identity.Models;
+using Identity.Repositories;
 using Identity.Services;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;

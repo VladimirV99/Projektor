@@ -1,4 +1,5 @@
 ﻿using AutoMapper;
+using Screening.Entities;
 using Screening.Models;
 
 namespace Screening.Mapper
@@ -7,7 +8,8 @@ namespace Screening.Mapper
     {
         public MovieProfile()
         {
-            CreateMap<Entities.Movie, MovieModel>();
+            CreateMap<Movie, MovieModel>();
+            CreateMap<InsertMovieRequest, Movie>();
         }
     }
 }

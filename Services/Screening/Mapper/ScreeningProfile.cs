@@ -8,6 +8,7 @@ namespace Screening.Mapper
         public ScreeningProfile()
         {
             CreateMap<Entities.Screening, ScreeningModel>();
+            CreateMap<InsertScreeningRequest, Entities.Screening>();
         }
     }
 }

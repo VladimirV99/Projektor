@@ -7,6 +7,7 @@
 		public Movie Movie { get; set; } = null!;
 		public DateTime MovieStart { get; set; }
 		public Hall Hall { get; set; }
+		public int HallId { get; set; }
 	}
 }
 

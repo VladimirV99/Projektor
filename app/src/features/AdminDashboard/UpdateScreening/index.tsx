@@ -1,32 +1,33 @@
 import { Fragment, useState } from 'react';
-import { useDispatch } from 'react-redux';
 import styled from 'styled-components';
 import { Button, TextField } from '@mui/material';
-import { Col, Modal, Row } from 'react-bootstrap';
-import CreateOrUpdateScreeningRequest from 'models/Screening/CreateOrUpdateScreeningRequest';
+import { Modal } from 'react-bootstrap';
 import Screening from 'models/Screening';
+import { UPDATE_SCREENING_URL } from 'constants/api/screenings';
+import axios from 'axios';
+import { callbackify } from 'util';
 
 type Props = {
     screening: Screening;
     onClose: () => void;
     onBackdropClick: () => void;
+    callback: () => void;
 };
 
-const CreateOrEditScreening = ({ screening, onClose, onBackdropClick }: Props) => {
+const UpdateScreening = ({ screening, onClose, onBackdropClick, callback }: Props) => {
     const [screeningInput, setScreeningInput] = useState<Screening>({ ...screening });
     const [updateStatus, setUpdateStatus] = useState('idle');
+    const [createStatus, setCreateStatus] = useState('idle')
 
-    const dispatch = useDispatch();
-
-    const handleSubmit = () => {
-        const screeningRequest = new CreateOrUpdateScreeningRequest(
-            screeningInput.id,
-            screeningInput.movie!,
-            screeningInput.hall!,
-            new Date(screeningInput.movieStart)
-        );
-
-        // dispatch(createOrUpdateMovie(movieRequest));
+    const handleUpdateSubmit = () => {
+        setCreateStatus('pending');
+        axios.patch(UPDATE_SCREENING_URL, {
+            screeningId: screeningInput.id,
+            moment: screeningInput.movieStart
+        }).then((response) => {
+            callback();
+            setUpdateStatus('success');
+        }).catch(error => setUpdateStatus('error'))
     };
 
     return (
@@ -34,15 +35,14 @@ const CreateOrEditScreening = ({ screening, onClose, onBackdropClick }: Props) =
             <Modal show={updateStatus !== 'idle'}>
                 <Modal.Header>
                     <Modal.Title>
-                        {screening.id == -1 ? 'Creating' : 'Updating'} a movie
+                        Update a screening
                     </Modal.Title>
                 </Modal.Header>
                 <Modal.Body>
                     {updateStatus === 'pending' && <div>Updating screening...</div>}
                     {updateStatus === 'success' && (
                         <div>
-                            Movie {screening.id === -1 ? 'created' : 'updated'}{' '}
-                            successfully!
+                            Screening updated successfully!
                         </div>
                     )}
                     {updateStatus === 'error' && (
@@ -54,10 +54,9 @@ const CreateOrEditScreening = ({ screening, onClose, onBackdropClick }: Props) =
                         disabled={updateStatus === 'pending'}
                         onClick={() => {
                             if (updateStatus === 'success') {
-                                // dispatch(patchMovie(screening));
                                 onClose();
                             }
-                            // dispatch(resetUpdateStatus());
+                            setUpdateStatus('idle');
                         }}
                     >
                         Close
@@ -69,20 +68,26 @@ const CreateOrEditScreening = ({ screening, onClose, onBackdropClick }: Props) =
                 onBackdropClick={onBackdropClick}
             >
                 <Modal.Header>
-                    {screening.id != -1 ? (
-                        <h4>
-                            Editing: <i>{screening.movie?.title} {screening.hall!.name}</i>
-                        </h4>
-                    ) : (
-                        <FormInputFieldTitle>
-                            Create a new screening
-                        </FormInputFieldTitle>
-                    )}
+                    <h4>
+                        Editing: <i>{screening.movie?.title} {screening.hall!.name}</i>
+                    </h4>
                 </Modal.Header>
 
                 <Modal.Body>
+                    <FormTextInputField>
+                        <TextField
+                            value={screeningInput.movieStart}
+                            label="Movie start"
+                            onChange={(e) => {
+                                setScreeningInput({
+                                    ...screeningInput,
+                                    movieStart: e.target.value,
+                                });
+                            }} 
+                            fullWidth
+                        />
+                    </FormTextInputField>
                 </Modal.Body>
-
                 <Modal.Footer>
                     <div
                         style={{
@@ -90,10 +95,8 @@ const CreateOrEditScreening = ({ screening, onClose, onBackdropClick }: Props) =
                             justifyContent: 'space-between',
                         }}
                     >
-                        <Button variant="contained" onClick={handleSubmit}>
-                            {screening.id != -1
-                                ? 'Update screening'
-                                : 'Create screening'}
+                        <Button variant="contained" onClick={handleUpdateSubmit}>
+                                Update screening
                         </Button>
                         <Button variant="contained" onClick={onClose}>
                             Close
@@ -105,11 +108,16 @@ const CreateOrEditScreening = ({ screening, onClose, onBackdropClick }: Props) =
     );
 };
 
-export default CreateOrEditScreening;
+export default UpdateScreening;
 
 const FormInputFieldTitle = styled.div`
     font-size: 20px;
     font-weight: bold;
+`;
+
+const FormTextInputField = styled.div`
+    padding-top: 10px;
+    padding-bottom: 10px;
 `;
 
 export const SelectedValuesWrapper = styled.div`
@@ -121,10 +129,4 @@ export const SelectedValuesWrapper = styled.div`
     border-opacity: 0.5;
     border-radius: 1px;
     border-radius: 5px;
-`;
-
-export const RoleTitle = styled.div`
-    font-size: 20px;
-    font-style: italic;
-    text-align: center;
 `;

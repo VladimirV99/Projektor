@@ -1,4 +1,4 @@
-import { Fragment, useCallback, useEffect, useMemo, useState } from 'react';
+import { Fragment, useEffect, useState } from 'react';
 import { Helmet } from 'react-helmet';
 import Paper from '@mui/material/Paper';
 import Table from '@mui/material/Table';
@@ -8,8 +8,6 @@ import TableContainer from '@mui/material/TableContainer';
 import TableHead from '@mui/material/TableHead';
 import TableRow from '@mui/material/TableRow';
 import axios from 'axios';
-import URL_BASE from 'constants/api/global';
-import urlJoin from 'url-join';
 import Screening from 'models/Screening';
 import styled from 'styled-components';
 import { Button } from '@mui/material';
@@ -18,7 +16,9 @@ import { faEdit } from '@fortawesome/free-regular-svg-icons';
 import { faTrash } from '@fortawesome/free-solid-svg-icons';
 import { faPlus } from '@fortawesome/free-solid-svg-icons';
 import { Modal } from 'react-bootstrap';
-import CreateOrEditScreening from '../CreateOrEditScreening';
+import CreateScreening from '../CreateScreening';
+import UpdateScreening from '../UpdateScreening';
+import { GET_SCREENINGS_URL, DELETE_SCREENING_URL } from 'constants/api/screenings';
 
 const ManageScreenings = () => {
 
@@ -27,9 +27,10 @@ const ManageScreenings = () => {
     const [deleteScreeningId, setDeleteScreeningId] = useState<number | null>(null);
     const [deleteStatus, setDeleteStatus] = useState('idle');
     const [shouldRefresh, setShouldRefresh] = useState(false);
+    const [updateModal, setUpdateModal] = useState(false);
 
     const getScreenings = () =>
-        axios.get(urlJoin(URL_BASE, "Screening/GetScreenings"))
+        axios.get(GET_SCREENINGS_URL)
             .then((response) => {
                 console.log(response.data);
                 setScreenings(response.data);
@@ -37,7 +38,7 @@ const ManageScreenings = () => {
     
     const deleteScreening = () => {
         setDeleteStatus('pending');
-        axios.delete(urlJoin(URL_BASE, `Screening/DeleteScreeningById/${deleteScreeningId}`))
+        axios.delete(DELETE_SCREENING_URL(deleteScreeningId!))
             .then((response) => {
                 setShouldRefresh(true);
                 setDeleteStatus('success');
@@ -64,7 +65,10 @@ const ManageScreenings = () => {
                 <title>Admin dashboard | Projektor</title>
             </Helmet>
             <AddScreeningContainer>
-                <Button onClick={() => setSelectedScreening(new Screening())}>
+                <Button onClick={() => {
+                    setSelectedScreening(new Screening());
+                    setUpdateModal(false);
+                    }}>
                     <FontAwesomeIcon icon={faPlus} />
                     New Screening
                 </Button>
@@ -104,7 +108,10 @@ const ManageScreenings = () => {
                                 </TableCell>
                                 <TableCell align="left" height={100}>
                                     <Button
-                                        onClick={() => setSelectedScreening(screening)}
+                                        onClick={() => {
+                                            setSelectedScreening(screening);
+                                            setUpdateModal(true)
+                                        }}
                                     >
                                         <FontAwesomeIcon icon={faEdit} />
                                     </Button>
@@ -116,17 +123,25 @@ const ManageScreenings = () => {
                                         <FontAwesomeIcon icon={faTrash} />
                                     </Button>
                                 </TableCell>
-
                             </TableRow>
                         ))}
                     </TableBody>
                 </Table>
             </TableContainer>
-            {selectedScreening && (
-                <CreateOrEditScreening 
+            {selectedScreening && !updateModal && (
+                <CreateScreening 
                     screening={selectedScreening}
                     onClose={() => setSelectedScreening(null)}
                     onBackdropClick={() => setSelectedScreening(null)}
+                    callback={() => setShouldRefresh(true)}
+                />
+            )}
+            {selectedScreening && updateModal && (
+                <UpdateScreening 
+                    screening={selectedScreening}
+                    onClose={() => setSelectedScreening(null)}
+                    onBackdropClick={() => setSelectedScreening(null)}
+                    callback={() => setShouldRefresh(true)}
                 />
             )}
             <Modal show={deleteScreeningId !== null}>

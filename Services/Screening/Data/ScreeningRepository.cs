@@ -121,18 +121,14 @@ namespace Screening.Data
             await _dbContext.SaveChangesAsync();
         }
 
-        public async Task<bool> UpdateMovieStartTime(int id, DateTime moment)
+        public async Task UpdateMovieStartTime(int id, DateTime moment)
         {
             var screening = await _dbContext
                 .Screenings
                 .FindAsync(id);
 
-            if (screening == null) return false;
-
             screening.MovieStart = moment;
             _dbContext.SaveChanges();
-
-            return true;
         }
 
         public async Task<bool> DeleteScreening(int id)

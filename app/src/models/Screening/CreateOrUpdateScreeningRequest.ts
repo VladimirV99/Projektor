@@ -4,7 +4,7 @@ import ScreeningMovie from "./ScreeningMovie";
 export default class CreateOrUpdateScreeningRequest {
     constructor(
         public id: number = -1,
-        public movie: ScreeningMovie = {
+        public movieId: ScreeningMovie = {
             id: -1,
             title: '',
             length: -1

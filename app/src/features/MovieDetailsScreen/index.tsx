@@ -44,9 +44,9 @@ const MovieDetailsScreen = (): JSX.Element => {
         const dict = movieScreenings
             //.filter((s) => s.movieStart.getTime() >= Date.now())
             .reduce((groups: any, screening: Screening): any => {
-                let day = new Date(screening.movieStart.getTime());
+                let day = new Date(screening.movieStart);
                 removeTime(day);
-                let key = day.getTime().toString();
+                let key = day.toString();
 
                 if (!groups.hasOwnProperty(key)) groups[key] = [];
                 groups[key].push(screening);
@@ -227,7 +227,7 @@ const MovieDetailsScreen = (): JSX.Element => {
     }, [dispatch, movieStatus, movieScreeningsStatus, movie]);
 
     useEffect(() => {
-        if (movieStatus === 'error' || movieScreeningsStatus === 'error') {
+        if (movieStatus === 'error') {
             throwAsyncError(new Error('Something went wrong'));
         }
     }, [movieStatus, movieScreeningsStatus, throwAsyncError]);

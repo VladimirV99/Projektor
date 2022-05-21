@@ -30,7 +30,7 @@ const screeningsSlice = createSlice({
         });
         builder.addCase(getScreeningsForMovie.fulfilled, (state, action) => {
             state.entities = action.payload.map((s) => {
-                return { ...s, movieStart: new Date(s.movieStart) };
+                return { ...s, movieStart: s.movieStart };
             });
             state.status = 'success';
         });

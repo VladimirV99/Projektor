@@ -20,7 +20,7 @@ import SignUp from 'features/authentication/SignUp';
 import SignIn from 'features/authentication/SignIn';
 import styled from 'styled-components';
 import { Link, useNavigate } from 'react-router-dom';
-import { logoutCustomer } from 'redux/auth/actions';
+import { logoutCustomer } from 'redux/auth/modules';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faCamera } from '@fortawesome/free-solid-svg-icons';
 
@@ -66,7 +66,9 @@ const Header = () => {
                 { name: 'Reservations', link: '/reservations' },
                 {
                     name: 'Logout',
-                    onClick: () => dispatch(logoutCustomer()),
+                    onClick: () => {
+                        dispatch(logoutCustomer());
+                    }
                 },
             ];
         }, []);

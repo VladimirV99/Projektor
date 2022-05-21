@@ -1,4 +1,5 @@
-import axios, { Axios, AxiosPromise } from 'axios';
+import axios, { AxiosPromise } from 'axios';
+import axiosAuthInstance from 'axios/instance';
 import {
     loginResponse,
     userLoginRequest,
@@ -26,5 +27,11 @@ export const loginUser = ({
     return axios.post(ENDPOINTS.LOGIN_URL, {
         email,
         password,
+    });
+};
+
+export const logoutUser = (refreshToken: string): any => {
+    return axiosAuthInstance.post(ENDPOINTS.LOGOUT_URL, {
+        refreshToken
     });
 };

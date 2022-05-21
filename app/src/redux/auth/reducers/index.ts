@@ -4,11 +4,10 @@ import {
     loginError,
     loginFullfiled,
     loginPending,
-    logoutCustomer,
+    logoutFullfiled,
     registerFailed,
     registerPending,
     setTokensAndUser,
-    updateName,
 } from '../actions';
 import { AuthenticationReducerType } from './types';
 
@@ -39,7 +38,7 @@ const reducer = createReducer(initialState, (builder) => {
         state.accessToken = action.payload.accessToken;
         state.refreshToken = action.payload.refreshToken;
     });
-    builder.addCase(logoutCustomer, (state) => {
+    builder.addCase(logoutFullfiled, (state) => {
         state.accessToken = null;
         state.refreshToken = null;
         state.user = null;
@@ -48,13 +47,6 @@ const reducer = createReducer(initialState, (builder) => {
         state.accessToken = action.payload.accessToken;
         state.refreshToken = action.payload.refreshToken;
         state.user = action.payload.user;
-    });
-    builder.addCase(updateName, (state, action) => {
-        if (!state.user) {
-            return;
-        }
-        state.user.firstName = action.payload.firstName;
-        state.user.lastName = action.payload.lastName;
     });
 });
 

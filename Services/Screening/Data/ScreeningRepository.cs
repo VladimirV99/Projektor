@@ -74,6 +74,30 @@ namespace Screening.Data
                 .FindAsync(id);
         }
 
+        public async Task<IEnumerable<Movie>> GetMovies()
+        {
+            return await _dbContext
+                .Movies
+                .ToListAsync();
+        }
+        public async Task<IEnumerable<Movie>> GetMoviesBySearchString(string searchString)
+        {
+            searchString = searchString.Trim().ToLower();
+            return await _dbContext
+                .Movies
+                .Where(m => m.Title.ToLower().Contains(searchString))
+                .ToListAsync();
+        }
+
+        public async Task<IEnumerable<Hall>> GetHallsBySearchString(string searchString)
+        {
+            searchString = searchString.Trim().ToLower();
+            return await _dbContext
+                .Halls
+                .Where(h => h.Name.ToLower().Contains(searchString))
+                .ToListAsync();
+        }
+
         public async Task<Hall?> GetHallById(int id)
         {
             return await _dbContext

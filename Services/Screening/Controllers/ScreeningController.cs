@@ -95,6 +95,29 @@ namespace Screening.Controllers
             return Ok(_mapper.Map<IEnumerable<HallModel>>(halls));
         }
 
+        [HttpGet("[action]/{searchString}")]
+        [ProducesResponseType(typeof(IEnumerable<HallModel>), StatusCodes.Status200OK)]
+        public async Task<ActionResult<HallModel>> GetHallsBySearchString(string searchString)
+        {
+            var halls = await _repository.GetHallsBySearchString(searchString);
+            return Ok(_mapper.Map<IEnumerable<HallModel>>(halls));
+        }
+
+        [HttpGet("[action]")]
+        [ProducesResponseType(typeof(IEnumerable<MovieModel>), StatusCodes.Status200OK)]
+        public async Task<ActionResult<MovieModel>> GetMovies()
+        {
+            var movies = await _repository.GetMovies();
+            return Ok(_mapper.Map<IEnumerable<MovieModel>>(movies));
+        }
+
+        [HttpGet("[action]/{searchString}")]
+        [ProducesResponseType(typeof(IEnumerable<MovieModel>), StatusCodes.Status200OK)]
+        public async Task<ActionResult<MovieModel>> GetMoviesBySearchString( string searchString)
+        {
+            var movies = await _repository.GetMoviesBySearchString(searchString);
+            return Ok(_mapper.Map<IEnumerable<MovieModel>>(movies));
+        }
 
         [HttpPost("[action]")]
         [ProducesResponseType(StatusCodes.Status200OK)]

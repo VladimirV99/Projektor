@@ -14,50 +14,54 @@ import MovieDetailsScreen from 'features/MovieDetailsScreen';
 import WithAuthorization from 'config/withAuthorization';
 import { ROLE_ADMINISTRATOR } from 'constants/index';
 import NotFound from 'components/NotFound';
+import { LocalizationProvider } from '@mui/lab';
+import AdapterDateFns from '@mui/lab/AdapterDateFns';
 
 function App() {
     return (
-        <WithReduxProvider>
-            <WithLocalStorageFetcher>
-                <BreakpointsProvider breakpoints={theme.breakpoints}>
-                    <ErrorBoundary FallbackComponent={SomethingWentWrong}>
-                        <BrowserRouter>
-                            <AppHeader />
-                            <Routes>
-                                <Route path="/" element={<HomeScreen />} />
-                                <Route
-                                    path="/movies"
-                                    element={<BrowseMoviesScreen />}
-                                />
-                                <Route
-                                    path="/movie/:id"
-                                    element={<MovieDetailsScreen />}
-                                />
-                                <Route
-                                    path="/admin"
-                                    element={
-                                        <WithAuthorization
-                                            role={ROLE_ADMINISTRATOR}
-                                        >
-                                            <AdminDashboard />
-                                        </WithAuthorization>
-                                    }
-                                />
-                                <Route
-                                    path="/profile_settings"
-                                    element={<UserProfileSettings />}
-                                />
-                                <Route
-                                    path="/not-found"
-                                    element={<NotFound />}
-                                />
-                                <Route path="*" element={<NotFound />} />
-                            </Routes>
-                        </BrowserRouter>
-                    </ErrorBoundary>
-                </BreakpointsProvider>
-            </WithLocalStorageFetcher>
-        </WithReduxProvider>
+        <LocalizationProvider dateAdapter={AdapterDateFns}>
+            <WithReduxProvider>
+                <WithLocalStorageFetcher>
+                    <BreakpointsProvider breakpoints={theme.breakpoints}>
+                        <ErrorBoundary FallbackComponent={SomethingWentWrong}>
+                            <BrowserRouter>
+                                <AppHeader />
+                                <Routes>
+                                    <Route path="/" element={<HomeScreen />} />
+                                    <Route
+                                        path="/movies"
+                                        element={<BrowseMoviesScreen />}
+                                    />
+                                    <Route
+                                        path="/movie/:id"
+                                        element={<MovieDetailsScreen />}
+                                    />
+                                    <Route
+                                        path="/admin"
+                                        element={
+                                            <WithAuthorization
+                                                role={ROLE_ADMINISTRATOR}
+                                            >
+                                                <AdminDashboard />
+                                            </WithAuthorization>
+                                        }
+                                    />
+                                    <Route
+                                        path="/profile_settings"
+                                        element={<UserProfileSettings />}
+                                    />
+                                    <Route
+                                        path="/not-found"
+                                        element={<NotFound />}
+                                    />
+                                    <Route path="*" element={<NotFound />} />
+                                </Routes>
+                            </BrowserRouter>
+                        </ErrorBoundary>
+                    </BreakpointsProvider>
+                </WithLocalStorageFetcher>
+            </WithReduxProvider>
+        </LocalizationProvider>
     );
 }
 

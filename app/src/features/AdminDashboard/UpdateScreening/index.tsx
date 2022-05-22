@@ -5,7 +5,8 @@ import { Modal } from 'react-bootstrap';
 import Screening from 'models/Screening';
 import { UPDATE_SCREENING_URL } from 'constants/api/screenings';
 import axios from 'axios';
-import { callbackify } from 'util';
+import { DateTimePicker } from '@mui/lab';
+import dayjs from 'dayjs';
 
 type Props = {
     screening: Screening;
@@ -83,10 +84,25 @@ const UpdateScreening = ({ screening, onClose, onBackdropClick, callback }: Prop
                                     ...screeningInput,
                                     movieStart: e.target.value,
                                 });
-                            }} 
+                            }}
                             fullWidth
                         />
                     </FormTextInputField>
+                    <div>
+                        <DateTimePicker
+                            label={"Movie start"}
+                            onChange={
+                                (value) => {
+                                    setScreeningInput(
+                                        { ...screeningInput, movieStart: dayjs(value!).format('YYYY-MM-DDTHH:mm:ss') }
+                                    )
+                                }
+                            }
+                            value={new Date(screeningInput.movieStart)}
+                            renderInput={(props) => <TextField {...props} />}
+                            ampm={false}
+                        />
+                    </div>
                 </Modal.Body>
                 <Modal.Footer>
                     <div
@@ -96,7 +112,7 @@ const UpdateScreening = ({ screening, onClose, onBackdropClick, callback }: Prop
                         }}
                     >
                         <Button variant="contained" onClick={handleUpdateSubmit}>
-                                Update screening
+                            Update screening
                         </Button>
                         <Button variant="contained" onClick={onClose}>
                             Close

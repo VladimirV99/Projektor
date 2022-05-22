@@ -32,7 +32,6 @@ const ManageScreenings = () => {
     const getScreenings = () =>
         axios.get(GET_SCREENINGS_URL)
             .then((response) => {
-                console.log(response.data);
                 setScreenings(response.data);
             })
     

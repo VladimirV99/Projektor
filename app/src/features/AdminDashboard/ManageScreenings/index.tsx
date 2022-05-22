@@ -87,6 +87,7 @@ const ManageScreenings = () => {
                             <TableCell align="left">ID</TableCell>
                             <TableCell align="left">Movie</TableCell>
                             <TableCell align="left">Movie start</TableCell>
+                            <TableCell align="left">Movie length</TableCell>
                             <TableCell align="left">Hall</TableCell>
                             <TableCell align="left">Actions</TableCell>
                         </TableRow>
@@ -115,6 +116,9 @@ const ManageScreenings = () => {
                                     {new Date(
                                         screening.movieStart
                                     ).toLocaleString()}
+                                </TableCell>
+                                <TableCell align="left">
+                                    {screening.movie?.length} minutes
                                 </TableCell>
                                 <TableCell align="left">
                                     {screening.hall!.name}

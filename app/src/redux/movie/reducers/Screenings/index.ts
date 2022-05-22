@@ -29,9 +29,7 @@ const screeningsSlice = createSlice({
             state.status = 'pending';
         });
         builder.addCase(getScreeningsForMovie.fulfilled, (state, action) => {
-            state.entities = action.payload.map((s) => {
-                return { ...s, movieStart: s.movieStart };
-            });
+            state.entities = action.payload;
             state.status = 'success';
         });
         builder.addCase(getScreeningsForMovie.rejected, (state, action) => {

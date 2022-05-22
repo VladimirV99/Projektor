@@ -128,7 +128,7 @@ namespace Screening.Data
                 .FindAsync(id);
 
             screening.MovieStart = moment;
-            _dbContext.SaveChanges();
+            await _dbContext.SaveChangesAsync();
         }
 
         public async Task<bool> DeleteScreening(int id)

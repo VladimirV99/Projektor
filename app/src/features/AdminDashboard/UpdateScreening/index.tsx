@@ -80,7 +80,7 @@ const UpdateScreening = ({
                     <h4>
                         Editing:{' '}
                         <i>
-                            {screening.movie?.title} {screening.hall!.name}
+                            {screening.movie?.title} | {screening.hall!.name}
                         </i>
                     </h4>
                 </Modal.Header>

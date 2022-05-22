@@ -19,8 +19,8 @@ public static class ScreeningSeeder
             DataTable dtScreenings = CsvReader.ReadCsv(screeningsDataPath) ?? throw new NullReferenceException(nameof(dtScreenings));
 
             TableInsertRecord[] seedTables = {
-                // new ("Halls", dtHalls, true), // TODO enable after merging screening-fixes
-                new ("Movies", dtMovies, true),
+                new ("Halls", dtHalls, false),
+                new ("Movies", dtMovies, false),
                 new ("Screenings", dtScreenings, true)
             };
             

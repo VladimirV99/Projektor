@@ -1,6 +1,7 @@
 ﻿using Identity.Constants;
 using Identity.Data;
 using Identity.Entities;
+using Identity.Repositories;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 

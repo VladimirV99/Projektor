@@ -58,7 +58,12 @@ namespace Movies.API.Data
                 .Where(request.YearTo == null ? m => true : m => m.Year <= request.YearTo)
                 .Where(request.LengthFrom == null ? m => true : m => m.Length >= request.LengthFrom)
                 .Where(request.LengthTo == null ? m => true : m => m.Length <= request.LengthTo)
+                .Where(request.SearchString == null ? m => true: m => m.Title.ToLower().Replace(" ", "").Contains(request.SearchString.ToLower().Replace(" ", "")))
                 .Include(m => m.Genres)
+                .Include(m => m.People)
+                .ThenInclude(mp => mp.Person)
+                .Include(m => m.People)
+                .ThenInclude(mp => mp.Role)
                 .Where(request.Genres == null
                     ? m => true
                     : m => m.Genres.Select(g => g.Id).Any(x => request.Genres.Contains(x)));
@@ -128,8 +133,33 @@ namespace Movies.API.Data
             _dbContext.Movies.Remove(movie);
             await _dbContext.SaveChangesAsync();
         }
-        
-        
+
+        public async Task<List<Person>> SearchPeople(string searchString)
+        {
+            var processedSearchString = searchString.ToLower().Replace(" ", "");
+            var people = await _dbContext
+                .People
+                .Where(p => (p.FirstName.ToLower() + p.LastName.ToLower()).Contains(processedSearchString))
+                .ToListAsync();
+            
+            return people;  
+        }
+
+        public async Task<List<Role>> SearchRoles(string searchString)
+        {
+            var processedSearchString = searchString.ToLower().Replace(" ", "");
+            var roles = await _dbContext
+                .Roles
+                .Where(r => $"{r.Name.ToString().ToLower()}".Contains(processedSearchString))
+                .ToListAsync();
+            return roles;
+        }
+
+        public async Task<List<Role>> GetRoles()
+        {
+            var roles = await _dbContext.Roles.ToListAsync();
+            return roles;
+        }
     }
 }
 

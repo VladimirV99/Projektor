@@ -5,6 +5,7 @@ export default class FilterMoviesRequest {
         public LengthFrom: number | null = null,
         public LengthTo: number | null = null,
         public Genres: number[] | null = null,
+        public searchString: string | null = null,
         public Page: number = 1,
         public PerPage: number = 10
     ) {}

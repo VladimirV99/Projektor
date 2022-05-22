@@ -1,7 +1,7 @@
 ﻿using Identity.Entities;
 using System.Linq.Expressions;
 
-namespace Identity.Data
+namespace Identity.Repositories
 {
     public interface IIdentityRepository
     {

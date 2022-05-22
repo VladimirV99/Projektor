@@ -1,4 +1,5 @@
 import React from 'react';
+import { Link } from 'react-router-dom';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import { faClapperboard } from '@fortawesome/free-solid-svg-icons/faClapperboard';
 import { faClock } from '@fortawesome/free-regular-svg-icons/faClock';
@@ -8,10 +9,11 @@ import * as S from './index.styles';
 
 type MovieCardProps = {
     movie: Movie;
+    onClick: () => void;
 };
 
 const MovieCard = ({ movie }: MovieCardProps): JSX.Element => {
-    const { title, year, length, genres, imdbUrl, imageUrl } = movie;
+    const { id, title, year, length, genres, imdbUrl, imageUrl } = movie;
     const genresDisplayString =
         genres.length > 0
             ? genres.map((genre) => genre.name.trim()).join(', ')
@@ -29,7 +31,9 @@ const MovieCard = ({ movie }: MovieCardProps): JSX.Element => {
                 </S.MovieCardCol>
                 <S.MovieInfoCol xs={9}>
                     <div style={{ display: 'flex' }}>
-                        <S.MovieTitle>{title}</S.MovieTitle>
+                        <S.MovieTitle>
+                            <Link to={`/movie/${id}`}>{title}</Link>
+                        </S.MovieTitle>
                         <S.MovieYear>({year})</S.MovieYear>
                     </div>
 

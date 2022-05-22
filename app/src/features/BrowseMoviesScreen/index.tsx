@@ -1,8 +1,8 @@
 ﻿import { useCallback, useEffect, useMemo, useState } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
-import { filterMovies } from 'redux/reducers/Movie';
-import { getGenres } from 'redux/reducers/Genre';
-import { getFilterLimits } from 'redux/reducers/FilterLimits';
+import { filterMovies } from 'redux/movies/reducers/Movie';
+import { getGenres } from 'redux/movies/reducers/Genre';
+import { getFilterLimits } from 'redux/movies/reducers/FilterLimits';
 import { Backdrop, CircularProgress, Pagination } from '@mui/material';
 import { Col, Row } from 'react-bootstrap';
 import MovieCard from 'components/MovieCard';
@@ -10,7 +10,7 @@ import MovieFilters from 'components/MovieFilters';
 import Movie from 'models/Movie';
 import FilterMoviesRequest from 'models/Movie/FilterMoviesRequest';
 import useAsyncError from 'hooks/useAsyncError';
-import * as selectors from 'redux/selectors';
+import * as selectors from 'redux/movies/selectors';
 import * as S from './index.styles';
 
 const BrowseMoviesScreen = (): JSX.Element => {
@@ -66,7 +66,7 @@ const BrowseMoviesScreen = (): JSX.Element => {
         ) : movies.length > 0 ? (
             movies.map((movie) => (
                 <S.MovieCardWrapper key={movie.id}>
-                    <MovieCard movie={movie} />
+                    <MovieCard movie={movie} onClick={() => {}} />
                 </S.MovieCardWrapper>
             ))
         ) : (
@@ -105,17 +105,16 @@ const BrowseMoviesScreen = (): JSX.Element => {
     }, [filterMovieRequest, dispatch]);
 
     useEffect(() => {
-        if (genresStatus === 'success') {
+        if (genresStatus !== 'idle') {
             return;
         }
         dispatch(getGenres());
     }, [dispatch, genresStatus]);
 
     useEffect(() => {
-        if (filterLimitsStatus === 'success') {
+        if (filterLimitsStatus !== 'idle') {
             return;
         }
-
         dispatch(getFilterLimits());
     }, [dispatch, filterLimitsStatus]);
 

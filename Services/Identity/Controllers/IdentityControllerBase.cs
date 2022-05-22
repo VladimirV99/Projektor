@@ -1,7 +1,7 @@
 ﻿using AutoMapper;
-using Identity.Data;
 using Identity.Entities;
 using Identity.Models;
+using Identity.Repositories;
 using Identity.Services;
 using Microsoft.AspNetCore.Mvc;
 

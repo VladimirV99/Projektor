@@ -1,8 +1,8 @@
 ﻿using FluentValidation;
 using Identity.Constants;
-using Identity.Data;
 using Identity.Extensions;
 using Identity.Models;
+using Identity.Repositories;
 
 namespace Identity.Validation
 {

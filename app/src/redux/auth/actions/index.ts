@@ -15,3 +15,6 @@ export const loginFullfiled = createAction<loginResponse>('loginFullfiled');
 export const loginError = createAction('loginError');
 
 export const logoutCustomer = createAction('logoutCustomer');
+export const updateName = createAction<{ firstName: string; lastName: string }>(
+    'updateName'
+);

@@ -1,7 +1,7 @@
 ﻿using AutoMapper;
-using Identity.Data;
 using Identity.Entities;
 using Identity.Models;
+using Identity.Repositories;
 using Microsoft.IdentityModel.Tokens;
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;

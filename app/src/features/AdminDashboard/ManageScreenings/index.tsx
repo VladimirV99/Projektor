@@ -18,45 +18,51 @@ import { faPlus } from '@fortawesome/free-solid-svg-icons';
 import { Modal } from 'react-bootstrap';
 import CreateScreening from '../CreateScreening';
 import UpdateScreening from '../UpdateScreening';
-import { GET_SCREENINGS_URL, DELETE_SCREENING_URL } from 'constants/api/screenings';
+import {
+    GET_SCREENINGS_URL,
+    DELETE_SCREENING_URL,
+} from 'constants/api/screenings';
 
 const ManageScreenings = () => {
-
     const [screenings, setScreenings] = useState<Screening[] | null>(null);
-    const [selectedScreening, setSelectedScreening] = useState<Screening | null>(null);
-    const [deleteScreeningId, setDeleteScreeningId] = useState<number | null>(null);
+    const [selectedScreening, setSelectedScreening] =
+        useState<Screening | null>(null);
+    const [deleteScreeningId, setDeleteScreeningId] = useState<number | null>(
+        null
+    );
     const [deleteStatus, setDeleteStatus] = useState('idle');
     const [shouldRefresh, setShouldRefresh] = useState(false);
     const [updateModal, setUpdateModal] = useState(false);
 
     const getScreenings = () =>
-        axios.get(GET_SCREENINGS_URL)
-            .then((response) => {
-                setScreenings(response.data);
-            })
-    
+        axios.get(GET_SCREENINGS_URL).then((response) => {
+            setScreenings(response.data);
+        });
+
     const deleteScreening = () => {
         setDeleteStatus('pending');
-        axios.delete(DELETE_SCREENING_URL(deleteScreeningId!))
+        axios
+            .delete(DELETE_SCREENING_URL(deleteScreeningId!))
             .then((response) => {
                 setShouldRefresh(true);
                 setDeleteStatus('success');
                 setDeleteScreeningId(null);
-            }).catch(() => setDeleteStatus('error'))
-    }
+            })
+            .catch(() => setDeleteStatus('error'));
+    };
 
     useEffect(() => {
-        getScreenings()
-    }, [])
+        getScreenings();
+    }, []);
 
     useEffect(() => {
-        if(shouldRefresh){
+        if (shouldRefresh) {
             getScreenings();
             setShouldRefresh(false);
         }
-    }, [shouldRefresh])
+    }, [shouldRefresh]);
 
-    if(screenings === null) return null;
+    if (screenings === null) return null;
 
     return (
         <Fragment>
@@ -64,16 +70,18 @@ const ManageScreenings = () => {
                 <title>Admin dashboard | Projektor</title>
             </Helmet>
             <AddScreeningContainer>
-                <Button onClick={() => {
-                    setSelectedScreening(new Screening());
-                    setUpdateModal(false);
-                    }}>
+                <Button
+                    onClick={() => {
+                        setSelectedScreening(new Screening());
+                        setUpdateModal(false);
+                    }}
+                >
                     <FontAwesomeIcon icon={faPlus} />
                     New Screening
                 </Button>
             </AddScreeningContainer>
             <TableContainer component={Paper}>
-                <Table sx={{minWidth: 650}}>
+                <Table sx={{ minWidth: 650 }}>
                     <TableHead>
                         <TableRow>
                             <TableCell align="left">ID</TableCell>
@@ -86,21 +94,27 @@ const ManageScreenings = () => {
                     <TableBody>
                         {screenings.map((screening) => (
                             <TableRow
-                                key={screening.id} 
+                                key={screening.id}
                                 sx={{
                                     '&:last-child td, &:last-child th': {
                                         border: 0,
                                     },
                                 }}
                             >
-                                <TableCell align='left' component="th" scope="row">
+                                <TableCell
+                                    align="left"
+                                    component="th"
+                                    scope="row"
+                                >
                                     {screening.id}
                                 </TableCell>
-                                <TableCell align='left'>
+                                <TableCell align="left">
                                     {screening.movie!.title}
                                 </TableCell>
-                                <TableCell align='left'>
-                                    {new Date(screening.movieStart).toLocaleString()}
+                                <TableCell align="left">
+                                    {new Date(
+                                        screening.movieStart
+                                    ).toLocaleString()}
                                 </TableCell>
                                 <TableCell align="left">
                                     {screening.hall!.name}
@@ -109,7 +123,7 @@ const ManageScreenings = () => {
                                     <Button
                                         onClick={() => {
                                             setSelectedScreening(screening);
-                                            setUpdateModal(true)
+                                            setUpdateModal(true);
                                         }}
                                     >
                                         <FontAwesomeIcon icon={faEdit} />
@@ -128,7 +142,7 @@ const ManageScreenings = () => {
                 </Table>
             </TableContainer>
             {selectedScreening && !updateModal && (
-                <CreateScreening 
+                <CreateScreening
                     screening={selectedScreening}
                     onClose={() => setSelectedScreening(null)}
                     onBackdropClick={() => setSelectedScreening(null)}
@@ -136,7 +150,7 @@ const ManageScreenings = () => {
                 />
             )}
             {selectedScreening && updateModal && (
-                <UpdateScreening 
+                <UpdateScreening
                     screening={selectedScreening}
                     onClose={() => setSelectedScreening(null)}
                     onBackdropClick={() => setSelectedScreening(null)}
@@ -147,8 +161,10 @@ const ManageScreenings = () => {
                 <Modal.Header>
                     <Modal.Title>
                         Delete screening:{' '}
-                        {screenings.find(({ id }) => id === deleteScreeningId)?.movie?.title ?? ''}{' '}
-                        {screenings.find(({ id }) => id === deleteScreeningId)?.hall?.name ?? ''}
+                        {screenings.find(({ id }) => id === deleteScreeningId)
+                            ?.movie?.title ?? ''}{' '}
+                        {screenings.find(({ id }) => id === deleteScreeningId)
+                            ?.hall?.name ?? ''}
                     </Modal.Title>
                 </Modal.Header>
                 <Modal.Body>
@@ -204,9 +220,8 @@ const ManageScreenings = () => {
                 </Modal.Footer>
             </Modal>
         </Fragment>
-    )
-
-}
+    );
+};
 
 export default ManageScreenings;
 

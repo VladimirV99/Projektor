@@ -1,5 +1,5 @@
-import Hall from "models/Hall";
-import ScreeningMovie from "./ScreeningMovie";
+import Hall from 'models/Hall';
+import ScreeningMovie from './ScreeningMovie';
 
 export default class CreateOrUpdateScreeningRequest {
     constructor(
@@ -7,12 +7,12 @@ export default class CreateOrUpdateScreeningRequest {
         public movieId: ScreeningMovie = {
             id: -1,
             title: '',
-            length: -1
+            length: -1,
         },
         public hall: Hall = {
             id: -1,
-            name: ''
+            name: '',
         },
-        public movieStart: Date,
+        public movieStart: Date
     ) {}
 }

@@ -29,7 +29,9 @@ const ScreeningSchedule = ({
                                         >
                                             <S.ScreeningItemTime>
                                                 {toTimeString(
-                                                    new Date(screening.movieStart)
+                                                    new Date(
+                                                        screening.movieStart
+                                                    )
                                                 )}
                                             </S.ScreeningItemTime>
                                             <S.ScreeningItemHall>

@@ -4,8 +4,14 @@ import { Button, TextField } from '@mui/material';
 import { Modal } from 'react-bootstrap';
 import Screening from 'models/Screening';
 import SearchInput from '../SearchInput';
-import { GET_MOVIES_BY_SEARCH_STRING, GET_HALLS_BY_SEARCH_STRING, INSERT_SCREENING_URL } from 'constants/api/screenings';
+import {
+    GET_MOVIES_BY_SEARCH_STRING,
+    GET_HALLS_BY_SEARCH_STRING,
+    INSERT_SCREENING_URL,
+} from 'constants/api/screenings';
 import axios from 'axios';
+import { DateTimePicker } from '@mui/lab';
+import dayjs from 'dayjs';
 
 type Props = {
     screening: Screening;
@@ -14,39 +20,47 @@ type Props = {
     callback: () => void;
 };
 
-const CreateScreening = ({ screening, onClose, onBackdropClick, callback }: Props) => {
-    const [screeningInput, setScreeningInput] = useState<Screening>({ ...screening });
+const CreateScreening = ({
+    screening,
+    onClose,
+    onBackdropClick,
+    callback,
+}: Props) => {
+    const [screeningInput, setScreeningInput] = useState<Screening>({
+        ...screening,
+    });
     const [updateStatus, setUpdateStatus] = useState('idle');
-    const [createStatus, setCreateStatus] = useState('idle')
+    const [createStatus, setCreateStatus] = useState('idle');
     const [selectedMovieId, setSelectedMovieId] = useState(screening.movie?.id);
     const [selectedHallId, setSelectedHallId] = useState(screening.hall?.id);
 
     const handleCreateSubmit = () => {
         setCreateStatus('pending');
-        axios.post(INSERT_SCREENING_URL, {
-            movieId: selectedMovieId,
-            hallId: selectedHallId,
-            movieStart: screeningInput.movieStart
-        }).then((response) => {
-            callback();
-            setCreateStatus('success');
-        }).catch(error => setCreateStatus('error'))
+        axios
+            .post(INSERT_SCREENING_URL, {
+                movieId: selectedMovieId,
+                hallId: selectedHallId,
+                movieStart: screeningInput.movieStart,
+            })
+            .then((response) => {
+                callback();
+                setCreateStatus('success');
+            })
+            .catch((error) => setCreateStatus('error'));
     };
 
     return (
         <Fragment>
             <Modal show={createStatus !== 'idle'}>
                 <Modal.Header>
-                    <Modal.Title>
-                        Creating a screening
-                    </Modal.Title>
+                    <Modal.Title>Creating a screening</Modal.Title>
                 </Modal.Header>
                 <Modal.Body>
-                    {updateStatus === 'pending' && <div>Updating screening...</div>}
+                    {updateStatus === 'pending' && (
+                        <div>Updating screening...</div>
+                    )}
                     {updateStatus === 'success' && (
-                        <div>
-                            Screening created successfully!
-                        </div>
+                        <div>Screening created successfully!</div>
                     )}
                     {updateStatus === 'error' && (
                         <div>Something went wrong.</div>
@@ -72,7 +86,10 @@ const CreateScreening = ({ screening, onClose, onBackdropClick, callback }: Prop
                 <Modal.Header>
                     {screening.id != -1 ? (
                         <h4>
-                            Editing: <i>{screening.movie?.title} {screening.hall!.name}</i>
+                            Editing:{' '}
+                            <i>
+                                {screening.movie?.title} {screening.hall!.name}
+                            </i>
                         </h4>
                     ) : (
                         <FormInputFieldTitle>
@@ -82,52 +99,46 @@ const CreateScreening = ({ screening, onClose, onBackdropClick, callback }: Prop
                 </Modal.Header>
 
                 <Modal.Body>
-                    <FormTextInputField>
-                        <TextField
-                            value={screeningInput.movieStart}
-                            label="Movie start"
-                            onChange={(e) => {
-                                setScreeningInput({
-                                    ...screeningInput,
-                                    movieStart: e.target.value,
-                                });
-                            }} 
-                            fullWidth
-                        />
-                    </FormTextInputField>
+                    <DateTimePicker
+                        label={'Movie start'}
+                        onChange={(value) => {
+                            setScreeningInput({
+                                ...screeningInput,
+                                movieStart: dayjs(value!).format(
+                                    'YYYY-MM-DDTHH:mm:ss'
+                                ),
+                            });
+                        }}
+                        value={new Date(screeningInput.movieStart)}
+                        renderInput={(props) => <TextField {...props} />}
+                        ampm={false}
+                    />
                     <div>
                         <FormInputFieldTitle>Movie</FormInputFieldTitle>
-                        <SearchInput 
+                        <SearchInput
                             searchEndpoint={GET_MOVIES_BY_SEARCH_STRING}
-                            getOptions={(movies) => 
-                                movies.map(({
+                            getOptions={(movies) =>
+                                movies.map(({ id, title, length }) => ({
                                     id,
-                                    title,
-                                    length
-                                }) => ({
-                                    id,
-                                    label: `${title} ${length}`
+                                    label: `${title} ${length}`,
                                 }))
                             }
-                            onOptionClicked={({id, label}) => {
+                            onOptionClicked={({ id, label }) => {
                                 setSelectedMovieId(id);
                             }}
                         />
                     </div>
                     <div>
                         <FormInputFieldTitle>Hall</FormInputFieldTitle>
-                        <SearchInput 
+                        <SearchInput
                             searchEndpoint={GET_HALLS_BY_SEARCH_STRING}
-                            getOptions={(halls) => 
-                                halls.map(({
+                            getOptions={(halls) =>
+                                halls.map(({ id, name }) => ({
                                     id,
-                                    name,
-                                }) => ({
-                                    id,
-                                    label: `${name}`
+                                    label: `${name}`,
                                 }))
                             }
-                            onOptionClicked={({id, label}) => {
+                            onOptionClicked={({ id, label }) => {
                                 setSelectedHallId(id);
                             }}
                         />
@@ -141,8 +152,11 @@ const CreateScreening = ({ screening, onClose, onBackdropClick, callback }: Prop
                             justifyContent: 'space-between',
                         }}
                     >
-                        <Button variant="contained" onClick={handleCreateSubmit}>
-                                Create screening
+                        <Button
+                            variant="contained"
+                            onClick={handleCreateSubmit}
+                        >
+                            Create screening
                         </Button>
                         <Button variant="contained" onClick={onClose}>
                             Close

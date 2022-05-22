@@ -68,7 +68,7 @@ const Header = () => {
                     name: 'Logout',
                     onClick: () => {
                         dispatch(logoutCustomer());
-                    }
+                    },
                 },
             ];
         }, []);

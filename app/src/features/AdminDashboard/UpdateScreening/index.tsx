@@ -15,36 +15,44 @@ type Props = {
     callback: () => void;
 };
 
-const UpdateScreening = ({ screening, onClose, onBackdropClick, callback }: Props) => {
-    const [screeningInput, setScreeningInput] = useState<Screening>({ ...screening });
+const UpdateScreening = ({
+    screening,
+    onClose,
+    onBackdropClick,
+    callback,
+}: Props) => {
+    const [screeningInput, setScreeningInput] = useState<Screening>({
+        ...screening,
+    });
     const [updateStatus, setUpdateStatus] = useState('idle');
-    const [createStatus, setCreateStatus] = useState('idle')
+    const [createStatus, setCreateStatus] = useState('idle');
 
     const handleUpdateSubmit = () => {
         setCreateStatus('pending');
-        axios.patch(UPDATE_SCREENING_URL, {
-            screeningId: screeningInput.id,
-            moment: screeningInput.movieStart
-        }).then((response) => {
-            callback();
-            setUpdateStatus('success');
-        }).catch(error => setUpdateStatus('error'))
+        axios
+            .patch(UPDATE_SCREENING_URL, {
+                screeningId: screeningInput.id,
+                moment: screeningInput.movieStart,
+            })
+            .then((response) => {
+                callback();
+                setUpdateStatus('success');
+            })
+            .catch((error) => setUpdateStatus('error'));
     };
 
     return (
         <Fragment>
             <Modal show={updateStatus !== 'idle'}>
                 <Modal.Header>
-                    <Modal.Title>
-                        Update a screening
-                    </Modal.Title>
+                    <Modal.Title>Update a screening</Modal.Title>
                 </Modal.Header>
                 <Modal.Body>
-                    {updateStatus === 'pending' && <div>Updating screening...</div>}
+                    {updateStatus === 'pending' && (
+                        <div>Updating screening...</div>
+                    )}
                     {updateStatus === 'success' && (
-                        <div>
-                            Screening updated successfully!
-                        </div>
+                        <div>Screening updated successfully!</div>
                     )}
                     {updateStatus === 'error' && (
                         <div>Something went wrong.</div>
@@ -70,39 +78,28 @@ const UpdateScreening = ({ screening, onClose, onBackdropClick, callback }: Prop
             >
                 <Modal.Header>
                     <h4>
-                        Editing: <i>{screening.movie?.title} {screening.hall!.name}</i>
+                        Editing:{' '}
+                        <i>
+                            {screening.movie?.title} {screening.hall!.name}
+                        </i>
                     </h4>
                 </Modal.Header>
 
                 <Modal.Body>
-                    <FormTextInputField>
-                        <TextField
-                            value={screeningInput.movieStart}
-                            label="Movie start"
-                            onChange={(e) => {
-                                setScreeningInput({
-                                    ...screeningInput,
-                                    movieStart: e.target.value,
-                                });
-                            }}
-                            fullWidth
-                        />
-                    </FormTextInputField>
-                    <div>
-                        <DateTimePicker
-                            label={"Movie start"}
-                            onChange={
-                                (value) => {
-                                    setScreeningInput(
-                                        { ...screeningInput, movieStart: dayjs(value!).format('YYYY-MM-DDTHH:mm:ss') }
-                                    )
-                                }
-                            }
-                            value={new Date(screeningInput.movieStart)}
-                            renderInput={(props) => <TextField {...props} />}
-                            ampm={false}
-                        />
-                    </div>
+                    <DateTimePicker
+                        label={'Movie start'}
+                        onChange={(value) => {
+                            setScreeningInput({
+                                ...screeningInput,
+                                movieStart: dayjs(value!).format(
+                                    'YYYY-MM-DDTHH:mm:ss'
+                                ),
+                            });
+                        }}
+                        value={new Date(screeningInput.movieStart)}
+                        renderInput={(props) => <TextField {...props} />}
+                        ampm={false}
+                    />
                 </Modal.Body>
                 <Modal.Footer>
                     <div
@@ -111,7 +108,10 @@ const UpdateScreening = ({ screening, onClose, onBackdropClick, callback }: Prop
                             justifyContent: 'space-between',
                         }}
                     >
-                        <Button variant="contained" onClick={handleUpdateSubmit}>
+                        <Button
+                            variant="contained"
+                            onClick={handleUpdateSubmit}
+                        >
                             Update screening
                         </Button>
                         <Button variant="contained" onClick={onClose}>

@@ -32,6 +32,6 @@ export const loginUser = ({
 
 export const logoutUser = (refreshToken: string): any => {
     return axiosAuthInstance.post(ENDPOINTS.LOGOUT_URL, {
-        refreshToken
+        refreshToken,
     });
 };

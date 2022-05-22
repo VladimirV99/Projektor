@@ -1,5 +1,5 @@
 import { useCallback, useEffect, useMemo } from 'react';
-import { useParams } from 'react-router-dom';
+import { Navigate, useParams } from 'react-router-dom';
 import { useSelector, useDispatch } from 'react-redux';
 import { Backdrop, CircularProgress } from '@mui/material';
 import useAsyncError from 'hooks/useAsyncError';
@@ -80,7 +80,7 @@ const MovieDetailsScreen = (): JSX.Element => {
             if (movie !== null) {
                 return <MovieDetails movie={movie} />;
             } else {
-                return <p>Movie not found.</p>;
+                return <Navigate to="/NotFound" />;
             }
         }
     }, [movie, renderLoading, isMovieLoading]);

@@ -17,16 +17,16 @@ export const GET_REVIEWS_FOR_MOVIE_URL = (
     let url = urlJoin(
         URL_BASE,
         '/Review/GetReviewsForMovie',
-        '?movieId=' + movieId.toString()
+        `?movieId=${movieId.toString()}`
     );
     // Postgres uses nanoseconds so we add one millisecond in order to
     // not get the same review twice
     if (createdAfter != null)
         url = urlJoin(
             url,
-            '&createdAfter=' + addMillisecond(createdAfter).toISOString()
+            `&createdAfter=${addMillisecond(createdAfter).toISOString()}`
         );
-    if (perPage != null) url = urlJoin(url, '&perPage=' + perPage);
+    if (perPage != null) url = urlJoin(url, `&perPage=${perPage}`);
     return url;
 };
 

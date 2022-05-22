@@ -9,31 +9,39 @@ type MovieDetailsProps = {
 };
 
 const MovieDetails = ({ movie }: MovieDetailsProps): JSX.Element => {
+    const {
+        title,
+        year,
+        length,
+        trailerUrl,
+        imdbUrl,
+        imageUrl,
+        genres,
+        people,
+    } = movie;
     return (
         <Fragment>
             <Row>
                 <Col xs={4} md={3} lg={2}>
-                    <S.MoviePoster
-                        src={movie.imageUrl || '/movie_placeholder.jpg'}
-                    />
+                    <S.MoviePoster src={imageUrl || '/movie_placeholder.jpg'} />
                 </Col>
                 <Col xs={8} md={9} lg={10}>
                     <div>
-                        <h1>{movie.title}</h1>
+                        <h1>{title}</h1>
                         <S.MovieInfoTable>
                             <tbody>
                                 <tr>
                                     <th>Year:</th>
-                                    <td>{movie.year}</td>
+                                    <td>{year}</td>
                                 </tr>
                                 <tr>
                                     <th>Length:</th>
-                                    <td>{movie.length} min</td>
+                                    <td>{length} min</td>
                                 </tr>
                                 <tr>
                                     <th>Genres:</th>
                                     <td>
-                                        {movie.genres
+                                        {genres
                                             .map((g) => g.name.trim())
                                             .join(', ')}
                                     </td>
@@ -41,7 +49,7 @@ const MovieDetails = ({ movie }: MovieDetailsProps): JSX.Element => {
                                 <tr>
                                     <th>Actors:</th>
                                     <td>
-                                        {movie.people
+                                        {people
                                             .filter(
                                                 ({ role }) => role === 'Actor'
                                             )
@@ -52,7 +60,7 @@ const MovieDetails = ({ movie }: MovieDetailsProps): JSX.Element => {
                                 <tr>
                                     <th>Directors:</th>
                                     <td>
-                                        {movie.people
+                                        {people
                                             .filter(
                                                 ({ role }) =>
                                                     role === 'Director'
@@ -64,7 +72,7 @@ const MovieDetails = ({ movie }: MovieDetailsProps): JSX.Element => {
                                 <tr>
                                     <th>Writers:</th>
                                     <td>
-                                        {movie.people
+                                        {people
                                             .filter(
                                                 ({ role }) => role === 'Writer'
                                             )
@@ -76,9 +84,9 @@ const MovieDetails = ({ movie }: MovieDetailsProps): JSX.Element => {
                         </S.MovieInfoTable>
                     </div>
 
-                    {movie.imdbUrl && (
+                    {imdbUrl && (
                         <a
-                            href={movie.imdbUrl! as string}
+                            href={imdbUrl! as string}
                             target="_blank"
                             rel="noopener noreferrer"
                         >
@@ -88,9 +96,9 @@ const MovieDetails = ({ movie }: MovieDetailsProps): JSX.Element => {
                 </Col>
             </Row>
 
-            {movie.trailerUrl && (
+            {trailerUrl && (
                 <S.MovieTrailerContainer>
-                    <EmbeddedVideo src={movie.trailerUrl}></EmbeddedVideo>
+                    <EmbeddedVideo src={trailerUrl} />
                 </S.MovieTrailerContainer>
             )}
         </Fragment>

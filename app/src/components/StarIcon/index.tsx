@@ -3,9 +3,9 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 
 type StarIconProps = {
     active: boolean;
-    onMouseEnter: () => void;
-    onMouseLeave: () => void;
-    onClick: () => void;
+    onMouseEnter?: () => void;
+    onMouseLeave?: () => void;
+    onClick?: () => void;
 };
 
 const StarIcon = ({

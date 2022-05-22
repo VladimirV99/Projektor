@@ -117,11 +117,15 @@ namespace Review.Controllers
         [ProducesResponseType(typeof(IEnumerable<MovieReviewModel>), StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
-        public async Task<ActionResult<IEnumerable<MovieReviewModel>>> GetReviewsForMovie([FromQuery] GetReviewsForMovieRequest request)
+        public async Task<ActionResult<GetReviewsForMovieResponse>> GetReviewsForMovie([FromQuery] GetReviewsForMovieRequest request)
         {
             // TODO Check movie exists
+            var count = await _repository.CountReviewsForMovie(request.MovieId);
             var result = await _repository.GetReviewsForMovie(request.MovieId, request.CreatedAfter, request.PerPage ?? Settings.PAGE_SIZE_DEFAULT);
-            return Ok(_mapper.Map<IEnumerable<MovieReviewModel>>(result));
+            return Ok(new GetReviewsForMovieResponse {
+                Count = count,
+                Reviews = _mapper.Map<IEnumerable<MovieReviewModel>>(result)
+            });
         }
 
         [Authorize(Roles = Roles.CUSTOMER)]

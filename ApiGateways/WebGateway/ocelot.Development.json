@@ -71,6 +71,18 @@
       ],
       "UpstreamPathTemplate": "/api/{version}/Screening/{everything}",
       "UpstreamHttpMethod": [ "Get", "Post", "Patch", "Delete", "Options" ]
+    },
+    {
+      "DownstreamPathTemplate": "/api/{version}/Reservation/{everything}",
+      "DownstreamScheme": "http",
+      "DownstreamHostAndPorts": [
+        {
+          "Host": "reservation",
+          "Port": 80
+        }
+      ],
+      "UpstreamPathTemplate": "/api/{version}/Reservation/{everything}",
+      "UpstreamHttpMethod": [ "Get", "Post", "Put", "Delete", "Options" ]
     }
   ]
 }

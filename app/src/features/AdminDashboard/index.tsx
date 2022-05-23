@@ -1,9 +1,11 @@
-import { Fragment, useState } from 'react';
+import { Fragment, useEffect, useMemo, useState } from 'react';
+import { Navigate, useNavigate, useParams } from 'react-router-dom';
 import Tabs from '@mui/material/Tabs';
 import Tab from '@mui/material/Tab';
 import { Box } from '@mui/material';
 import ManageMovies from './ManageMovies';
 import Helmet from 'react-helmet';
+import ManagePeople from './ManagePeople';
 
 interface TabPanelProps {
     children?: React.ReactNode;
@@ -27,12 +29,38 @@ function TabPanel(props: TabPanelProps) {
     );
 }
 
+type TabValuesType = {
+    [id: string]: number;
+};
+
+const tabValues: TabValuesType = {
+    movies: 0,
+    people: 1,
+    users: 2,
+    screenings: 3,
+};
+
 const AdminDashboard = () => {
     const [value, setValue] = useState(0);
 
     const handleChange = (event: React.SyntheticEvent, newValue: number) => {
-        setValue(newValue);
+        navigate(
+            `/admin/${
+                (Object.entries(tabValues).find(([, v]) => v === newValue) ??
+                    [])[0]
+            }`
+        );
     };
+
+    const { tab } = useParams();
+    const navigate = useNavigate();
+
+    useEffect(() => {
+        if (!tab || !Object.keys(tabValues).includes(tab)) {
+            return navigate('/not-found');
+        }
+        setValue(tabValues[tab]);
+    }, [tab]);
 
     return (
         <Fragment>
@@ -53,7 +81,7 @@ const AdminDashboard = () => {
                     <ManageMovies />
                 </TabPanel>
                 <TabPanel value={value} index={1}>
-                    Dashboard for managing people
+                    <ManagePeople />
                 </TabPanel>
                 <TabPanel value={value} index={2}>
                     Dashboard for managing users

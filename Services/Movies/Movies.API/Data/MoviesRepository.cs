@@ -160,6 +160,20 @@ namespace Movies.API.Data
             var roles = await _dbContext.Roles.ToListAsync();
             return roles;
         }
+        public async Task<List<Person>> SearchPeopleAdmin(string searchString, int page)
+        {
+            var processedSearchString = searchString.ToLower().Replace(" ", "");
+            var people = await _dbContext
+                .People
+                .Where(p => (p.FirstName.ToLower() + p.LastName.ToLower()).Contains(processedSearchString))
+                .Skip((page - 1) * 10)
+                .Take(10)
+                .Include(p => p.Movies)
+                .ThenInclude(mp => mp.Movie)
+                .ToListAsync();
+            
+            return people;  
+        }
     }
 }
 

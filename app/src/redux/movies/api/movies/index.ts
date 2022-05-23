@@ -5,10 +5,11 @@ import {
     DELETE_MOVIES_URL,
     CREATE_MOVIE_URL,
     UPDATE_MOVIE_URL,
+    SEARCH_PEOPLE_ADMIN_URL,
 } from 'constants/api/movies';
 import { PaginatedMovieList } from 'models/Movie/PaginatedMovieList';
-import Movie from 'models/Movie';
 import CreateOrUpdateMovieRequest from 'models/Movie/CreateOrUpdateMovieRequest';
+import PaginatedPeopleList from 'models/Movie/PaginatedPeopleList';
 import axiosAuthInstance from 'axios/instance';
 
 export const filterMovies = (filter: FilterMoviesRequest) => {
@@ -25,4 +26,13 @@ export const createOrUpdateMovie = (request: CreateOrUpdateMovieRequest) => {
     } else {
         return axiosAuthInstance.post(CREATE_MOVIE_URL, request);
     }
+};
+
+export const searchPeopleAdmin = (searchString: string, page: number) => {
+    return axiosAuthInstance.get<PaginatedPeopleList>(SEARCH_PEOPLE_ADMIN_URL, {
+        params: {
+            searchString,
+            page,
+        },
+    });
 };

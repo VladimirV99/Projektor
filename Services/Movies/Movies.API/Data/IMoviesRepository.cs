@@ -20,6 +20,7 @@ namespace Movies.API.Data
 		public Task<List<Person>> SearchPeople(string searchString);
 		public Task<List<Role>> SearchRoles(string searchString);
 		public Task<List<Role>> GetRoles();
+		public Task<List<Person>> SearchPeopleAdmin(string searchString, int page);
 	}
 }
 

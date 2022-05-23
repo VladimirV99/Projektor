@@ -4,6 +4,7 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Movies.API.Constants;
 using Movies.API.Data;
+using Movies.API.Entities;
 using Movies.API.Models;
 using Movies.API.Services;
 
@@ -129,7 +130,15 @@ namespace Movies.API.Controllers
             var roles = await _repository.GetRoles();
             return Ok(_mapper.Map<List<RoleModel>>(roles));
         }
-        
+
+        [HttpGet("[action]")]
+        [Authorize(Roles = Roles.ADMINISTRATOR)]
+        public async Task<IActionResult> SearchPeopleAdmin([FromQuery] string searchString, [FromQuery] int page)
+        {
+            var people = await _repository.SearchPeopleAdmin(searchString, page);
+            return Ok(_mapper.Map<List<Person>, List<PersonModel>>(people));
+        }
+
     }
 }
 

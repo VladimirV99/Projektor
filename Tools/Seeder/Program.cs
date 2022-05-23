@@ -1,82 +1,63 @@
-﻿using System.Data;
-using System.Data.SqlClient;
-using Seeder;
+﻿using Seeder.Seeders;
 
-void PrintDataTable(DataTable table)
+if (args.Length == 0)
 {
-    foreach(DataRow row in table.Rows)
+    Console.WriteLine("You must specify which databases to seed");
+    Console.WriteLine("Supported options:");
+    Console.WriteLine("  --all");
+    Console.WriteLine("  --mssql");
+    Console.WriteLine("  --postgres");
+    Console.WriteLine("  --movies");
+    Console.WriteLine("  --screenings");
+    Console.WriteLine("  --reservations");
+    Console.WriteLine("  --reviews");
+    return 1;
+}
+
+var seedMovies = false;
+var seedScreenings = false;
+var seedReservations = false;
+var seedReviews = false;
+
+foreach (var arg in args)
+{
+    switch (arg)
     {
-        foreach(DataColumn column in table.Columns)
-        {
-            Console.Write(row[column] + "\t\t");
-        }
-        Console.WriteLine();
+        case "--all":
+            seedMovies = true;
+            seedScreenings = true;
+            seedReservations = true;
+            seedReviews = true;
+            break;
+        case "--mssql":
+            seedMovies = true;
+            seedScreenings = true;
+            seedReservations = true;
+            break;
+        case "--postgres":
+            seedReviews = true;
+            break;
+        case "--movies":
+            seedMovies = true;
+            break;
+        case "--screenings":
+            seedScreenings = true;
+            break;
+        case "--reservations":
+            seedReservations = true;
+            break;
+        case "--reviews":
+            seedReviews = true;
+            break;
+        default:
+            Console.WriteLine($"Unknown option: {arg}");
+            break;
     }
 }
 
-const string moviesCsvPath      = "csv/movies.csv";
-const string genresCsvPath      = "csv/genres.csv";
-const string rolesCsvPath       = "csv/roles.csv";
-const string peopleCsvPath      = "csv/people.csv";
-const string movieGenresCsvPath = "csv/movie_genres.csv";
-const string moviePeopleCsvPath = "csv/movie_people.csv";
+if (seedMovies) MovieSeeder.Seed();
+if (seedScreenings) ScreeningSeeder.Seed();
+// if (seedReservations) ReservationSeeder.Seed();
+if (seedReviews) ReviewSeeder.Seed();
 
-try
-{
-    // Read data files
-    DataTable dtMovies      = CsvReader.ReadCsv(moviesCsvPath) ?? throw new NullReferenceException(nameof(dtMovies));
-    DataTable dtGenres      = CsvReader.ReadCsv(genresCsvPath) ?? throw new NullReferenceException(nameof(dtGenres));
-    DataTable dtRoles       = CsvReader.ReadCsv(rolesCsvPath) ?? throw new NullReferenceException(nameof(dtRoles));
-    DataTable dtPeople      = CsvReader.ReadCsv(peopleCsvPath) ?? throw new NullReferenceException(nameof(dtPeople));
-    DataTable dtMovieGenres = CsvReader.ReadCsv(movieGenresCsvPath) ?? throw new NullReferenceException(nameof(dtMovieGenres));
-    DataTable dtMoviePeople = CsvReader.ReadCsv(moviePeopleCsvPath) ?? throw new NullReferenceException(nameof(dtMoviePeople));
-
-    // Connect to database
-    const string connectionString = "Server=localhost;Database=MoviesDb;User Id=sa;Password=MatfRs2_MSSQL;";
-    using SqlConnection connection = new SqlConnection(connectionString);
-    connection.Open();
-
-    Console.WriteLine();
-    SqlHelper.PrintVersion(connection);
-    Console.WriteLine();
-    SqlHelper.PrintTables(connection);
-    Console.WriteLine();
-
-    // Seed data
-    (string, DataTable)[] seedTables = {
-        ("Movies", dtMovies),
-        ("Genres", dtGenres),
-        ("Roles", dtRoles),
-        ("People", dtPeople),
-        ("GenreMovie", dtMovieGenres),
-        ("MoviePeople", dtMoviePeople)
-    };
-    foreach ((string tableName, DataTable data) in seedTables)
-    {
-        Console.WriteLine($"Seeding table '{tableName}'");
-
-        if (SqlHelper.CheckTableExists(connection, tableName))
-        {
-            // Clear the table if it contains data
-            if (SqlHelper.TableHasData(connection, tableName))
-                SqlHelper.TruncateTable(connection, tableName);
-
-            bool hasKey = data.Columns.Contains("Id");
-            // Reset id counter for the table
-            if (hasKey)
-                SqlHelper.ResetIds(connection, tableName);
-            
-            // Insert seed data (Note: The data ID column is ignored. IDs are genereated by the database)
-            SqlHelper.BulkInsert(connection, data, tableName, hasKey);
-        }
-        else
-        {
-            Console.WriteLine($"Error seeding table '{tableName}': Table doesn't exist");
-        }
-    }
-}
-catch (Exception e)
-{
-    Console.WriteLine(e);
-    throw;
-}
+return 0;

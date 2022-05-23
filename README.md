@@ -19,7 +19,7 @@ Projektor is a microservice application for managing basic cinema operations. It
 2. (Optional) Insert dummy data into database by running the seeder tool:
    ```
    cd Tools/Seeder
-   dotnet run
+   dotnet run --all
    ```
 3. Start the client:
    ```

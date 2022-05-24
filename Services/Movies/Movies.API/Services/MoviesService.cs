@@ -94,4 +94,33 @@ public class MoviesService : IMoviesService
         await _repository.UpdateMovie(movie);
         return null;
     }
+
+    public async Task CreatePerson(CreateOrUpdatePersonRequest request)
+    {
+        var person = new Person
+        {
+            FirstName = request.FirstName,
+            LastName = request.LastName,
+            ImdbUrl = request.ImdbUrl,
+            Movies = new List<MoviePerson>()
+        }; 
+        
+        await _repository.CreatePerson(person);
+    }
+
+    public async Task<string?> UpdatePerson(CreateOrUpdatePersonRequest request)
+    {
+        var person = await _repository.GetPersonById(request.Id ?? 0);
+        if (person == null)
+        {
+            return ErrorMessages.PERSON_NOT_FOUND;
+        }
+
+        person.FirstName = request.FirstName;
+        person.LastName = request.LastName;
+        person.ImdbUrl = request.ImdbUrl;
+        
+        await _repository.UpdateMovie(movie);
+        return null;
+    }
 }

@@ -27,12 +27,3 @@ export const createOrUpdateMovie = (request: CreateOrUpdateMovieRequest) => {
         return axiosAuthInstance.post(CREATE_MOVIE_URL, request);
     }
 };
-
-export const searchPeopleAdmin = (searchString: string, page: number) => {
-    return axiosAuthInstance.get<PaginatedPeopleList>(SEARCH_PEOPLE_ADMIN_URL, {
-        params: {
-            searchString,
-            page,
-        },
-    });
-};

@@ -1,11 +1,7 @@
 import { Fragment, useCallback, useEffect, useMemo, useState } from 'react';
 import styled from 'styled-components';
 import FilterMoviesRequest from 'models/Movie/FilterMoviesRequest';
-import {
-    filterMovies,
-    deleteMovie,
-    resetDeleteStatus,
-} from 'redux/movies/reducers/Movie';
+import { searchPeopleAdmin } from 'redux/movies/reducers/People';
 import { getGenres } from 'redux/movies/reducers/Genre';
 import { getRoles } from 'redux/movies/reducers/Roles';
 import { useDispatch, useSelector } from 'react-redux';
@@ -33,66 +29,74 @@ import { faTrash } from '@fortawesome/free-solid-svg-icons';
 import { faPlus } from '@fortawesome/free-solid-svg-icons';
 import { useDebounce } from 'use-debounce';
 import { Modal } from 'react-bootstrap';
+import Person from 'models/Movie/Person';
 
 const ManagePeople = () => {
-    const [filterMovieRequest, setFilterMovieRequest] =
-        useState<FilterMoviesRequest>(new FilterMoviesRequest());
+    const [searchPeopleRequest, setSearchPeopleRequest] = useState<{
+        searchString: string | null;
+        page: number;
+    }>({
+        searchString: null,
+        page: 1,
+    });
 
-    const moviesCount = useSelector(selectors.getMoviesCount);
+    const peopleCount = useSelector(selectors.getPeopleCount);
 
     const numberOfPages = useMemo(() => {
-        return Math.ceil(moviesCount / filterMovieRequest.PerPage);
-    }, [moviesCount, filterMovieRequest.PerPage]);
+        return Math.ceil(peopleCount / 10);
+    }, [peopleCount]);
 
     const [searchStringInput, setSearchStringInput] = useState(
-        filterMovieRequest.searchString ?? ''
+        searchPeopleRequest.searchString ?? ''
     );
+
     const [debouncedSearchString] = useDebounce(searchStringInput, 500);
 
     useEffect(() => {
         if (
-            filterMovieRequest.searchString &&
-            filterMovieRequest.searchString === debouncedSearchString
+            searchPeopleRequest.searchString &&
+            searchPeopleRequest.searchString === debouncedSearchString
         ) {
             return;
         }
-        setFilterMovieRequest({
-            ...filterMovieRequest,
+        setSearchPeopleRequest({
+            ...searchPeopleRequest,
             searchString: debouncedSearchString,
-            Page: 1,
+            page: 1,
         });
     }, [debouncedSearchString]);
 
     const dispatch = useDispatch();
-    const movies: Movie[] = useSelector(selectors.getMovies);
-
-    const genresStatus = useSelector(selectors.getGenresStatus);
-    const rolesStatus = useSelector(selectors.getRolesStatus);
-    const deleteStatus = useSelector(selectors.getDeleteStatus);
-
-    const isDataLoaded =
-        genresStatus === 'success' && rolesStatus === 'success';
-
-    const [selectedMovie, setSelectedMovie] = useState<Movie | null>(null);
-    const [deleteMovieId, setDeleteMovieId] = useState<number | null>(null);
+    const people: Person[] = useSelector(selectors.getPeople);
 
     useEffect(() => {
-        dispatch(getGenres());
-        dispatch(getRoles());
-    }, [dispatch]);
+        console.log(people);
+    }, [people]);
+
+    const peopleStatus = useSelector(selectors.getPeopleStatus);
+
+    const isDataLoaded = peopleStatus === 'success';
+
+    const [selectedPerson, setSelectedPerson] = useState<Person | null>(null);
+    const [deletePersonId, setDeletePersonId] = useState<number | null>(null);
 
     useEffect(() => {
-        dispatch(filterMovies(filterMovieRequest));
-    }, [filterMovieRequest, dispatch]);
+        dispatch(
+            searchPeopleAdmin({
+                searchString: searchPeopleRequest.searchString ?? '',
+                page: searchPeopleRequest.page,
+            })
+        );
+    }, [searchPeopleRequest, dispatch]);
 
     const renderPagination = () => (
         <Pagination
             count={numberOfPages}
-            page={filterMovieRequest.Page}
+            page={searchPeopleRequest.page}
             onChange={(e, page) => {
-                setFilterMovieRequest({
-                    ...filterMovieRequest,
-                    Page: page,
+                setSearchPeopleRequest({
+                    ...searchPeopleRequest,
+                    page: page,
                 });
             }}
         />
@@ -106,6 +110,13 @@ const ManagePeople = () => {
                 </a>
             </DisplayInline>
         );
+    }, []);
+
+    const renderFullName = useCallback(({ firstName, lastName }) => {
+        const fullName = `${firstName} ${lastName}`;
+        const displayFullName =
+            fullName.length > 30 ? `${fullName.substring(0, 30)}...` : fullName;
+        return displayFullName;
     }, []);
 
     return (
@@ -127,7 +138,7 @@ const ManagePeople = () => {
                             setSearchStringInput(e.target.value);
                         }}
                     />
-                    <Button onClick={() => setSelectedMovie(new Movie())}>
+                    <Button onClick={() => setSelectedPerson(new Person())}>
                         <FontAwesomeIcon icon={faPlus} />
                         New person
                     </Button>
@@ -140,21 +151,15 @@ const ManagePeople = () => {
                     <TableHead>
                         <TableRow>
                             <TableCell>ID</TableCell>
-                            <TableCell align="left">Image</TableCell>
-                            <TableCell align="right">Title</TableCell>
-                            <TableCell align="right">Length</TableCell>
-                            <TableCell align="right">Year</TableCell>
-                            <TableCell align="right">Trailer</TableCell>
-                            <TableCell align="right">IMDB</TableCell>
-                            <TableCell align="right">Genres</TableCell>
-                            <TableCell align="right">People</TableCell>
-                            <TableCell align="right">Actions</TableCell>
+                            <TableCell align="left">Full Name</TableCell>
+                            <TableCell align="right">IMDB Url</TableCell>
+                            <TableCell align="right">Movies</TableCell>
                         </TableRow>
                     </TableHead>
                     <TableBody>
-                        {movies.map((movie) => (
+                        {people.map((person) => (
                             <TableRow
-                                key={movie.id}
+                                key={person.id}
                                 sx={{
                                     '&:last-child td, &:last-child th': {
                                         border: 0,
@@ -162,46 +167,18 @@ const ManagePeople = () => {
                                 }}
                             >
                                 <TableCell component="th" scope="row">
-                                    {movie.id}
+                                    {person.id}
                                 </TableCell>
                                 <TableCell align="right">
-                                    {movie.imageUrl ? (
-                                        <img
-                                            src={movie.imageUrl}
-                                            style={{
-                                                width: '100px',
-                                                height: '100px',
-                                            }}
-                                            onClick={() =>
-                                                navigator.clipboard.writeText(
-                                                    movie.imageUrl ?? ''
-                                                )
-                                            }
-                                        />
-                                    ) : (
-                                        <div>No image</div>
-                                    )}
+                                    {renderFullName(person)}
                                 </TableCell>
                                 <TableCell align="right">
-                                    {movie.title.length > 30
-                                        ? `${movie.title.substring(0, 30)}...`
-                                        : movie.title}
+                                    {person.imdbUrl &&
+                                        renderLink(person.imdbUrl)}
                                 </TableCell>
                                 <TableCell align="right">
-                                    {movie.length}min
+                                    movies go here
                                 </TableCell>
-                                <TableCell align="right">
-                                    {movie.year}
-                                </TableCell>
-                                <TableCell align="right">
-                                    {movie.trailerUrl &&
-                                        renderLink(movie.trailerUrl)}
-                                </TableCell>
-                                <TableCell align="right">
-                                    {movie.imdbUrl && renderLink(movie.imdbUrl)}
-                                </TableCell>
-                                <TableCell align="right"></TableCell>
-                                <TableCell align="right"></TableCell>
                                 <TableCell align="right">
                                     <Button>
                                         <FontAwesomeIcon icon={faEdit} />
@@ -216,7 +193,7 @@ const ManagePeople = () => {
                 </Table>
             </TableContainer>
             <PaginationContainer>{renderPagination()}</PaginationContainer>
-            <Modal show={deleteMovieId !== null}>
+            <Modal show={deletePersonId !== null}>
                 <Modal.Header>
                     <Modal.Title></Modal.Title>
                 </Modal.Header>

@@ -107,7 +107,6 @@ namespace Movies.API.Controllers
         {
             await _repository.DeleteMovie(id);
             return Ok();
-            return Ok();
         }
         
         [HttpGet("[action]")]
@@ -133,10 +132,10 @@ namespace Movies.API.Controllers
 
         [HttpGet("[action]")]
         [Authorize(Roles = Roles.ADMINISTRATOR)]
-        public async Task<IActionResult> SearchPeopleAdmin([FromQuery] string searchString, [FromQuery] int page)
+        public async Task<IActionResult> SearchPeopleAdmin([FromQuery] string? searchString, [FromQuery] int page = 1)
         {
-            var people = await _repository.SearchPeopleAdmin(searchString, page);
-            return Ok(_mapper.Map<List<Person>, List<PersonModel>>(people));
+            var (people, count) = await _repository.SearchPeopleAdmin(searchString ?? "", page);
+            return Ok(new PaginatedPeopleList { People = _mapper.Map<List<PersonModel>>(people), Count = count });
         }
 
     }

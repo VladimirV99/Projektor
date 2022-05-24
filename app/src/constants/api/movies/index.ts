@@ -27,3 +27,9 @@ export const SEARCH_PEOPLE_ADMIN_URL = urlJoin(
 );
 
 export const GET_ROLES_URL = urlJoin(URL_BASE, '/Movies/GetRoles');
+
+export const UPDATE_PERSON_URL = urlJoin(URL_BASE, '/Movies/UpdatePerson');
+export const CREATE_PERSON_URL = urlJoin(URL_BASE, '/Movies/CreatePerson');
+
+export const DELETE_PERSON_URL = (id: number) =>
+    urlJoin(URL_BASE, `/Movies/DeletePerson/${id}`);

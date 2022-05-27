@@ -1,13 +1,12 @@
 import { Fragment, useCallback, useEffect, useMemo, useState } from 'react';
 import styled from 'styled-components';
-import FilterMoviesRequest from 'models/Movie/FilterMoviesRequest';
-import { searchPeopleAdmin } from 'redux/movies/reducers/People';
-import { getGenres } from 'redux/movies/reducers/Genre';
-import { getRoles } from 'redux/movies/reducers/Roles';
+import {
+    deletePerson,
+    resetPeopleDeleteStatus,
+    searchPeopleAdmin,
+} from 'redux/movies/reducers/People';
 import { useDispatch, useSelector } from 'react-redux';
-import Movie from 'models/Movie';
 import * as selectors from 'redux/movies/selectors';
-import CreateOrEditMovie from 'features/AdminDashboard/CreateOrEditMovie';
 import Table from '@mui/material/Table';
 import TableBody from '@mui/material/TableBody';
 import TableCell from '@mui/material/TableCell';
@@ -28,8 +27,10 @@ import { faEdit } from '@fortawesome/free-regular-svg-icons';
 import { faTrash } from '@fortawesome/free-solid-svg-icons';
 import { faPlus } from '@fortawesome/free-solid-svg-icons';
 import { useDebounce } from 'use-debounce';
-import { Modal } from 'react-bootstrap';
+import { Modal, ModalDialog } from 'react-bootstrap';
 import Person from 'models/Movie/Person';
+import { Link, Navigate } from 'react-router-dom';
+import CreateOrEditPerson from '../CreateOrEditPerson';
 
 const ManagePeople = () => {
     const [searchPeopleRequest, setSearchPeopleRequest] = useState<{
@@ -50,7 +51,12 @@ const ManagePeople = () => {
         searchPeopleRequest.searchString ?? ''
     );
 
+    const [selectedPersonForMoviesModal, setSelectedPersonForMoviesModal] =
+        useState<Person | null>(null);
+
     const [debouncedSearchString] = useDebounce(searchStringInput, 500);
+
+    const deleteStatus = useSelector(selectors.getPeopleDeleteStatus);
 
     useEffect(() => {
         if (
@@ -70,8 +76,8 @@ const ManagePeople = () => {
     const people: Person[] = useSelector(selectors.getPeople);
 
     useEffect(() => {
-        console.log(people);
-    }, [people]);
+        console.log(selectedPersonForMoviesModal);
+    }, [selectedPersonForMoviesModal]);
 
     const peopleStatus = useSelector(selectors.getPeopleStatus);
 
@@ -79,6 +85,14 @@ const ManagePeople = () => {
 
     const [selectedPerson, setSelectedPerson] = useState<Person | null>(null);
     const [deletePersonId, setDeletePersonId] = useState<number | null>(null);
+
+    const deletePersonFullName = useMemo(() => {
+        const person = people.find(({ id }) => id === deletePersonId);
+        if (!person) {
+            return '';
+        }
+        return `${person.firstName} ${person.lastName}`;
+    }, [deletePersonId, people]);
 
     useEffect(() => {
         dispatch(
@@ -88,6 +102,16 @@ const ManagePeople = () => {
             })
         );
     }, [searchPeopleRequest, dispatch]);
+
+    const handleDeletePerson = () => {
+        if (
+            deletePersonId === null ||
+            !people.find(({ id }) => id === deletePersonId)
+        ) {
+            setDeletePersonId(null);
+        }
+        dispatch(deletePerson(deletePersonId ?? -1));
+    };
 
     const renderPagination = () => (
         <Pagination
@@ -118,6 +142,39 @@ const ManagePeople = () => {
             fullName.length > 30 ? `${fullName.substring(0, 30)}...` : fullName;
         return displayFullName;
     }, []);
+
+    const renderMoviesModal = (person: Person) => {
+        return (
+            <Modal
+                show={
+                    selectedPersonForMoviesModal !== null &&
+                    selectedPersonForMoviesModal.id === person.id
+                }
+            >
+                <Modal.Header>
+                    <Modal.Title>
+                        {person.firstName} {person.lastName} - Movies
+                    </Modal.Title>
+                </Modal.Header>
+                <Modal.Body>
+                    {person.movies.length === 0
+                        ? 'This person has no movies'
+                        : person.movies.map((movie) => (
+                              <Link key={movie.id} to={`/movie/${movie.id}`}>
+                                  {movie.title}
+                              </Link>
+                          ))}
+                </Modal.Body>
+                <Modal.Footer>
+                    <Button
+                        onClick={() => setSelectedPersonForMoviesModal(null)}
+                    >
+                        Close
+                    </Button>
+                </Modal.Footer>
+            </Modal>
+        );
+    };
 
     return (
         <Fragment>
@@ -154,51 +211,126 @@ const ManagePeople = () => {
                             <TableCell align="left">Full Name</TableCell>
                             <TableCell align="right">IMDB Url</TableCell>
                             <TableCell align="right">Movies</TableCell>
+                            <TableCell align="right">Actions</TableCell>
                         </TableRow>
                     </TableHead>
                     <TableBody>
                         {people.map((person) => (
-                            <TableRow
-                                key={person.id}
-                                sx={{
-                                    '&:last-child td, &:last-child th': {
-                                        border: 0,
-                                    },
-                                }}
-                            >
-                                <TableCell component="th" scope="row">
-                                    {person.id}
-                                </TableCell>
-                                <TableCell align="right">
-                                    {renderFullName(person)}
-                                </TableCell>
-                                <TableCell align="right">
-                                    {person.imdbUrl &&
-                                        renderLink(person.imdbUrl)}
-                                </TableCell>
-                                <TableCell align="right">
-                                    movies go here
-                                </TableCell>
-                                <TableCell align="right">
-                                    <Button>
-                                        <FontAwesomeIcon icon={faEdit} />
-                                    </Button>
-                                    <Button>
-                                        <FontAwesomeIcon icon={faTrash} />
-                                    </Button>
-                                </TableCell>
-                            </TableRow>
+                            <Fragment>
+                                {renderMoviesModal(person)}
+                                <TableRow
+                                    key={person.id}
+                                    sx={{
+                                        '&:last-child td, &:last-child th': {
+                                            border: 0,
+                                        },
+                                    }}
+                                >
+                                    <TableCell component="th" scope="row">
+                                        {person.id}
+                                    </TableCell>
+                                    <TableCell align="left">
+                                        {renderFullName(person)}
+                                    </TableCell>
+                                    <TableCell align="right">
+                                        {person.imdbUrl &&
+                                            renderLink(person.imdbUrl)}
+                                    </TableCell>
+                                    <TableCell align="right">
+                                        <Button
+                                            onClick={() => {
+                                                setSelectedPersonForMoviesModal(
+                                                    person
+                                                );
+                                            }}
+                                        >
+                                            Show movies
+                                        </Button>
+                                    </TableCell>
+                                    <TableCell align="right">
+                                        <Button
+                                            onClick={() =>
+                                                setSelectedPerson(person)
+                                            }
+                                        >
+                                            <FontAwesomeIcon icon={faEdit} />
+                                        </Button>
+                                        <Button
+                                            onClick={() =>
+                                                setDeletePersonId(person.id)
+                                            }
+                                        >
+                                            <FontAwesomeIcon icon={faTrash} />
+                                        </Button>
+                                    </TableCell>
+                                </TableRow>
+                            </Fragment>
                         ))}
                     </TableBody>
                 </Table>
             </TableContainer>
             <PaginationContainer>{renderPagination()}</PaginationContainer>
+            {selectedPerson && (
+                <CreateOrEditPerson
+                    person={selectedPerson}
+                    onClose={() => setSelectedPerson(null)}
+                    onBackdropClick={() => {}}
+                />
+            )}
             <Modal show={deletePersonId !== null}>
                 <Modal.Header>
-                    <Modal.Title></Modal.Title>
+                    <Modal.Title>
+                        Delete person - <i>{deletePersonFullName}</i>
+                    </Modal.Title>
                 </Modal.Header>
-                <Modal.Body></Modal.Body>
-                <Modal.Footer></Modal.Footer>
+                <Modal.Body>
+                    {deleteStatus === 'idle' && (
+                        <div>
+                            Are you sure you want to delete this person? This
+                            action cannot be undone.
+                        </div>
+                    )}
+                    {deleteStatus === 'pending' && <div>Please wait...</div>}
+                    {deleteStatus === 'error' && (
+                        <div>Something went wrong. Please try again.</div>
+                    )}
+                    {deleteStatus === 'success' && (
+                        <div>Person successfully deleted</div>
+                    )}
+                </Modal.Body>
+                <Modal.Footer>
+                    {(deleteStatus === 'success' ||
+                        deleteStatus === 'error') && (
+                        <Button
+                            onClick={() => {
+                                setDeletePersonId(null);
+                                dispatch(resetPeopleDeleteStatus());
+                            }}
+                        >
+                            Close
+                        </Button>
+                    )}
+                    {(deleteStatus === 'idle' ||
+                        deleteStatus === 'pending') && (
+                        <Fragment>
+                            <Button
+                                disabled={deleteStatus === 'pending'}
+                                onClick={() => {
+                                    setDeletePersonId(null);
+                                    // dispatch(resetDeleteStatus());
+                                }}
+                            >
+                                Cancel
+                            </Button>
+                            <Button
+                                onClick={handleDeletePerson}
+                                disabled={deleteStatus === 'pending'}
+                            >
+                                Delete
+                            </Button>
+                        </Fragment>
+                    )}
+                </Modal.Footer>
             </Modal>
         </Fragment>
     );

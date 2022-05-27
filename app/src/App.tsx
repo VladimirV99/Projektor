@@ -34,6 +34,16 @@ function App() {
                                     element={<MovieDetailsScreen />}
                                 />
                                 <Route
+                                    path="/admin"
+                                    element={
+                                        <WithAuthorization
+                                            role={ROLE_ADMINISTRATOR}
+                                        >
+                                            <AdminDashboard />
+                                        </WithAuthorization>
+                                    }
+                                />
+                                <Route
                                     path="/admin/:tab"
                                     element={
                                         <WithAuthorization

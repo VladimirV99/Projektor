@@ -138,6 +138,41 @@ namespace Movies.API.Controllers
             return Ok(new PaginatedPeopleList { People = _mapper.Map<List<PersonModel>>(people), Count = count });
         }
 
+        [HttpDelete("[action]/{id}")]
+        [Authorize(Roles = Roles.ADMINISTRATOR)]
+        public async Task<IActionResult> DeletePerson(int id)
+        {
+            await _repository.DeletePerson(id);
+            return Ok();
+        }
+        
+        [HttpPut("[action]")]
+        [Authorize(Roles = Roles.ADMINISTRATOR)]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        public async Task<IActionResult> UpdatePerson([FromBody] CreateOrUpdatePersonRequest updatePersonRequest)
+        {
+            if (updatePersonRequest.Id == null)
+            {
+                return BadRequest(ErrorMessages.MOVIE_ID_NOT_PROVIDED);
+            }
+            var error = await _service.UpdatePerson(updatePersonRequest);
+            if (error != null)
+            {
+                return BadRequest(error);
+            }
+            return Ok();
+        }
+    
+        [HttpPost("[action]")]
+        [ProducesResponseType(StatusCodes.Status201Created)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        [Authorize(Roles = Roles.ADMINISTRATOR)]
+        public async Task<IActionResult> CreatePerson([FromBody] CreateOrUpdatePersonRequest createOrUpdatePersonRequest)
+        {
+            await _service.CreatePerson(createOrUpdatePersonRequest);
+            return StatusCode(StatusCodes.Status201Created);
+        }
     }
 }
 

@@ -1,23 +1,17 @@
 import { Fragment, useEffect, useMemo, useState } from 'react';
 import { useDispatch } from 'react-redux';
-import Movie from 'models/Movie';
-import CreateOrUpdateMovieRequest from 'models/Movie/CreateOrUpdateMovieRequest';
-import ModalCheKoV from 'components/Modal';
 import styled from 'styled-components';
 import { Button, TextField } from '@mui/material';
 import * as selectors from 'redux/movies/selectors';
 import { useSelector } from 'react-redux';
-import StaticSearchInput from '../StaticSearchInput';
-import SelectedOptions from '../SelectedOptions';
-import SearchInput from '../SearchInput';
-import { SEARCH_PEOPLE_URL } from 'constants/api';
-import {
-    createOrUpdateMovie,
-    patchMovie,
-    resetUpdateStatus,
-} from 'redux/movies/reducers/Movie';
-import { Col, Modal, Row } from 'react-bootstrap';
+import { Modal } from 'react-bootstrap';
 import Person from 'models/Movie/Person';
+import {
+    createOrUpdatePerson,
+    patchPerson,
+    resetPeopleUpdateStatus,
+} from 'redux/movies/reducers/People';
+import CreateOrUpdatePersonRequest from 'models/People';
 
 type Props = {
     person: Person;
@@ -29,9 +23,21 @@ const CreateOrEditPerson = ({ person, onClose, onBackdropClick }: Props) => {
     const [personInput, setPersonInput] = useState({ ...person });
 
     const dispatch = useDispatch();
-    const updateStatus = useSelector(selectors.getUpdateStatus);
+    const updateStatus = useSelector(selectors.getPeopleUpdateStatus);
 
-    const handleSubmit = () => {};
+    const handleSubmit = () => {
+        const personRequest = new CreateOrUpdatePersonRequest(
+            personInput.id,
+            personInput.firstName,
+            personInput.lastName,
+            personInput.imdbUrl
+        );
+        dispatch(createOrUpdatePerson(personRequest));
+    };
+
+    useEffect(() => {
+        console.log(personInput);
+    }, []);
 
     return (
         <Fragment>
@@ -60,10 +66,10 @@ const CreateOrEditPerson = ({ person, onClose, onBackdropClick }: Props) => {
                         disabled={updateStatus === 'pending'}
                         onClick={() => {
                             if (updateStatus === 'success') {
-                                // dispatch(patchMovie(personInput));
+                                dispatch(patchPerson(personInput));
                                 onClose();
                             }
-                            dispatch(resetUpdateStatus());
+                            dispatch(resetPeopleUpdateStatus());
                         }}
                     >
                         Close
@@ -81,7 +87,6 @@ const CreateOrEditPerson = ({ person, onClose, onBackdropClick }: Props) => {
                             <i>
                                 {person.firstName} {person.lastName}
                             </i>{' '}
-                            (
                         </h4>
                     ) : (
                         <FormInputFieldTitle>
@@ -120,7 +125,6 @@ const CreateOrEditPerson = ({ person, onClose, onBackdropClick }: Props) => {
                     <FormTextInputField>
                         <TextField
                             value={personInput.imdbUrl}
-                            type="number"
                             label="IMDB Url"
                             onChange={(e) =>
                                 setPersonInput({

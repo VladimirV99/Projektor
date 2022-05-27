@@ -120,7 +120,7 @@ public class MoviesService : IMoviesService
         person.LastName = request.LastName;
         person.ImdbUrl = request.ImdbUrl;
         
-        await _repository.UpdateMovie(movie);
+        await _repository.UpdatePerson(person);
         return null;
     }
 }

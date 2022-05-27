@@ -11,7 +11,7 @@ namespace Identity.Controllers
 {
     [ApiController]
     [Route("api/v1/[controller]")]
-    [Authorize(Roles = Roles.ADMINISTRATOR)]
+    // [Authorize(Roles = Roles.ADMINISTRATOR)]
     public class AdministratorController : IdentityControllerBase
     {
         public AdministratorController(ILogger<AuthenticationController> logger, IMapper mapper, IIdentityRepository repository, IAuthenticationService authService) 

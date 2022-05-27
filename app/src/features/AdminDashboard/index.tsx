@@ -56,7 +56,10 @@ const AdminDashboard = () => {
     const navigate = useNavigate();
 
     useEffect(() => {
-        if (!tab || !Object.keys(tabValues).includes(tab)) {
+        if (!tab) {
+            return navigate('/admin/movies');
+        }
+        if (!Object.keys(tabValues).includes(tab)) {
             return navigate('/not-found');
         }
         setValue(tabValues[tab]);

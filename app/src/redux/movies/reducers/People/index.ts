@@ -43,10 +43,9 @@ export const resetPeopleDeleteStatus = createAction(
 export const createOrUpdatePerson = createAsyncThunk(
     'people/createOrUpdatePerson',
     async (request: CreateOrUpdatePersonRequest) => {
-        const data = new Person();
-        // const { data }: ApiSuccess<Person> = await API.createOrUpdatePerson(
-        //     request
-        // );
+        const { data }: ApiSuccess<Person> = await API.createOrUpdatePerson(
+            request
+        );
         return data;
     }
 );

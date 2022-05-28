@@ -1,9 +1,12 @@
+using System.Reflection;
 using Common.Auth.Extensions;
 using Common.Auth.Models;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.OpenApi.Models;
 using Reservation.Data;
 using Reservation.Extensions;
+using Reservation.Repositories;
+using Reservation.Services;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -14,7 +17,12 @@ builder.Services.AddDbContext<ReservationContext>(options =>
 {
     options.UseSqlServer(builder.Configuration.GetConnectionString("ReservationsConnectionString"));
 });
+builder.Services.AddScoped<IReservationRepository, ReservationRepository>();
 builder.Services.AddTransient<IDataSeeder, DataSeeder>();
+
+builder.Services.AddScoped<IHallService, HallService>();
+
+builder.Services.AddAutoMapper(Assembly.GetExecutingAssembly());
 
 builder.Services.AddControllers();
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle

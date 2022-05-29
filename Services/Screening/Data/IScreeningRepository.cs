@@ -18,7 +18,7 @@ namespace Screening.Data
 		Task InsertScreening(Entities.Screening screening);
 		Task InsertMovie(Movie movie);
 		Task InsertHall(Hall hall);
-		Task UpdateMovieStartTime(int id, DateTime moment);
+		Task UpdateScreening(int id, DateTime moment, int movieId, int hallId);
 		Task<bool> DeleteScreening(int id);
 		Task<bool> DeleteMovie(int id);
     }

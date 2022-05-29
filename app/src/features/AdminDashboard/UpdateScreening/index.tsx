@@ -3,10 +3,11 @@ import styled from 'styled-components';
 import { Button, TextField } from '@mui/material';
 import { Modal } from 'react-bootstrap';
 import Screening from 'models/Screening';
-import { UPDATE_SCREENING_URL } from 'constants/api/screenings';
+import { UPDATE_SCREENING_URL, GET_MOVIES_BY_SEARCH_STRING, GET_HALLS_BY_SEARCH_STRING } from 'constants/api/screenings';
 import axios from 'axios';
 import { DateTimePicker } from '@mui/lab';
 import dayjs from 'dayjs';
+import SearchInput from '../SearchInput';
 
 type Props = {
     screening: Screening;
@@ -21,9 +22,11 @@ const UpdateScreening = ({
     onBackdropClick,
     callback,
 }: Props) => {
+
     const [screeningInput, setScreeningInput] = useState<Screening>({
         ...screening,
     });
+
     const [updateStatus, setUpdateStatus] = useState('idle');
     const [createStatus, setCreateStatus] = useState('idle');
 
@@ -33,6 +36,8 @@ const UpdateScreening = ({
             .patch(UPDATE_SCREENING_URL, {
                 screeningId: screeningInput.id,
                 moment: screeningInput.movieStart,
+                movieId: screeningInput.movie?.id,
+                hallId: screeningInput.hall?.id,
             })
             .then((response) => {
                 callback();
@@ -86,20 +91,55 @@ const UpdateScreening = ({
                 </Modal.Header>
 
                 <Modal.Body>
-                    <DateTimePicker
-                        label={'Movie start'}
-                        onChange={(value) => {
-                            setScreeningInput({
-                                ...screeningInput,
-                                movieStart: dayjs(value!).format(
-                                    'YYYY-MM-DDTHH:mm:ss'
-                                ),
-                            });
-                        }}
-                        value={new Date(screeningInput.movieStart)}
-                        renderInput={(props) => <TextField {...props} />}
-                        ampm={false}
-                    />
+                    <div>
+                        <DateTimePicker
+                            label={'Movie start'}
+                            onChange={(value) => {
+                                setScreeningInput({
+                                    ...screeningInput,
+                                    movieStart: dayjs(value!).format(
+                                        'YYYY-MM-DDTHH:mm:ss'
+                                    ),
+                                });
+                            }}
+                            value={new Date(screeningInput.movieStart)}
+                            renderInput={(props) => <TextField {...props} />}
+                            ampm={false}
+                        />
+                    </div>
+                    <div>
+                        <FormInputFieldTitle>Movie</FormInputFieldTitle>
+                        <SearchInput
+                            searchEndpoint={GET_MOVIES_BY_SEARCH_STRING}
+                            getOptions={(movies) =>
+                                movies.map(({ id, title, length }) => ({
+                                    id,
+                                    label: `${title} ${length}`,
+                                }))
+                            }
+                            onOptionClicked={({ id, label }) => {
+                                const splitted = label.split(' ');
+                                const title = splitted[0];
+                                const length = splitted[1];
+                                setScreeningInput({...screeningInput, movie: {id, title, length}})
+                            }}
+                        />
+                    </div>
+                    <div>
+                        <FormInputFieldTitle>Hall</FormInputFieldTitle>
+                        <SearchInput
+                            searchEndpoint={GET_HALLS_BY_SEARCH_STRING}
+                            getOptions={(halls) =>
+                                halls.map(({ id, name }) => ({
+                                    id,
+                                    label: `${name}`,
+                                }))
+                            }
+                            onOptionClicked={({ id, label }) => {
+                                setScreeningInput({...screeningInput, hall: { id, name: label}})
+                            }}
+                        />
+                    </div>
                 </Modal.Body>
                 <Modal.Footer>
                     <div

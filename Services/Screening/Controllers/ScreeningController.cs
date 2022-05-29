@@ -162,12 +162,9 @@ namespace Screening.Controllers
         [HttpPatch("[action]")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
-        public async Task<IActionResult> UpdateMovieStartTime([FromBody] UpdateMovieStartTimeRequest request)
+        public async Task<IActionResult> UpdateScreening([FromBody] UpdateScreeningRequest request)
         {
-            var screening = await _repository.GetScreeningById(request.ScreeningId);
-            if(screening == null) return NotFound();
-
-            await _repository.UpdateMovieStartTime(request.ScreeningId, request.Moment);
+            await _repository.UpdateScreening(request.ScreeningId, request.Moment, request.MovieId, request.HallId);
 
             return Ok();
         }

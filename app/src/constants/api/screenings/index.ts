@@ -24,7 +24,7 @@ export const INSERT_SCREENING_URL = urlJoin(
 
 export const UPDATE_SCREENING_URL = urlJoin(
     URL_BASE,
-    '/Screening/UpdateMovieStartTime'
+    '/Screening/UpdateScreening'
 );
 
 export const GET_SCREENINGS_URL = urlJoin(URL_BASE, 'Screening/GetScreenings');

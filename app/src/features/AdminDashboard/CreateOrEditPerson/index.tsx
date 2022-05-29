@@ -35,10 +35,6 @@ const CreateOrEditPerson = ({ person, onClose, onBackdropClick }: Props) => {
         dispatch(createOrUpdatePerson(personRequest));
     };
 
-    useEffect(() => {
-        console.log(personInput);
-    }, []);
-
     return (
         <Fragment>
             <Modal show={updateStatus !== 'idle'}>

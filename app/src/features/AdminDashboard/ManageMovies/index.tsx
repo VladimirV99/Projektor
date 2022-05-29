@@ -264,7 +264,6 @@ const ManageMovies = () => {
                                     </Button>
                                     <Button
                                         onClick={() => {
-                                            console.log('setting delete id');
                                             setDeleteMovieId(movie.id);
                                         }}
                                     >

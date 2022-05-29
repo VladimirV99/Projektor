@@ -30,8 +30,9 @@ export const searchPeopleAdmin = createAsyncThunk(
 
 export const deletePerson = createAsyncThunk(
     'people/deletePeople',
-    async (id: number) => {
+    async (id: number, thunkAPI) => {
         const { data }: ApiSuccess<void> = await API.deletePerson(id);
+        thunkAPI.dispatch(removePerson(id));
         return data;
     }
 );
@@ -53,6 +54,8 @@ export const createOrUpdatePerson = createAsyncThunk(
 export const resetPeopleUpdateStatus = createAction(
     'people/resetPeopleUpdateStatus'
 );
+
+export const removePerson = createAction<number>('removePerson');
 
 export const patchPerson = createAction<Person>('people/patchPerson');
 
@@ -109,6 +112,11 @@ const peopleSlice = createSlice({
             if (index !== -1) {
                 state.entities[index] = action.payload;
             }
+        });
+        builder.addCase(removePerson, (state, action) => {
+            state.entities = state.entities.filter(
+                (person) => person.id !== action.payload
+            );
         });
     },
 });

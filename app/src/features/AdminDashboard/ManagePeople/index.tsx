@@ -75,10 +75,6 @@ const ManagePeople = () => {
     const dispatch = useDispatch();
     const people: Person[] = useSelector(selectors.getPeople);
 
-    useEffect(() => {
-        console.log(selectedPersonForMoviesModal);
-    }, [selectedPersonForMoviesModal]);
-
     const peopleStatus = useSelector(selectors.getPeopleStatus);
 
     const isDataLoaded = peopleStatus === 'success';
@@ -160,9 +156,14 @@ const ManagePeople = () => {
                     {person.movies.length === 0
                         ? 'This person has no movies'
                         : person.movies.map((movie) => (
-                              <Link key={movie.id} to={`/movie/${movie.id}`}>
-                                  {movie.title}
-                              </Link>
+                              <div>
+                                  <Link
+                                      key={movie.id}
+                                      to={`/movie/${movie.id}`}
+                                  >
+                                      {movie.title}
+                                  </Link>
+                              </div>
                           ))}
                 </Modal.Body>
                 <Modal.Footer>

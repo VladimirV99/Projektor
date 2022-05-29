@@ -3,7 +3,11 @@ import styled from 'styled-components';
 import { Button, TextField } from '@mui/material';
 import { Modal } from 'react-bootstrap';
 import Screening from 'models/Screening';
-import { UPDATE_SCREENING_URL, GET_MOVIES_BY_SEARCH_STRING, GET_HALLS_BY_SEARCH_STRING } from 'constants/api/screenings';
+import {
+    UPDATE_SCREENING_URL,
+    GET_MOVIES_BY_SEARCH_STRING,
+    GET_HALLS_BY_SEARCH_STRING,
+} from 'constants/api/screenings';
 import axios from 'axios';
 import { DateTimePicker } from '@mui/lab';
 import dayjs from 'dayjs';
@@ -22,7 +26,6 @@ const UpdateScreening = ({
     onBackdropClick,
     callback,
 }: Props) => {
-
     const [screeningInput, setScreeningInput] = useState<Screening>({
         ...screening,
     });
@@ -121,7 +124,10 @@ const UpdateScreening = ({
                                 const splitted = label.split(' ');
                                 const title = splitted[0];
                                 const length = splitted[1];
-                                setScreeningInput({...screeningInput, movie: {id, title, length}})
+                                setScreeningInput({
+                                    ...screeningInput,
+                                    movie: { id, title, length },
+                                });
                             }}
                         />
                     </div>
@@ -136,7 +142,10 @@ const UpdateScreening = ({
                                 }))
                             }
                             onOptionClicked={({ id, label }) => {
-                                setScreeningInput({...screeningInput, hall: { id, name: label}})
+                                setScreeningInput({
+                                    ...screeningInput,
+                                    hall: { id, name: label },
+                                });
                             }}
                         />
                     </div>

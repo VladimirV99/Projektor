@@ -4,6 +4,7 @@ import Tab from '@mui/material/Tab';
 import { Box } from '@mui/material';
 import ManageMovies from './ManageMovies';
 import Helmet from 'react-helmet';
+import ManageUsers from './ManageUsers';
 
 interface TabPanelProps {
     children?: React.ReactNode;
@@ -56,7 +57,7 @@ const AdminDashboard = () => {
                     Dashboard for managing people
                 </TabPanel>
                 <TabPanel value={value} index={2}>
-                    Dashboard for managing users
+                    <ManageUsers />
                 </TabPanel>
                 <TabPanel value={value} index={3}>
                     Dashboard for managing screenings

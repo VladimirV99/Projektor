@@ -27,7 +27,7 @@ export default function WithAuthorization({ role, children }: Props) {
         (Array.isArray(rolesEncoded) && !rolesEncoded.includes(role)) ||
         rolesEncoded !== role
     ) {
-        return <Navigate to="/NotFound" />;
+        return <Navigate to="/not-found" />;
     }
 
     return <Fragment>{children}</Fragment>;

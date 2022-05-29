@@ -160,6 +160,7 @@ const ManagePeople = () => {
                                   <Link
                                       key={movie.id}
                                       to={`/movie/${movie.id}`}
+                                      target="_blank"
                                   >
                                       {movie.title}
                                   </Link>

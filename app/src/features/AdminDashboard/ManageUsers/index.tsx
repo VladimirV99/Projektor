@@ -13,7 +13,11 @@ import { faTrash } from '@fortawesome/free-solid-svg-icons';
 import { faPlus } from '@fortawesome/free-solid-svg-icons';
 import { Modal } from 'react-bootstrap';
 import User from 'models/User';
-import { DELETE_USER_BY_EMAIL_URL, GET_ALL_USERS_URL, REVOKE_TOKENS_URL } from 'constants/api/user';
+import {
+    DELETE_USER_BY_EMAIL_URL,
+    GET_ALL_USERS_URL,
+    REVOKE_TOKENS_URL,
+} from 'constants/api/user';
 import { Button } from '@mui/material';
 import axiosAuthInstance from 'axios/instance';
 import CreateUserRequest from 'models/User/CreateUserRequest';
@@ -22,52 +26,49 @@ import { useDispatch } from 'react-redux';
 import { logoutCustomer } from 'redux/auth/actions';
 
 const ManageUsers = () => {
-    
     const [users, setUsers] = useState<User[] | null>(null);
-    const [userForCreation, setUserForCreation] = useState<CreateUserRequest | null>(null);
+    const [userForCreation, setUserForCreation] =
+        useState<CreateUserRequest | null>(null);
     const [deleteUserEmail, setDeleteUserEmail] = useState<string | null>(null);
     const [deleteStatus, setDeleteStatus] = useState('idle');
     const [shouldRefresh, setShouldRefresh] = useState(false);
 
     const dispatch = useDispatch();
 
-    const getUsers = () => 
+    const getUsers = () =>
         axiosAuthInstance.get(GET_ALL_USERS_URL).then((response) => {
             setUsers(response.data);
-        })
+        });
 
     const deleteUser = () => {
         setDeleteStatus('pending');
-        axiosAuthInstance.delete(DELETE_USER_BY_EMAIL_URL(deleteUserEmail!))
-        .then((response) => {
-            setShouldRefresh(true);
-            setDeleteStatus('success');
-        }).catch(() =>
-            setDeleteStatus('error')
-        )
-    }
+        axiosAuthInstance
+            .delete(DELETE_USER_BY_EMAIL_URL(deleteUserEmail!))
+            .then((response) => {
+                setShouldRefresh(true);
+                setDeleteStatus('success');
+            })
+            .catch(() => setDeleteStatus('error'));
+    };
 
-    const revokeTokens = () =>{
-        axiosAuthInstance.post(REVOKE_TOKENS_URL)
-        .then(
-            (res) => {
-                dispatch(logoutCustomer());
-            }
-        );
-    }
+    const revokeTokens = () => {
+        axiosAuthInstance.post(REVOKE_TOKENS_URL).then((res) => {
+            dispatch(logoutCustomer());
+        });
+    };
 
     useEffect(() => {
         getUsers();
-    }, [])
+    }, []);
 
     useEffect(() => {
-        if(shouldRefresh) {
+        if (shouldRefresh) {
             getUsers();
             setShouldRefresh(false);
         }
-    })
+    });
 
-    if(users === null) return null;
+    if (users === null) return null;
 
     return (
         <Fragment>
@@ -83,12 +84,10 @@ const ManageUsers = () => {
                     <FontAwesomeIcon icon={faPlus} />
                     New administrator
                 </Button>
-                <Button onClick={revokeTokens}>
-                    Revoke all tokens
-                </Button>
+                <Button onClick={revokeTokens}>Revoke all tokens</Button>
             </AddUserContainer>
             <TableContainer component={Paper}>
-                <Table sx={{minWidth: 650}}>
+                <Table sx={{ minWidth: 650 }}>
                     <TableHead>
                         <TableRow>
                             <TableCell align="left">ID</TableCell>
@@ -108,16 +107,32 @@ const ManageUsers = () => {
                                     },
                                 }}
                             >
-                                <TableCell align="left" component="th" scope="row">
+                                <TableCell
+                                    align="left"
+                                    component="th"
+                                    scope="row"
+                                >
                                     {user.id}
                                 </TableCell>
-                                <TableCell align="left" component="th" scope="row">
+                                <TableCell
+                                    align="left"
+                                    component="th"
+                                    scope="row"
+                                >
                                     {user.firstName}
                                 </TableCell>
-                                <TableCell align="left" component="th" scope="row">
+                                <TableCell
+                                    align="left"
+                                    component="th"
+                                    scope="row"
+                                >
                                     {user.lastName}
                                 </TableCell>
-                                <TableCell align="left" component="th" scope="row">
+                                <TableCell
+                                    align="left"
+                                    component="th"
+                                    scope="row"
+                                >
                                     {user.email}
                                 </TableCell>
                                 <TableCell align="left" height={100}>
@@ -134,14 +149,14 @@ const ManageUsers = () => {
                     </TableBody>
                 </Table>
             </TableContainer>
-            {userForCreation && 
+            {userForCreation && (
                 <CreateNewUser
                     user={userForCreation}
                     onClose={() => setUserForCreation(null)}
                     onBackdropClick={() => setUserForCreation(null)}
                     callback={() => setShouldRefresh(true)}
                 />
-            }
+            )}
             <Modal show={deleteUserEmail !== null}>
                 <Modal.Header>
                     <Modal.Title>
@@ -197,8 +212,8 @@ const ManageUsers = () => {
                 </Modal.Footer>
             </Modal>
         </Fragment>
-    )
-};  
+    );
+};
 
 export default ManageUsers;
 

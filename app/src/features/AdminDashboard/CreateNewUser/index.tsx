@@ -13,12 +13,7 @@ type Props = {
     callback: () => void;
 };
 
-const CreateNewUser = ({
-    user,
-    onClose,
-    onBackdropClick,
-    callback,
-}: Props) => {
+const CreateNewUser = ({ user, onClose, onBackdropClick, callback }: Props) => {
     const [userInput, setUserInput] = useState<CreateUserRequest>({ ...user });
     const [createStatus, setCreateStatus] = useState('idle');
 
@@ -29,7 +24,7 @@ const CreateNewUser = ({
                 firstName: userInput.firstName,
                 lastName: userInput.lastName,
                 email: userInput.email,
-                password: userInput.password
+                password: userInput.password,
             })
             .then((response) => {
                 onClose();
@@ -39,7 +34,7 @@ const CreateNewUser = ({
             .catch((error) => {
                 onClose();
                 setCreateStatus('error');
-            })
+            });
     };
 
     return (
@@ -133,12 +128,11 @@ const CreateNewUser = ({
                         </Button>
                         <Button
                             variant="contained"
-                            onClick={
-                                () => {
-                                    onClose();
-                                    setCreateStatus('idle')
-                                }
-                            }>
+                            onClick={() => {
+                                onClose();
+                                setCreateStatus('idle');
+                            }}
+                        >
                             Close
                         </Button>
                     </div>

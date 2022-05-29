@@ -64,10 +64,7 @@ namespace Identity.Controllers
             {
                 return BadRequest("Administrator can't delete his account");
             }
-            if((await _repository.GetUserRoles(user)).Contains(Roles.ADMINISTRATOR))
-            {
-                return BadRequest("Can't delete account of administrator");
-            }
+
             await _repository.DeleteUser(user!);
             return Ok();
         }

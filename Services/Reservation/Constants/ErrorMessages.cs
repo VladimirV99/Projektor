@@ -4,6 +4,8 @@ namespace Reservation.Constants
     {
         public const string HALL_ID_REQUIRED = "Hall Id is required";
 
+        public const string SCREENING_ID_REQUIRED = "Screening Id is required";
+
         public const string HALL_ROWS_REQUIRED = "Number of rows is required";
         public const string HALL_ROWS_RANGE = "Number of rows must be between 0 and 50";
 
@@ -18,5 +20,9 @@ namespace Reservation.Constants
         
         public const string SEAT_PRICE_REQUIRED = "Seat price multiplier is required";
         public const string SEAT_PRICE_RANGE = "Seat price multiplier must be between 0 and 2";
+
+        public const string RESERVATION_SEATS_REQUIRED = "";
+        public const string RESERVATION_MIN_SEATS = "";
+        public const string RESERVATION_MAX_SEATS = "";
     }
 }

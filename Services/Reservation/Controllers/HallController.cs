@@ -45,6 +45,14 @@ namespace Reservation.Controllers
             var hall = await _repository.GetHallById(id);
             return hall == null ? NotFound() : Ok(_mapper.Map<HallBasicModel>(hall));
         }
+        
+        [HttpGet("[action]")]
+        [ProducesResponseType(typeof(IEnumerable<HallBasicModel>), StatusCodes.Status200OK)]
+        public async Task<ActionResult<IEnumerable<HallBasicModel>>> GetHalls()
+        {
+            var halls = await _repository.GetHalls();
+            return Ok(_mapper.Map<IEnumerable<HallBasicModel>>(halls));
+        }
 
         [HttpDelete("[action]/{id}")]
         [ProducesResponseType(StatusCodes.Status200OK)]

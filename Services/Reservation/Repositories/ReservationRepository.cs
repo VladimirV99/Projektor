@@ -1,4 +1,5 @@
-﻿using Reservation.Data;
+﻿using Microsoft.EntityFrameworkCore;
+using Reservation.Data;
 using Reservation.Entities;
 
 namespace Reservation.Repositories
@@ -12,24 +13,39 @@ namespace Reservation.Repositories
             _dbContext = dbContext ?? throw new ArgumentNullException(nameof(dbContext));
         }
 
-        public Task CreateHall(Hall hall)
+        public async Task CreateHall(Hall hall)
         {
-            throw new NotImplementedException();
+            _dbContext.Halls.Add(hall);
+            await _dbContext.SaveChangesAsync();
         }
 
-        public Task<Hall?> GetHallById(int id)
+        public async Task<Hall?> GetHallById(int id)
         {
-            throw new NotImplementedException();
+            return await _dbContext.Halls.FindAsync(id);
         }
 
-        public Task UpdateHall(Hall hall)
+        public async Task<IEnumerable<Hall>> GetHalls()
         {
-            throw new NotImplementedException();
+            return await _dbContext.Halls.ToListAsync();
         }
 
-        public Task<bool> DeleteHall(int id)
+        public async Task UpdateHall(Hall hall)
         {
-            throw new NotImplementedException();
+            _dbContext.Halls.Update(hall);
+            await _dbContext.SaveChangesAsync();
+        }
+
+        public async Task<bool> DeleteHall(int id)
+        {
+            var hall = await _dbContext.Halls.FindAsync(id);
+            if (hall == null)
+            {
+                return false;
+            }
+            
+            _dbContext.Halls.Remove(hall);
+            await _dbContext.SaveChangesAsync();
+            return true;
         }
 
         public async Task CreateSeat(Seat seat)
@@ -67,6 +83,58 @@ namespace Reservation.Repositories
             _dbContext.Seats.Remove(seat);
             await _dbContext.SaveChangesAsync();
             return true;
+        }
+
+        public async Task<IEnumerable<Seat>> GetSeatsByHallId(int hallId)
+        {
+            return await _dbContext.Seats.Where(s => s.HallId == hallId).ToListAsync();
+        }
+
+        public async Task<IEnumerable<Seat>> GetReservedSeats(int screeningId)
+        {
+            return await _dbContext.Reservations
+                .Where(r => r.Screening.Id == screeningId)
+                .Include(r => r.Seats)
+                .SelectMany(r => r.Seats)
+                .ToListAsync();
+        }
+
+        public async Task CreateReservation(Entities.Reservation reservation)
+        {
+            _dbContext.Reservations.Add(reservation);
+            await _dbContext.SaveChangesAsync();
+        }
+
+        public async Task<Entities.Reservation?> GetReservationById(int id)
+        {
+            return await _dbContext.Reservations
+                .Where(r => r.Id == id)
+                .Include(r => r.Seats)
+                .SingleOrDefaultAsync();
+        }
+
+        public async Task<bool> DeleteReservation(int id)
+        {
+            var reservation = await _dbContext.Reservations.FindAsync(id);
+            if (reservation == null)
+            {
+                return false;
+            }
+            
+            _dbContext.Reservations.Remove(reservation);
+            await _dbContext.SaveChangesAsync();
+            return true;
+        }
+
+        public async Task<bool> IsSeatReserved(int screeningId, int row, int column)
+        {
+            var result = await _dbContext.Reservations
+                .Where(r => r.Screening.Id == screeningId)
+                .Include(r => r.Seats)
+                .SelectMany(r => r.Seats)
+                .Where(s => s.Row == row && s.Column == column)
+                .SingleOrDefaultAsync();
+            return result != null;
         }
     }
 }

@@ -10,6 +10,7 @@ namespace Reservation.Mapper
         {
             CreateMap<CreateSeatRequest, Seat>();
             CreateMap<Seat, SeatModel>();
+            CreateMap<Seat, SeatCoordinates>();
         }
     }
 }

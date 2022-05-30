@@ -6,5 +6,6 @@
         public int Row { get; set; }
         public int Column { get; set; }
         public float PriceMultiplier { get; set; }
+        public IEnumerable<Reservation> Reservations { get; set; }
     }
 }

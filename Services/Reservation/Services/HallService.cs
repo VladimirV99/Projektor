@@ -18,7 +18,6 @@ namespace Reservation.Services
 
         public async Task<Hall> CreateHall(string name, int rows, int columns)
         {
-            // TODO check rows and columns
             var hall = new Hall {Name = name, Rows = rows, Columns = columns};
             await _repository.CreateHall(hall);
 

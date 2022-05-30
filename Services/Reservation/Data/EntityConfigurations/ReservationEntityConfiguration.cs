@@ -18,6 +18,8 @@ namespace Reservation.Data.EntityConfigurations
 
             builder.OwnsOne(r => r.Movie);
             builder.Navigation(r => r.Movie).IsRequired();
+
+            builder.HasMany(r => r.Seats);
         }
     }
 }

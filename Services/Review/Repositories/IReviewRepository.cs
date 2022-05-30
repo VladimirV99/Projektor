@@ -11,6 +11,7 @@ namespace Review.Repositories
         Task<MovieReview?> CreateReview(MovieReview review);
         Task<MovieReview?> GetReview(int movieId, string reviewerId);
         Task<IEnumerable<MovieReview>> GetReviewsForMovie(int movieId, DateTime? createdAfter, int perPage = Settings.PAGE_SIZE_DEFAULT);
+        Task<long> CountReviewsForMovie(int movieId);
         Task UpdateReview(MovieReview review);
         Task<bool> DeleteReview(int movieId, string reviewerId);
         Task CreateUser(User user);

@@ -58,6 +58,14 @@ This account cannot be deleted as it will be recreated when the service restarts
    docker exec -it projektor_mssql opt/mssql-tools/bin/sqlcmd -S localhost -U sa -P MatfRs2_MSSQL -d MoviesDB -e -i /var/seed/seed_script.sql 
    ```
 
+### Screening
+
+![Screening Workflow Status](https://img.shields.io/github/workflow/status/VladimirV99/Projektor/Screening/main?style=for-the-badge)
+
+### Reservation
+
+![Reservation Workflow Status](https://img.shields.io/github/workflow/status/VladimirV99/Projektor/Reservation/main?style=for-the-badge)
+
 ### Review
 
 ![Review Workflow Status](https://img.shields.io/github/workflow/status/VladimirV99/Projektor/Review/main?style=for-the-badge)

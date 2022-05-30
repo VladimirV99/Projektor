@@ -19,13 +19,21 @@ namespace Movies.API.Mapper
                     opt => opt.MapFrom(src => $"{src.Person.FirstName} {src.Person.LastName}"))
                 .ForMember(dest => dest.Role,
                     opt => opt.MapFrom(src => src.Role.Name));
-                                        
+
             CreateMap<Movie, MovieModel>()
                 .ForMember(dest => dest.Genres,
                     opt => opt.MapFrom(src => src.Genres))
                 .ForMember(dest => dest.People,
                     opt => opt.MapFrom(src => src.People));
+            CreateMap<Movie, MovieSimpleModel>();
 
+            CreateMap<MoviePerson, MovieSimpleModel>()
+                .ForMember(dest => dest.Id,
+                    opt => opt.MapFrom(src => src.Movie.Id))
+                .ForMember(dest => dest.Title,
+                    opt => opt.MapFrom(src => src.Movie.Title));
+                
+            CreateMap<Person, PersonSearchModel>();
             CreateMap<Person, PersonModel>();
 
             CreateMap<Role, RoleModel>();

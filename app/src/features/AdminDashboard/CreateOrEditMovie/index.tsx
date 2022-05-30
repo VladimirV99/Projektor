@@ -42,11 +42,6 @@ const CreateOrEditMovie = ({ movie, onClose, onBackdropClick }: Props) => {
     const dispatch = useDispatch();
     const updateStatus = useSelector(selectors.getUpdateStatus);
 
-    useEffect(() => {
-        console.log('Movie:');
-        console.log(movieInput);
-    }, [movieInput]);
-
     const peopleByRoles = useMemo<PeopleByRolesType>(() => {
         const peopleByRolesTmp = [] as PeopleByRolesType;
         movieInput.people.forEach(({ personId, roleId, role, name }) => {

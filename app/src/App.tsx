@@ -44,6 +44,16 @@ function App() {
                                     }
                                 />
                                 <Route
+                                    path="/admin/:tab"
+                                    element={
+                                        <WithAuthorization
+                                            role={ROLE_ADMINISTRATOR}
+                                        >
+                                            <AdminDashboard />
+                                        </WithAuthorization>
+                                    }
+                                />
+                                <Route
                                     path="/profile_settings"
                                     element={<UserProfileSettings />}
                                 />

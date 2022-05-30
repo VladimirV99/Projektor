@@ -4,6 +4,7 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Movies.API.Constants;
 using Movies.API.Data;
+using Movies.API.Entities;
 using Movies.API.Models;
 using Movies.API.Services;
 
@@ -106,7 +107,6 @@ namespace Movies.API.Controllers
         {
             await _repository.DeleteMovie(id);
             return Ok();
-            return Ok();
         }
         
         [HttpGet("[action]")]
@@ -129,7 +129,50 @@ namespace Movies.API.Controllers
             var roles = await _repository.GetRoles();
             return Ok(_mapper.Map<List<RoleModel>>(roles));
         }
+
+        [HttpGet("[action]")]
+        [Authorize(Roles = Roles.ADMINISTRATOR)]
+        public async Task<IActionResult> SearchPeopleAdmin([FromQuery] string? searchString, [FromQuery] int page = 1)
+        {
+            var (people, count) = await _repository.SearchPeopleAdmin(searchString ?? "", page);
+            return Ok(new PaginatedPeopleList { People = _mapper.Map<List<PersonModel>>(people), Count = count });
+        }
+
+        [HttpDelete("[action]/{id}")]
+        [Authorize(Roles = Roles.ADMINISTRATOR)]
+        public async Task<IActionResult> DeletePerson(int id)
+        {
+            await _repository.DeletePerson(id);
+            return Ok();
+        }
         
+        [HttpPut("[action]")]
+        [Authorize(Roles = Roles.ADMINISTRATOR)]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        public async Task<IActionResult> UpdatePerson([FromBody] CreateOrUpdatePersonRequest updatePersonRequest)
+        {
+            if (updatePersonRequest.Id == null)
+            {
+                return BadRequest(ErrorMessages.MOVIE_ID_NOT_PROVIDED);
+            }
+            var error = await _service.UpdatePerson(updatePersonRequest);
+            if (error != null)
+            {
+                return BadRequest(error);
+            }
+            return Ok();
+        }
+    
+        [HttpPost("[action]")]
+        [ProducesResponseType(StatusCodes.Status201Created)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        [Authorize(Roles = Roles.ADMINISTRATOR)]
+        public async Task<IActionResult> CreatePerson([FromBody] CreateOrUpdatePersonRequest createOrUpdatePersonRequest)
+        {
+            await _service.CreatePerson(createOrUpdatePersonRequest);
+            return StatusCode(StatusCodes.Status201Created);
+        }
     }
 }
 

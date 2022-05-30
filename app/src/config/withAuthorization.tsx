@@ -13,6 +13,6 @@ export default function WithAuthorization({ role, children }: Props) {
     return isUserAdmin() ? (
         <Fragment>{children}</Fragment>
     ) : (
-        <Navigate to="/login" />
+        <Navigate to="/not-found" />
     );
 }

@@ -10,7 +10,7 @@ namespace Reservation.Controllers
 {
     [ApiController]
     [Route("api/v1/[controller]")]
-    // [Authorize(Roles = Roles.ADMINISTRATOR)]
+    [Authorize(Roles = Roles.ADMINISTRATOR)]
     public class HallController : ControllerBase
     {
         private readonly IReservationRepository _repository;

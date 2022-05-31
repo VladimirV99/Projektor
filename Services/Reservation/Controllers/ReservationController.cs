@@ -1,5 +1,6 @@
 ﻿using AutoMapper;
 using Common.Auth;
+using Common.Auth.Util;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Reservation.Entities;
@@ -21,13 +22,14 @@ namespace Reservation.Controllers
             _mapper = mapper ?? throw new ArgumentNullException(nameof(mapper));
         }
 
-        // TODO To service
-        // [Authorize(Roles = Roles.CUSTOMER)]
+        [Authorize(Roles = Roles.CUSTOMER)]
         [HttpPost("[action]")]
         [ProducesResponseType(typeof(ReservationModel), StatusCodes.Status201Created)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         public async Task<ActionResult<ReservationModel>> CreateReservation([FromBody] CreateReservationRequest request)
         {
+            var userInfo = UserClaimsHelper.GetUserFromClaims(User);
+            
             // TODO Fetch screening (gRPC)
             // TODO also fetch movie length for price calculation
             var screening = new GetScreeningResponse
@@ -74,7 +76,6 @@ namespace Reservation.Controllers
                 
                 seats.Add(seatEntity);
             }
-
             if (!ModelState.IsValid)
             {
                 return ValidationProblem(ModelState);
@@ -85,9 +86,10 @@ namespace Reservation.Controllers
             {
                 Movie = _mapper.Map<Movie>(screening.Movie),
                 Screening = new Screening { Id = screening.Id, MovieStart = screening.MovieStart },
-                // TODO Pull from token
-                User = new User { Id = "a", Firstname = "fn", Lastname = "ln", Email = "fn.ln@test.com"},
-                Seats = seats
+                User = _mapper.Map<User>(userInfo),
+                Seats = seats,
+                // TODO Price could depend on the movie length, day of the week...
+                Price = seats.Aggregate(0, (double acc, Seat s) => acc + s.PriceMultiplier * 300.0)
             };
             await _repository.CreateReservation(reservation);
             return CreatedAtAction(
@@ -97,18 +99,37 @@ namespace Reservation.Controllers
             );
         }
         
-        // [Authorize(Roles = Roles.CUSTOMER)]
+        [Authorize(Roles = Roles.CUSTOMER)]
         [HttpDelete("[action]/{id}")]
         [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status401Unauthorized)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         public async Task<IActionResult> CancelReservation(int id)
         {
-            // TODO check if belongs to user
+            var reservation = await _repository.GetReservationById(id);
+            if (reservation == null)
+            {
+                return NotFound();
+            }
+
+            // Check if reservation belongs to user trying to cancel it
+            if (reservation.User.Id == UserClaimsHelper.GetIdFromClaims(User))
+            {
+                return Unauthorized();
+            }
+            
             var result = await _repository.DeleteReservation(id);
             return result ? Ok() : NotFound();
         }
         
-        // TODO CancelScreening(int screeningId) admin route
+        [Authorize(Roles = Roles.ADMINISTRATOR)]
+        [HttpDelete("[action]/{screeningId}")]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        public async Task<IActionResult> CancelScreening(int screeningId)
+        {
+            await _repository.DeleteReservationsForScreening(screeningId);
+            return Ok();
+        }
         
         [HttpGet("[action]/{screeningId}")]
         [ProducesResponseType(typeof(IEnumerable<IEnumerable<SeatModel>>), StatusCodes.Status200OK)]
@@ -165,7 +186,7 @@ namespace Reservation.Controllers
             return Ok(response);
         }
         
-        // TODO admin authorization or check if belongs to user
+        [Authorize(Roles = Roles.ADMINISTRATOR)]
         [HttpGet("[action]/{id}")]
         [ProducesResponseType(typeof(ReservationModel), StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
@@ -178,6 +199,16 @@ namespace Reservation.Controllers
             }
 
             return Ok(_mapper.Map<ReservationModel>(reservation));
+        }
+
+        [Authorize(Roles = Roles.CUSTOMER)]
+        [HttpGet("[action]")]
+        [ProducesResponseType(typeof(IEnumerable<ReservationModel>), StatusCodes.Status200OK)]
+        public async Task<ActionResult<IEnumerable<ReservationModel>>> GetUserReservations()
+        {
+            var userId = UserClaimsHelper.GetIdFromClaims(User);
+            var reservations = await _repository.GetReservationsByUser(userId);
+            return Ok(_mapper.Map<IEnumerable<ReservationModel>>(reservations));
         }
     }
 }

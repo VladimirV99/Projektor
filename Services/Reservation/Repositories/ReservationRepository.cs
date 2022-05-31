@@ -113,6 +113,14 @@ namespace Reservation.Repositories
                 .SingleOrDefaultAsync();
         }
 
+        public async Task<IEnumerable<Entities.Reservation>> GetReservationsByUser(string userId)
+        {
+            return await _dbContext.Reservations
+                .Where(r => r.User.Id == userId)
+                .Include(r => r.Seats)
+                .ToListAsync();
+        }
+
         public async Task<bool> DeleteReservation(int id)
         {
             var reservation = await _dbContext.Reservations.FindAsync(id);
@@ -124,6 +132,15 @@ namespace Reservation.Repositories
             _dbContext.Reservations.Remove(reservation);
             await _dbContext.SaveChangesAsync();
             return true;
+        }
+
+        public async Task DeleteReservationsForScreening(int screeningId)
+        {
+            var reservations = await _dbContext.Reservations
+                .Where(r => r.Screening.Id == screeningId)
+                .ToListAsync();
+            _dbContext.Reservations.RemoveRange(reservations);
+            await _dbContext.SaveChangesAsync();
         }
 
         public async Task<bool> IsSeatReserved(int screeningId, int row, int column)

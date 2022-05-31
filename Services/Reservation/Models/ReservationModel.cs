@@ -7,5 +7,6 @@ namespace Reservation.Models
         public MovieModel Movie { get; set; }
         public IEnumerable<SeatCoordinates> Seats { get; set; }
         public UserModel User { get; set; }
+        public double Price { get; set; }
     }
 }

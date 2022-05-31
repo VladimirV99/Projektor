@@ -9,22 +9,23 @@ public static class ReservationSeeder
     {
         const string hallsDataPath            = "Data/Reservations/halls.tsv";
         const string seatsDataPath            = "Data/Reservations/seats.tsv";
-        // const string reservationsDataPath     = "Data/Reservations/reservations.tsv";
-        // const string reservationSeatsDataPath = "Data/Reservations/reservation_seats.tsv";
+        const string reservationsDataPath     = "Data/Reservations/reservations.tsv";
+        const string reservationSeatsDataPath = "Data/Reservations/reservation_seats.tsv";
         
         try
         {
             // Read data files
             DataTable dtHalls            = CsvReader.ReadCsv(hallsDataPath) ?? throw new NullReferenceException(nameof(dtHalls));
             DataTable dtSeats            = CsvReader.ReadCsv(seatsDataPath) ?? throw new NullReferenceException(nameof(dtSeats));
-            // DataTable dtReservations     = CsvReader.ReadCsv(reservationsDataPath) ?? throw new NullReferenceException(nameof(dtReservations));
-            // DataTable dtReservationSeats = CsvReader.ReadCsv(reservationSeatsDataPath) ?? throw new NullReferenceException(nameof(dtReservationSeats));
+            DataTable dtReservations     = CsvReader.ReadCsv(reservationsDataPath) ?? throw new NullReferenceException(nameof(dtReservations));
+            DataTable dtReservationSeats = CsvReader.ReadCsv(reservationSeatsDataPath) ?? throw new NullReferenceException(nameof(dtReservationSeats));
             
             TableInsertRecord[] seedTables = {
                 new ("Halls", dtHalls, true),
-                new ("Seats", dtSeats, false)
-                // new ("Reservations", dtReservations, true),
-                // new ("ReservationSeats", dtReservationSeats, false)
+                new ("Seats", dtSeats, false),
+                new ("Reservations", dtReservations, true),
+                new ("ReservationSeat", dtReservationSeats, false),
+                
             };
             
             SqlHelper.SeedData(

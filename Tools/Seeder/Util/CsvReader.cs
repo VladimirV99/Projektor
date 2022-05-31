@@ -49,7 +49,7 @@ public static class CsvReader
         }
         catch (Exception)
         {
-            Console.WriteLine($"Could not read file: {csvPath}");
+            Console.WriteLine($"Error parsing file: {csvPath}");
         }
         return null;
     }

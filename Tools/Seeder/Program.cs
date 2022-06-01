@@ -57,7 +57,7 @@ foreach (var arg in args)
 
 if (seedMovies) MovieSeeder.Seed();
 if (seedScreenings) ScreeningSeeder.Seed();
-// if (seedReservations) ReservationSeeder.Seed();
+if (seedReservations) ReservationSeeder.Seed();
 if (seedReviews) ReviewSeeder.Seed();
 
 return 0;

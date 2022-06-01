@@ -73,6 +73,18 @@
       "UpstreamHttpMethod": [ "Get", "Post", "Patch", "Delete", "Options" ]
     },
     {
+      "DownstreamPathTemplate": "/api/{version}/Hall/{everything}",
+      "DownstreamScheme": "http",
+      "DownstreamHostAndPorts": [
+        {
+          "Host": "localhost",
+          "Port": 5102
+        }
+      ],
+      "UpstreamPathTemplate": "/api/{version}/Hall/{everything}",
+      "UpstreamHttpMethod": [ "Get", "Post", "Put", "Delete", "Options" ]
+    },
+    {
       "DownstreamPathTemplate": "/api/{version}/Reservation/{everything}",
       "DownstreamScheme": "http",
       "DownstreamHostAndPorts": [

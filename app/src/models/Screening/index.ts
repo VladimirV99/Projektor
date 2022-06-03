@@ -1,10 +1,11 @@
+import Hall from 'models/Hall';
 import ScreeningMovie from './ScreeningMovie';
 
 export default class Screening {
     constructor(
-        public id: number,
-        public movie: ScreeningMovie | null,
-        public movieStart: Date,
-        public hallId: number
+        public id: number = -1,
+        public movie: ScreeningMovie | null = null,
+        public movieStart: string = '',
+        public hall: Hall | null = null
     ) {}
 }

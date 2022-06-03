@@ -1,6 +1,7 @@
 import { Fragment, useEffect } from 'react';
 import { useDispatch } from 'react-redux';
-import { logoutCustomer, setTokensAndUser } from 'redux/auth/actions';
+import { setTokensAndUser } from 'redux/auth/actions';
+import { logoutFullfiled } from 'redux/auth/actions';
 
 export default function WithLocalStorageFetcher({
     children,
@@ -15,7 +16,7 @@ export default function WithLocalStorageFetcher({
         const userEncoded = window.localStorage.getItem('user');
 
         if (!accessToken || !refreshToken || !userEncoded) {
-            dispatch(logoutCustomer());
+            dispatch(logoutFullfiled());
             return;
         }
 

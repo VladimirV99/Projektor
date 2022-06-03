@@ -42,9 +42,9 @@ const MovieDetailsScreen = (): JSX.Element => {
         const dict = screenings
             //.filter((s) => s.movieStart.getTime() >= Date.now())
             .reduce((groups: any, screening: Screening): any => {
-                let day = new Date(screening.movieStart.getTime());
+                let day = new Date(screening.movieStart);
                 removeTime(day);
-                let key = day.getTime().toString();
+                let key = day.toString();
 
                 if (!groups.hasOwnProperty(key)) groups[key] = [];
                 groups[key].push(screening);

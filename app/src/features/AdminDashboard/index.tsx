@@ -5,6 +5,7 @@ import Tab from '@mui/material/Tab';
 import { Box } from '@mui/material';
 import ManageMovies from './ManageMovies';
 import Helmet from 'react-helmet';
+import ManageScreenings from './ManageScreenings';
 import ManagePeople from './ManagePeople';
 import ManageUsers from './ManageUsers';
 
@@ -91,7 +92,7 @@ const AdminDashboard = () => {
                     <ManageUsers />
                 </TabPanel>
                 <TabPanel value={value} index={3}>
-                    Dashboard for managing screenings
+                    <ManageScreenings />
                 </TabPanel>
             </Box>
         </Fragment>

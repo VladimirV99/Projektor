@@ -1,4 +1,5 @@
-import { logoutCustomer, setTokensAndUser } from 'redux/auth/actions';
+import { setTokensAndUser } from 'redux/auth/actions';
+import { logoutFullfiled } from 'redux/auth/actions';
 import axios from 'axios';
 import store from 'redux/store';
 import urlJoin from 'url-join';
@@ -46,7 +47,7 @@ axiosAuthInstance.interceptors.response.use(
         }
         const originalRequest = error.config;
         if (originalRequest._retry) {
-            store.dispatch(logoutCustomer());
+            store.dispatch(logoutFullfiled());
             localStorage.removeItem('accessToken');
             localStorage.removeItem('refreshToken');
 
@@ -77,7 +78,7 @@ axiosAuthInstance.interceptors.response.use(
                     localStorage.removeItem('accessToken');
                     localStorage.removeItem('refreshToken');
                     localStorage.removeItem('user');
-                    store.dispatch(logoutCustomer());
+                    store.dispatch(logoutFullfiled());
                     reject(error);
                 });
         });

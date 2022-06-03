@@ -74,6 +74,30 @@ namespace Screening.Data
                 .FindAsync(id);
         }
 
+        public async Task<IEnumerable<Movie>> GetMovies()
+        {
+            return await _dbContext
+                .Movies
+                .ToListAsync();
+        }
+        public async Task<IEnumerable<Movie>> GetMoviesBySearchString(string searchString)
+        {
+            searchString = searchString.Trim().ToLower();
+            return await _dbContext
+                .Movies
+                .Where(m => m.Title.ToLower().Contains(searchString))
+                .ToListAsync();
+        }
+
+        public async Task<IEnumerable<Hall>> GetHallsBySearchString(string searchString)
+        {
+            searchString = searchString.Trim().ToLower();
+            return await _dbContext
+                .Halls
+                .Where(h => h.Name.ToLower().Contains(searchString))
+                .ToListAsync();
+        }
+
         public async Task<Hall?> GetHallById(int id)
         {
             return await _dbContext
@@ -97,18 +121,17 @@ namespace Screening.Data
             await _dbContext.SaveChangesAsync();
         }
 
-        public async Task<bool> UpdateMovieStartTime(int id, DateTime moment)
+        public async Task UpdateScreening(int id, DateTime moment, int movieId, int hallId)
         {
             var screening = await _dbContext
                 .Screenings
                 .FindAsync(id);
 
-            if (screening == null) return false;
-
             screening.MovieStart = moment;
-            _dbContext.SaveChanges();
+            screening.HallId = hallId;
+            screening.MovieId = movieId;
 
-            return true;
+            await _dbContext.SaveChangesAsync();
         }
 
         public async Task<bool> DeleteScreening(int id)

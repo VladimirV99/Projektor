@@ -95,6 +95,29 @@ namespace Screening.Controllers
             return Ok(_mapper.Map<IEnumerable<HallModel>>(halls));
         }
 
+        [HttpGet("[action]")]
+        [ProducesResponseType(typeof(IEnumerable<HallModel>), StatusCodes.Status200OK)]
+        public async Task<ActionResult<HallModel>> GetHallsBySearchString([FromQuery] string searchString)
+        {
+            var halls = await _repository.GetHallsBySearchString(searchString);
+            return Ok(_mapper.Map<IEnumerable<HallModel>>(halls));
+        }
+
+        [HttpGet("[action]")]
+        [ProducesResponseType(typeof(IEnumerable<MovieModel>), StatusCodes.Status200OK)]
+        public async Task<ActionResult<MovieModel>> GetMovies()
+        {
+            var movies = await _repository.GetMovies();
+            return Ok(_mapper.Map<IEnumerable<MovieModel>>(movies));
+        }
+
+        [HttpGet("[action]")]
+        [ProducesResponseType(typeof(IEnumerable<MovieModel>), StatusCodes.Status200OK)]
+        public async Task<ActionResult<MovieModel>> GetMoviesBySearchString([FromQuery] string searchString)
+        {
+            var movies = await _repository.GetMoviesBySearchString(searchString);
+            return Ok(_mapper.Map<IEnumerable<MovieModel>>(movies));
+        }
 
         [HttpPost("[action]")]
         [ProducesResponseType(StatusCodes.Status200OK)]
@@ -136,15 +159,14 @@ namespace Screening.Controllers
             return StatusCode(StatusCodes.Status201Created);
         }
 
-        [HttpPatch("[action]/{id}/{moment}")]
+        [HttpPatch("[action]")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
-        public async Task<IActionResult> UpdateMovieStartTime([FromBody] UpdateMovieStartTimeRequest request)
+        public async Task<IActionResult> UpdateScreening([FromBody] UpdateScreeningRequest request)
         {
-            var movie = _repository.GetMovieById(request.MovieId);
-            if(movie == null) return NotFound();
+            await _repository.UpdateScreening(request.ScreeningId, request.Moment, request.MovieId, request.HallId);
 
-            return await _repository.UpdateMovieStartTime(request.MovieId, request.Moment) ? Ok() : NotFound();
+            return Ok();
         }
 
         [HttpDelete("[action]/{id}")]

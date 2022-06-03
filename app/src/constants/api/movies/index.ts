@@ -21,4 +21,15 @@ export const MOVIE_DETAILS_URL = (movieId: number) =>
 
 export const SEARCH_PEOPLE_URL = urlJoin(URL_BASE, '/Movies/SearchPeople');
 
+export const SEARCH_PEOPLE_ADMIN_URL = urlJoin(
+    URL_BASE,
+    '/Movies/SearchPeopleAdmin'
+);
+
 export const GET_ROLES_URL = urlJoin(URL_BASE, '/Movies/GetRoles');
+
+export const UPDATE_PERSON_URL = urlJoin(URL_BASE, '/Movies/UpdatePerson');
+export const CREATE_PERSON_URL = urlJoin(URL_BASE, '/Movies/CreatePerson');
+
+export const DELETE_PERSON_URL = (id: number) =>
+    urlJoin(URL_BASE, `/Movies/DeletePerson/${id}`);

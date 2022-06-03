@@ -23,6 +23,7 @@ import { Link, useNavigate } from 'react-router-dom';
 import { logoutCustomer } from 'redux/auth/modules';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faCamera } from '@fortawesome/free-solid-svg-icons';
+import { isUserAdmin } from 'util/auth';
 
 const Header = () => {
     const [anchorElNav, setAnchorElNav] = React.useState<null | HTMLElement>(
@@ -61,7 +62,14 @@ const Header = () => {
 
     const settings: { name: string; link?: string; onClick?: () => void }[] =
         useMemo(() => {
+            const isAdmin = isUserAdmin();
+
+            const adminLinks = isAdmin
+                ? [{ name: 'Admin Dashboard', link: '/admin' }]
+                : [];
+
             return [
+                ...adminLinks,
                 { name: 'Profile Settings', link: '/profile_settings' },
                 { name: 'Reservations', link: '/reservations' },
                 {

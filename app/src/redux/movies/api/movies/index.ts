@@ -5,10 +5,11 @@ import {
     DELETE_MOVIES_URL,
     CREATE_MOVIE_URL,
     UPDATE_MOVIE_URL,
+    SEARCH_PEOPLE_ADMIN_URL,
 } from 'constants/api/movies';
 import { PaginatedMovieList } from 'models/Movie/PaginatedMovieList';
-import Movie from 'models/Movie';
 import CreateOrUpdateMovieRequest from 'models/Movie/CreateOrUpdateMovieRequest';
+import PaginatedPeopleList from 'models/Movie/PaginatedPeopleList';
 import axiosAuthInstance from 'axios/instance';
 
 export const filterMovies = (filter: FilterMoviesRequest) => {

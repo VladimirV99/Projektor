@@ -160,6 +160,44 @@ namespace Movies.API.Data
             var roles = await _dbContext.Roles.ToListAsync();
             return roles;
         }
+        public async Task<Tuple<List<Person>, int>> SearchPeopleAdmin(string searchString, int page)
+        {
+            var processedSearchString = searchString.ToLower().Replace(" ", "");
+            var query = _dbContext
+                    .People
+                    .Where(p => (p.FirstName.ToLower() + p.LastName.ToLower()).Contains(processedSearchString))
+                    .Include(p => p.Movies)
+                    .ThenInclude(mp => mp.Movie)
+                ;
+            var count = query.Count();
+            var result = await query.Skip((page - 1) * 10)
+                .Take(10).ToListAsync();
+            
+            return new Tuple<List<Person>, int>(result, count);
+        }
+
+        public async Task CreatePerson(Person person)
+        {
+            _dbContext.People.Add(person);
+            await _dbContext.SaveChangesAsync();
+        }
+
+        public async Task UpdatePerson(Person person)
+        {
+            _dbContext.People.Update(person);
+            await _dbContext.SaveChangesAsync();
+        }
+
+        public async Task DeletePerson(int id)
+        {
+            var person = await _dbContext.People.FindAsync(id);
+            if (person == null)
+            {
+                return;
+            }
+            _dbContext.People.Remove(person);
+            await _dbContext.SaveChangesAsync();
+        }
     }
 }
 

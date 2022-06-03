@@ -5,12 +5,14 @@ import moviesReducer from 'redux/movies/reducers/Movie';
 import genresReducer from 'redux/movies/reducers/Genre';
 import filterLimitsReducer from 'redux/movies/reducers/FilterLimits';
 import rolesReducer from 'redux/movies/reducers/Roles';
+import peopleReducer from 'redux/movies/reducers/People';
 
 const rootReducer = combineReducers({
     movies: moviesReducer,
     genres: genresReducer,
     filterLimits: filterLimitsReducer,
     roles: rolesReducer,
+    people: peopleReducer,
 });
 
 const persistConfig = {

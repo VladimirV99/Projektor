@@ -16,7 +16,7 @@ export type MovieSliceType = {
 
 export const filterMovies = createAsyncThunk(
     'movies/filterMovies',
-    async (filter: FilterMoviesRequest) => {
+    async (filter: FilterMoviesRequest): Promise<PaginatedMovieList> => {
         const { data }: ApiSuccess<PaginatedMovieList> = await API.filterMovies(
             filter
         );

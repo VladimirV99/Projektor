@@ -33,3 +33,11 @@ export const toTimeString = (date: Date) => {
     if (minutes.length == 1) minutes = '0' + minutes;
     return `${hours}:${minutes}`;
 };
+
+export const parseServerDate = (date: Date) => {
+    return new Date(date + 'Z');
+};
+
+export const addMillisecond = (date: Date) => {
+    return new Date(date.getTime() + 1);
+};

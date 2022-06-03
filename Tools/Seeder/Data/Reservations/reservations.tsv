@@ -1,0 +1,6 @@
+Id	User_Id	User_Email	User_Firstname	User_Lastname	Movie_Id	Movie_Title	Screening_Id	Screening_MovieStart	Price
+1	6f5a8363-b09d-4737-80f3-5432db0cfb2b	snyderscott@example.com	Anthony	Bowers	1	Spider-Man: No Way Home	1	2022-06-01 20:00:00	900.0
+2	9bdbf836-3ee5-46c9-968c-5f4fcb32185d	christinetaylor@example.com	Nancy	Graham	1	Spider-Man: No Way Home	1	2022-06-01 20:00:00	660.0
+3	c4dc8e09-73dc-4deb-85e0-a2431099f81d	janetmoreno@example.net	Michelle	Hodges	1	Spider-Man: No Way Home	1	2022-06-01 20:00:00	300.0
+4	9254b048-6fbe-48c5-8aba-ddc2a5b2066c	jonescurtis@example.org	Scott	Cunningham	3	Last Night in Soho	10	2022-06-01 20:45:00	600.0
+5	ca7fd985-b2e6-4276-8cbb-bbc145fcfc02	mckenziemary@example.org	Jennifer	Bentley	4	tick, tick...BOOM!	16	2022-06-01 18:00:00	300.0

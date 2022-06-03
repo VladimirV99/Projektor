@@ -4,6 +4,9 @@ using Microsoft.OpenApi.Models;
 using Review.Data;
 using Review.Repositories;
 using System.Reflection;
+using Common.EventBus.Constants;
+using MassTransit;
+using Review.EventBus;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -16,6 +19,29 @@ builder.Services.AddTransient<IDataSeeder, DataSeeder>();
 builder.Services.AddAutoMapper(Assembly.GetExecutingAssembly());
 
 builder.Services.AddScoped<IReviewRepository, ReviewRepository>();
+
+builder.Services.AddMassTransit(config =>
+{
+    var eventBusSettings = builder.Configuration.GetSection("EventBus");
+
+    config.AddConsumer<AddWatchedMovieConsumer>();
+    config.AddConsumer<RemoveWatchedMovieConsumer>();
+
+    config.UsingRabbitMq((ctx, cfg) =>
+    {
+        cfg.Host(eventBusSettings["Host"], h =>
+        {
+            h.Username(eventBusSettings["Username"]);
+            h.Password(eventBusSettings["Password"]);
+        });
+
+        cfg.ReceiveEndpoint(EventQueues.REVIEW, c =>
+        {
+            c.ConfigureConsumer<AddWatchedMovieConsumer>(ctx);
+            c.ConfigureConsumer<RemoveWatchedMovieConsumer>(ctx);
+        });
+    });
+});
 
 builder.Services.AddControllers();
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle

@@ -9,6 +9,7 @@ namespace Review.Mapper
         public UserProfile()
         {
             CreateMap<User, UserModel>().ReverseMap();
+            CreateMap<Common.EventBus.Models.User, User>();
         }
     }
 }

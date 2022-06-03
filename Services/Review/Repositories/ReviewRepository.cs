@@ -18,7 +18,7 @@ namespace Review.Repositories
         {
             await using var connection = _dbContext.GetConnection();
             await connection.ExecuteAsync(
-                "INSERT INTO WatchedMovies (MovieId, UserId, WatchedOn) VALUES (@MovieId, @UserId, @WatchedOn)",
+                "INSERT INTO WatchedMovies (MovieId, UserId, ReservationId, WatchedOn) VALUES (@MovieId, @UserId, @ReservationId, @WatchedOn)",
                 watchedMovie
             );
             return watchedMovie;
@@ -27,19 +27,19 @@ namespace Review.Repositories
         public async Task<bool> HasWatchedMovie(string userId, int movieId)
         {
             await using var connection = _dbContext.GetConnection();
-            var watchedMovie = await connection.QuerySingleOrDefaultAsync<WatchedMovie>(
-                "SELECT * FROM WatchedMovies WHERE MovieId = @MovieId AND UserId = @UserId",
+            var watchedMovie = await connection.QueryFirstOrDefaultAsync<WatchedMovie>(
+                "SELECT * FROM WatchedMovies WHERE MovieId = @MovieId AND UserId = @UserId AND WatchedOn < CURRENT_TIMESTAMP",
                 new { MovieId = movieId, UserId = userId }
             );
             return watchedMovie != null;
         }
 
-        public async Task<bool> RemoveWatchedMovie(int movieId, string userId)
+        public async Task<bool> RemoveWatchedMovie(int movieId, string userId, int reservationId)
         {
             await using var connection = _dbContext.GetConnection();
             var rowsAffected = await connection.ExecuteAsync(
-                "DELETE FROM WatchedMovies WHERE MovieId = @MovieId AND UserId = @UserId",
-                new { MovieId = movieId, UserId = userId }
+                "DELETE FROM WatchedMovies WHERE MovieId = @MovieId AND UserId = @UserId AND ReservationId = @ReservationId",
+                new { MovieId = movieId, UserId = userId, ReservationId = reservationId }
             );
             return rowsAffected != 0;
         }

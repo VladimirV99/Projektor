@@ -1,6 +1,8 @@
 ﻿using AutoMapper;
 using Common.Auth;
 using Common.Auth.Util;
+using Common.EventBus.Events;
+using MassTransit;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Reservation.Entities;
@@ -15,11 +17,14 @@ namespace Reservation.Controllers
     {
         private readonly IReservationRepository _repository;
         private readonly IMapper _mapper;
+        private readonly IPublishEndpoint _publishEndpoint;
 
-        public ReservationController(IReservationRepository repository, IMapper mapper)
+        public ReservationController(IReservationRepository repository, IMapper mapper,
+            IPublishEndpoint publishEndpoint)
         {
             _repository = repository ?? throw new ArgumentNullException(nameof(repository));
             _mapper = mapper ?? throw new ArgumentNullException(nameof(mapper));
+            _publishEndpoint = publishEndpoint ?? throw new ArgumentNullException(nameof(publishEndpoint));
         }
 
         [Authorize(Roles = Roles.CUSTOMER)]
@@ -92,6 +97,16 @@ namespace Reservation.Controllers
                 Price = seats.Aggregate(0, (double acc, Seat s) => acc + s.PriceMultiplier * 300.0)
             };
             await _repository.CreateReservation(reservation);
+
+            // Notify review service
+            await _publishEndpoint.Publish(new AddWatchedMovieEvent
+            (
+                screening.Movie.Id,
+                _mapper.Map<Common.EventBus.Models.User>(userInfo),
+                reservation.Id,
+                screening.MovieStart
+            ));
+            
             return CreatedAtAction(
                 nameof(GetReservation),
                 new {Id = reservation.Id},
@@ -113,13 +128,26 @@ namespace Reservation.Controllers
             }
 
             // Check if reservation belongs to user trying to cancel it
-            if (reservation.User.Id == UserClaimsHelper.GetIdFromClaims(User))
+            if (reservation.User.Id != UserClaimsHelper.GetIdFromClaims(User))
             {
                 return Unauthorized();
             }
             
             var result = await _repository.DeleteReservation(id);
-            return result ? Ok() : NotFound();
+            if (!result)
+            {
+                return NotFound();
+            }
+            
+            // Notify review service
+            await _publishEndpoint.Publish(new RemoveWatchedMovieEvent
+            (
+                reservation.Movie.Id,
+                reservation.User.Id,
+                reservation.Id
+            ));
+            
+            return Ok();
         }
         
         [Authorize(Roles = Roles.ADMINISTRATOR)]

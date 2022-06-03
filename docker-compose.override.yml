@@ -99,8 +99,10 @@ services:
     environment:
       - ASPNETCORE_ENVIRONMENT=Development
       - "ConnectionStrings:ReviewConnectionString=Server=projektor_postgres;Database=ReviewDB;User Id=admin;Password=admin123;"
+      - "EventBus:Host=amqp://projektor_rabbitmq:5672"
     depends_on:
       - projektor_postgres
+      - projektor_rabbitmq
     ports:
       - "5007:80"
 
@@ -108,9 +110,11 @@ services:
     container_name: reservation
     environment:
       - ASPNETCORE_ENVIRONMENT=Development
-      - "ConnectionStrings:ReservationsConnectionString=Server=localhost;Database=ReservationDB;User Id=sa;Password=MatfRs2_MSSQL;"
+      - "ConnectionStrings:ReservationsConnectionString=Server=projektor_mssql;Database=ReservationDB;User Id=sa;Password=MatfRs2_MSSQL;"
+      - "EventBus:Host=amqp://projektor_rabbitmq:5672"
     depends_on:
       - projektor_mssql
+      - projektor_rabbitmq
     ports:
       - "5006:80"
 

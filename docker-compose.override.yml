@@ -11,7 +11,7 @@ services:
     volumes:
       - mssql_data:/var/opt/mssql/data
       - ./Services/Movies/Movies.API/Seed:/var/seed
-      - ./Services/Screening/Seed:/var/seed_screening
+      - ./Services/Screening.Common/Seed:/var/seed_screening
 
   projektor_rabbitmq:
     container_name: projektor_rabbitmq
@@ -70,8 +70,8 @@ services:
     ports:
       - "5009:80"
 
-  screening:
-    container_name: screening
+  screening.api:
+    container_name: screening.api
     environment:
       - ASPNETCORE_ENVIRONMENT=Development
       - "ConnectionStrings:ScreeningsConnectionString=Server=projektor_mssql;Database=ScreeningDb;User Id=sa;Password=MatfRs2_MSSQL;"
@@ -89,7 +89,7 @@ services:
       - identity
       - mailer
       - review
-      - screening
+      - screening.api
       - reservation
     ports:
       - "7060:80"

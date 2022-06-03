@@ -1,6 +1,4 @@
-﻿using Screening.Common.Models;
-
-namespace Screening.Common.Models
+﻿namespace Screening.API.Models
 {
     public class ScreeningModel
     {

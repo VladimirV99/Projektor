@@ -1,7 +1,7 @@
 ﻿using System.ComponentModel.DataAnnotations;
 using Screening.Common.Constants;
 
-namespace Screening.Common.Models
+namespace Screening.API.Models
 {
     public class InsertHallRequest
     {

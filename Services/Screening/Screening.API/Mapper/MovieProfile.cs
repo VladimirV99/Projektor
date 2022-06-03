@@ -1,8 +1,8 @@
 ﻿using AutoMapper;
 using Screening.Common.Entities;
-using Screening.Common.Models;
+using Screening.API.Models;
 
-namespace Screening.Common.Mapper
+namespace Screening.API.Mapper
 {
     public class MovieProfile : Profile
     {

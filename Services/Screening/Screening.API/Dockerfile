@@ -6,11 +6,11 @@ EXPOSE 80
 
 FROM mcr.microsoft.com/dotnet/sdk:6.0 AS build
 WORKDIR /src
-COPY ["Services/Screening.API/Screening.API.csproj", "Services/Screening.API/"]
-COPY ["Services/Screening/Screening.Common.csproj", "Services/Screening/"]
-RUN dotnet restore "Services/Screening.API/Screening.API.csproj"
+COPY ["Services/Screening/Screening.API/Screening.API.csproj", "Services/Screening/Screening.API/"]
+COPY ["Services/Screening/Screening.Common/Screening.Common.csproj", "Services/Screening/Screening.Common/"]
+RUN dotnet restore "Services/Screening/Screening.API/Screening.API.csproj"
 COPY . .
-WORKDIR "/src/Services/Screening.API"
+WORKDIR "/src/Services/Screening/Screening.API"
 RUN dotnet build "Screening.API.csproj" -c Release -o /app/build
 
 FROM build AS publish

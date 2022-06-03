@@ -1,6 +1,6 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Screening.Common.Data;
-using Screening.Common.Models;
+using Screening.API.Models;
 using AutoMapper;
 using Screening.Common.Entities;
 

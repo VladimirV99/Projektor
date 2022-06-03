@@ -1,8 +1,8 @@
 ﻿using AutoMapper;
+using Screening.API.Models;
 using Screening.Common.Entities;
-using Screening.Common.Models;
 
-namespace Screening.Common.Mapper
+namespace Screening.API.Mapper
 {
     public class HallProfile : Profile
     {

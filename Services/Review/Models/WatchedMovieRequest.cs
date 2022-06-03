@@ -3,7 +3,7 @@ using System.ComponentModel.DataAnnotations;
 
 namespace Review.Models
 {
-    public class AddWatchedMovieRequest
+    public class WatchedMovieRequest
     {
         [Required(ErrorMessage = ErrorMessages.MOVIE_ID_REQUIRED)]
         public int MovieId { get; set; }
@@ -13,14 +13,5 @@ namespace Review.Models
 
         [Required(ErrorMessage = ErrorMessages.RESERVATION_ID_REQUIRED)]
         public int ReservationId { get; set; }
-
-        [Required(ErrorMessage = ErrorMessages.WATCHED_TIME_REQUIRED)]
-        public DateTime WatchedOn { get; set; }
-
-        // TODO Remove when we implement gRPC to fetch this data
-        [EmailAddress]
-        public string Email { get; set; } = null!;
-        public string FirstName { get; set; } = null!;
-        public string LastName { get; set; } = null!;
     }
 }

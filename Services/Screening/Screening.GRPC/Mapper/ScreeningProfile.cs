@@ -7,7 +7,11 @@ namespace Screening.GRPC.Mapper
     {
         public ScreeningProfile()
         {
-            CreateMap<Common.Entities.Screening, GetScreeningResponse>().ForMember(s => s.MovieStart, x => x.MapFrom(t => Timestamp.FromDateTime(DateTime.SpecifyKind(t.MovieStart, DateTimeKind.Utc))));
+            CreateMap<Common.Entities.Screening, GetScreeningResponse>()
+                .ForMember(
+                    s => s.MovieStart,
+                    opt => opt.MapFrom(screening => Timestamp.FromDateTime(DateTime.SpecifyKind(screening.MovieStart, DateTimeKind.Utc)))
+                );
             CreateMap<Common.Entities.Movie, GetScreeningResponse.Types.Movie>();
         }
     }

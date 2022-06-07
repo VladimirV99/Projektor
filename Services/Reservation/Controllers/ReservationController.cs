@@ -4,6 +4,7 @@ using Common.Auth.Util;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Reservation.Entities;
+using Reservation.Grpc;
 using Reservation.Models;
 using Reservation.Repositories;
 
@@ -15,11 +16,14 @@ namespace Reservation.Controllers
     {
         private readonly IReservationRepository _repository;
         private readonly IMapper _mapper;
+        private readonly ScreeningService _screeningService;
 
-        public ReservationController(IReservationRepository repository, IMapper mapper)
+        public ReservationController(IReservationRepository repository, IMapper mapper,
+            ScreeningService screeningService)
         {
             _repository = repository ?? throw new ArgumentNullException(nameof(repository));
             _mapper = mapper ?? throw new ArgumentNullException(nameof(mapper));
+            _screeningService = screeningService ?? throw new ArgumentNullException(nameof(screeningService));
         }
 
         [Authorize(Roles = Roles.CUSTOMER)]
@@ -30,19 +34,7 @@ namespace Reservation.Controllers
         {
             var userInfo = UserClaimsHelper.GetUserFromClaims(User);
             
-            // TODO Fetch screening (gRPC)
-            // TODO also fetch movie length for price calculation
-            var screening = new GetScreeningResponse
-            {
-                Id = 1,
-                Movie = new MovieModel {
-                    Id = 1,
-                    Title = "Spider-Man: No Way Home"
-                    // Length = 148
-                },
-                MovieStart = new DateTime(2022, 5, 14, 18, 0, 0),
-                HallId = 1
-            };
+            var screening = await _screeningService.GetScreeningById(request.ScreeningId);
             if (screening == null)
             {
                 return NotFound("Screening not found");
@@ -85,7 +77,7 @@ namespace Reservation.Controllers
             var reservation = new Entities.Reservation
             {
                 Movie = _mapper.Map<Movie>(screening.Movie),
-                Screening = new Screening { Id = screening.Id, MovieStart = screening.MovieStart },
+                Screening = new Entities.Screening { Id = screening.Id, MovieStart = screening.MovieStart },
                 User = _mapper.Map<User>(userInfo),
                 Seats = seats,
                 // TODO Price could depend on the movie length, day of the week...
@@ -136,17 +128,7 @@ namespace Reservation.Controllers
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         public async Task<ActionResult<IEnumerable<IEnumerable<SeatModel>>>> GetSeatsForScreening(int screeningId)
         {
-            var screening = new GetScreeningResponse
-            {
-                Id = 1,
-                Movie = new MovieModel {
-                    Id = 1,
-                    Title = "Spider-Man: No Way Home"
-                    // Length = 148
-                },
-                MovieStart = new DateTime(2022, 5, 14, 18, 0, 0),
-                HallId = 1
-            };
+            var screening = await _screeningService.GetScreeningById(screeningId);
             if (screening == null)
             {
                 return NotFound("Screening not found");

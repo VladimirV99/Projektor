@@ -5,8 +5,10 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.OpenApi.Models;
 using Reservation.Data;
 using Reservation.Extensions;
+using Reservation.Grpc;
 using Reservation.Repositories;
 using Reservation.Services;
+using Screening.GRPC;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -21,6 +23,12 @@ builder.Services.AddScoped<IReservationRepository, ReservationRepository>();
 builder.Services.AddTransient<IDataSeeder, DataSeeder>();
 
 builder.Services.AddScoped<IHallService, HallService>();
+
+builder.Services.AddGrpcClient<ScreeningProtoService.ScreeningProtoServiceClient>(o =>
+{
+    o.Address = new Uri(builder.Configuration["gRPC:ScreeningUrl"]);
+});
+builder.Services.AddScoped<ScreeningService>();
 
 builder.Services.AddAutoMapper(Assembly.GetExecutingAssembly());
 

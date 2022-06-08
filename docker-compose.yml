@@ -55,8 +55,15 @@ services:
       context: .
       dockerfile: Services/Reservation/Dockerfile
 
+  screening.grpc:
+    image: ${DOCKER_REGISTRY-}screeninggrpc
+    build:
+      context: .
+      dockerfile: Services/Screening/Screening.GRPC/Dockerfile
+
 volumes:
   mssql_data:
   postgres_data:
   pgadmin_data:
+
 

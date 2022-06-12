@@ -36,7 +36,17 @@ const SignIn = ({ shouldRender, onModalClose, onSignUpLinkClicked }: Props) => {
 
     return (
         <ModalCheKoV shouldRender={shouldRender} onModalClose={onModalClose}>
-            <div style={{ backgroundColor: 'white' }}>
+            <div
+                style={{
+                    backgroundColor: 'white',
+                    display: 'flex',
+                    flexDirection: 'column',
+                    height: 'fit-content',
+                    padding: '2rem',
+                    margin: 'auto',
+                    borderRadius: '5px',
+                }}
+            >
                 <h1 style={{ textAlign: 'center' }}>
                     {TRANSLATIONS.SIGN_IN_LABEL}
                 </h1>
@@ -50,9 +60,7 @@ const SignIn = ({ shouldRender, onModalClose, onSignUpLinkClicked }: Props) => {
                     {({ handleSubmit }) => (
                         <form
                             style={{
-                                flexDirection: 'column',
-                                display: 'flex',
-                                width: '300px',
+                                width: '350px',
                             }}
                             onSubmit={handleSubmit}
                         >
@@ -72,7 +80,13 @@ const SignIn = ({ shouldRender, onModalClose, onSignUpLinkClicked }: Props) => {
                                     setPassword(e.currentTarget.value)
                                 }
                             />
-                            <Button type="submit" disabled={!isSubmitting}>
+                            <Button
+                                type="submit"
+                                variant="contained"
+                                fullWidth
+                                disabled={!isSubmitting}
+                                style={{ marginTop: '1rem' }}
+                            >
                                 {TRANSLATIONS.SUBMIT_LABEL}
                             </Button>
                         </form>

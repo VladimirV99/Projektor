@@ -43,7 +43,17 @@ const SignUp = ({ shouldRender, onModalClose }: Props) => {
 
     return (
         <ModalCheKoV shouldRender={shouldRender} onModalClose={onModalClose}>
-            <div style={{ backgroundColor: 'white' }}>
+            <div
+                style={{
+                    backgroundColor: 'white',
+                    display: 'flex',
+                    flexDirection: 'column',
+                    height: 'fit-content',
+                    padding: '2rem',
+                    margin: 'auto',
+                    borderRadius: '5px',
+                }}
+            >
                 <h1 style={{ textAlign: 'center' }}>
                     {TRANSLATIONS.SIGN_UP_LABEL}
                 </h1>
@@ -88,10 +98,7 @@ const SignUp = ({ shouldRender, onModalClose }: Props) => {
                     {({ handleSubmit }) => (
                         <form
                             style={{
-                                flexDirection: 'column',
-                                display: 'flex',
-                                width: '300px',
-                                justifyContent: 'center',
+                                width: '350px',
                             }}
                             onSubmit={handleSubmit}
                         >
@@ -135,7 +142,13 @@ const SignUp = ({ shouldRender, onModalClose }: Props) => {
                                 }
                                 value={passwordConfirmed}
                             />
-                            <Button type="submit" disabled={!isSubmitting}>
+                            <Button
+                                type="submit"
+                                variant="contained"
+                                fullWidth
+                                disabled={!isSubmitting}
+                                style={{ marginTop: '1rem' }}
+                            >
                                 {TRANSLATIONS.SUBMIT_LABEL}
                             </Button>
                         </form>

@@ -1,4 +1,4 @@
-import { FormControl, Input, InputLabel } from '@mui/material';
+import { TextField } from '@mui/material';
 
 type Props = {
     onChange: (event: any) => void;
@@ -16,16 +16,16 @@ const FormInput = ({
     required = true,
 }: Props): JSX.Element => {
     return (
-        <FormControl style={{ paddingBottom: '20px' }}>
-            <InputLabel>{label}</InputLabel>
-            <Input
-                required={required}
-                type={type}
-                onChange={onChange}
-                value={value}
-                style={{ paddingLeft: '16px' }}
-            />
-        </FormControl>
+        <TextField
+            type={type}
+            variant="standard"
+            fullWidth
+            margin="normal"
+            label={label}
+            required={required}
+            onChange={onChange}
+            value={value}
+        />
     );
 };
 

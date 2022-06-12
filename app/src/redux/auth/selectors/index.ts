@@ -22,3 +22,12 @@ export const selectAuthErrors = createSelector(
     [getState],
     (state) => state.errors
 );
+
+export const selectShowSignUpForm = createSelector(
+    [getState],
+    (state) => state.showSignUpForm
+);
+export const selectShowSignInForm = createSelector(
+    [getState],
+    (state) => state.showSignInForm
+);

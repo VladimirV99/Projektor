@@ -8,6 +8,8 @@ import {
     registerFailed,
     registerPending,
     setTokensAndUser,
+    openSignUpForm,
+    openSignInForm,
 } from '../actions';
 import { AuthenticationReducerType } from './types';
 
@@ -17,6 +19,8 @@ const initialState: AuthenticationReducerType = {
     accessToken: null,
     refreshToken: null,
     errors: null,
+    showSignUpForm: false,
+    showSignInForm: false,
 };
 
 const reducer = createReducer(initialState, (builder) => {
@@ -47,6 +51,14 @@ const reducer = createReducer(initialState, (builder) => {
         state.accessToken = action.payload.accessToken;
         state.refreshToken = action.payload.refreshToken;
         state.user = action.payload.user;
+    });
+    builder.addCase(openSignUpForm, (state, action) => {
+        if (action.payload) state.showSignInForm = false;
+        state.showSignUpForm = action.payload;
+    });
+    builder.addCase(openSignInForm, (state, action) => {
+        if (action.payload) state.showSignUpForm = false;
+        state.showSignInForm = action.payload;
     });
 });
 

@@ -9,4 +9,6 @@ export interface AuthenticationReducerType {
     accessToken: string | null;
     refreshToken: string | null;
     errors: any;
+    showSignUpForm: boolean;
+    showSignInForm: boolean;
 }

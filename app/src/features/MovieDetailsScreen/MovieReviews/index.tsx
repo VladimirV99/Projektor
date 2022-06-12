@@ -15,11 +15,12 @@ import {
 } from 'constants/api/reviews';
 import axios from 'axios';
 import ReviewBox from 'components/Review';
-import { useSelector } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import { selectIsUserLoggedIn, selectUser } from 'redux/auth/selectors';
 import * as S from './index.styles';
 import StarIcon from 'components/StarIcon';
 import { parseServerDate } from 'util/dateUtils';
+import { openSignInForm } from 'redux/auth/actions';
 
 type CreateReviewRequest = {
     isAlreadyCreated: boolean;
@@ -55,6 +56,8 @@ const MovieReviews = ({
     if (!isMovieLoaded) {
         return <CircularProgress />;
     }
+
+    const dispatch = useDispatch();
 
     const isLoggedIn = useSelector(selectIsUserLoggedIn);
     const user = useSelector(selectUser);
@@ -232,12 +235,16 @@ const MovieReviews = ({
 
     const renderUserReview = useCallback(() => {
         if (!isLoggedIn) {
-            // TODO open login panel
             return (
                 <S.ReviewContainer>
                     <h5>
                         To leave a review, please{' '}
-                        <Link to="/login">log in</Link>
+                        <Link
+                            to="#"
+                            onClick={() => dispatch(openSignInForm(true))}
+                        >
+                            log in
+                        </Link>
                     </h5>
                 </S.ReviewContainer>
             );

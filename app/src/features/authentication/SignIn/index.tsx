@@ -6,6 +6,8 @@ import FormInput from 'components/FormInput';
 import * as TRANSLATIONS from 'translations';
 import { useDispatch } from 'react-redux';
 import { loginCustomer } from 'redux/auth/modules';
+import { Link } from 'react-router-dom';
+import { openSignUpForm } from 'redux/auth/actions';
 
 type Props = {
     shouldRender: boolean;
@@ -26,9 +28,9 @@ const SignIn = ({ shouldRender, onModalClose, onSignUpLinkClicked }: Props) => {
             <span>
                 {TRANSLATIONS.NOT_A_MEMBER_LABEL}{' '}
                 {
-                    <a style={{ color: 'blue' }} onClick={onSignUpLinkClicked}>
+                    <Link to="#" onClick={() => dispatch(openSignUpForm(true))}>
                         {TRANSLATIONS.SIGN_UP_LABEL}
-                    </a>
+                    </Link>
                 }
             </span>
         </div>

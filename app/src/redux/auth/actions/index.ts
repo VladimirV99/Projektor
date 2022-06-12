@@ -19,3 +19,6 @@ export const logoutFullfiled = createAction('logoutFullfiled');
 export const updateName = createAction<{ firstName: string; lastName: string }>(
     'updateName'
 );
+
+export const openSignUpForm = createAction<boolean>('openSignUpForm');
+export const openSignInForm = createAction<boolean>('openSignInForm');

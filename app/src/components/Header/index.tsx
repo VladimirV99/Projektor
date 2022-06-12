@@ -11,7 +11,6 @@ import Avatar from '@mui/material/Avatar';
 import Button from '@mui/material/Button';
 import Tooltip from '@mui/material/Tooltip';
 import MenuItem from '@mui/material/MenuItem';
-import AdbIcon from '@mui/icons-material/Adb';
 import { Fragment, useEffect, useMemo, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { selectIsUserLoggedIn, selectUser } from 'redux/auth/selectors';
@@ -24,6 +23,11 @@ import { logoutCustomer } from 'redux/auth/modules';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faCamera } from '@fortawesome/free-solid-svg-icons';
 import { isUserAdmin } from 'util/auth';
+import {
+    selectShowSignUpForm,
+    selectShowSignInForm,
+} from 'redux/auth/selectors';
+import { openSignUpForm, openSignInForm } from 'redux/auth/actions';
 
 const Header = () => {
     const [anchorElNav, setAnchorElNav] = React.useState<null | HTMLElement>(
@@ -82,26 +86,25 @@ const Header = () => {
         }, []);
 
     const isLoggedIn = useSelector(selectIsUserLoggedIn);
-    const [signInModal, setSignInModal] = useState<boolean>(false);
-    const [signUpModal, setSignUpModal] = useState<boolean>(false);
+
+    const signInModal = useSelector(selectShowSignInForm);
+    const signUpModal = useSelector(selectShowSignUpForm);
 
     const isUserLoggedIn = useSelector(selectIsUserLoggedIn);
 
     useEffect(() => {
         if (isUserLoggedIn) {
-            setSignInModal(false);
-            setSignUpModal(false);
+            dispatch(openSignInForm(false));
+            dispatch(openSignUpForm(false));
         }
     }, [isUserLoggedIn]);
 
     const onSignUpLinkClicked = () => {
-        setSignInModal(false);
-        setSignUpModal(true);
+        dispatch(openSignUpForm(true));
     };
 
     const onSignInLinkClicked = () => {
-        setSignInModal(true);
-        setSignUpModal(false);
+        dispatch(openSignInForm(true));
     };
 
     const user = useSelector(selectUser);
@@ -292,11 +295,11 @@ const Header = () => {
         <Fragment>
             <SignUp
                 shouldRender={signUpModal}
-                onModalClose={() => setSignUpModal(false)}
+                onModalClose={() => dispatch(openSignUpForm(false))}
             />
             <SignIn
                 shouldRender={signInModal}
-                onModalClose={() => setSignInModal(false)}
+                onModalClose={() => dispatch(openSignInForm(false))}
                 onSignUpLinkClicked={onSignUpLinkClicked}
             />
         </Fragment>

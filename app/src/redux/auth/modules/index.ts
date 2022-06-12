@@ -24,15 +24,13 @@ export const loginCustomer = (user: userLoginRequest) => (dispatch: any) => {
 };
 
 export const logoutCustomer = () => (dispatch: any) => {
-    API.logoutUser(localStorage.getItem('refreshToken')!).then(
-        (response: any) => {
-            localStorage.removeItem('user');
-            localStorage.removeItem('accessToken');
-            localStorage.removeItem('refreshToken');
+    API.logoutUser(localStorage.getItem('refreshToken')!).finally(() => {
+        localStorage.removeItem('user');
+        localStorage.removeItem('accessToken');
+        localStorage.removeItem('refreshToken');
 
-            dispatch(logoutFullfiled());
-        }
-    );
+        dispatch(logoutFullfiled());
+    });
 };
 
 export const registerCustomer =

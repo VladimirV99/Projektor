@@ -30,7 +30,7 @@ export const loginUser = ({
     });
 };
 
-export const logoutUser = (refreshToken: string): any => {
+export const logoutUser = (refreshToken: string): AxiosPromise<void> => {
     return axiosAuthInstance.post(ENDPOINTS.LOGOUT_URL, {
         refreshToken,
     });

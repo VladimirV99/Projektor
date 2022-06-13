@@ -1,27 +1,32 @@
-import { useState } from 'react';
+import { useState, useMemo } from 'react';
 import { Formik } from 'formik';
-import { Button } from '@mui/material';
+import { Alert, Button } from '@mui/material';
 import ModalCheKoV from 'components/Modal';
 import FormInput from 'components/FormInput';
 import * as TRANSLATIONS from 'translations';
-import { useDispatch } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import { loginCustomer } from 'redux/auth/modules';
 import { Link } from 'react-router-dom';
-import { openSignUpForm } from 'redux/auth/actions';
+import { clearAuthErrors, openSignUpForm } from 'redux/auth/actions';
+import { selectAuthErrors, selectAuthStatus } from 'redux/auth/selectors';
+import { LoadingStatus } from 'constants/common';
 
 type Props = {
-    shouldRender: boolean;
     onModalClose: () => void;
-    onSignUpLinkClicked: () => void;
 };
 
-const SignIn = ({ shouldRender, onModalClose, onSignUpLinkClicked }: Props) => {
+const SignIn = ({ onModalClose }: Props) => {
     const [email, setEmail] = useState<string>('admin@admin.com');
     const [password, setPassword] = useState<string>('Admin_123');
 
     const dispatch = useDispatch();
 
-    const isSubmitting = email && password;
+    const isFilled = useMemo(() => {
+        return email.trim().length > 0 && password.trim().length > 0;
+    }, [email, password]);
+
+    const apiStatus = useSelector(selectAuthStatus);
+    const apiErrors = useSelector(selectAuthErrors);
 
     const signUp = () => (
         <div>
@@ -37,7 +42,13 @@ const SignIn = ({ shouldRender, onModalClose, onSignUpLinkClicked }: Props) => {
     );
 
     return (
-        <ModalCheKoV shouldRender={shouldRender} onModalClose={onModalClose}>
+        <ModalCheKoV
+            shouldRender={true}
+            onModalClose={() => {
+                onModalClose();
+                dispatch(clearAuthErrors());
+            }}
+        >
             <div
                 style={{
                     backgroundColor: 'white',
@@ -82,12 +93,19 @@ const SignIn = ({ shouldRender, onModalClose, onSignUpLinkClicked }: Props) => {
                                     setPassword(e.currentTarget.value)
                                 }
                             />
+                            {apiStatus === LoadingStatus.Failed && (
+                                <Alert severity="error">
+                                    {apiErrors.message}
+                                </Alert>
+                            )}
                             <Button
                                 type="submit"
                                 variant="contained"
                                 fullWidth
-                                disabled={!isSubmitting}
-                                style={{ marginTop: '1rem' }}
+                                disabled={
+                                    !isFilled ||
+                                    apiStatus === LoadingStatus.Initializing
+                                }
                             >
                                 {TRANSLATIONS.SUBMIT_LABEL}
                             </Button>

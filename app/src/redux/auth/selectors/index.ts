@@ -18,6 +18,10 @@ export const selectIsUserLoggedIn = createSelector(
     (user) => user !== null
 );
 
+export const selectAuthStatus = createSelector(
+    [getState],
+    (state) => state.loadingStatus
+);
 export const selectAuthErrors = createSelector(
     [getState],
     (state) => state.errors

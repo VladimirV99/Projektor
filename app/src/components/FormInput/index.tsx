@@ -5,6 +5,7 @@ type Props = {
     value: string;
     type: string;
     label: string;
+    error?: string | undefined;
     required?: boolean;
 };
 
@@ -13,6 +14,7 @@ const FormInput = ({
     type,
     value,
     label,
+    error = undefined,
     required = true,
 }: Props): JSX.Element => {
     return (
@@ -25,6 +27,8 @@ const FormInput = ({
             required={required}
             onChange={onChange}
             value={value}
+            error={error !== undefined}
+            helperText={error}
         />
     );
 };

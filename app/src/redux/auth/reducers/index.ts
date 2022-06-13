@@ -6,7 +6,9 @@ import {
     loginPending,
     logoutFullfiled,
     registerFailed,
+    registerFulfilled,
     registerPending,
+    clearAuthErrors,
     setTokensAndUser,
     openSignUpForm,
     openSignInForm,
@@ -26,15 +28,23 @@ const initialState: AuthenticationReducerType = {
 const reducer = createReducer(initialState, (builder) => {
     builder.addCase(registerPending, (state) => {
         state.loadingStatus = LoadingStatus.Initializing;
+        state.errors = null;
     });
     builder.addCase(registerFailed, (state, action) => {
+        state.loadingStatus = LoadingStatus.Failed;
         state.errors = action.payload;
+    });
+    builder.addCase(registerFulfilled, (state) => {
+        state.loadingStatus = LoadingStatus.Fetched;
+        state.errors = null;
     });
     builder.addCase(loginPending, (state) => {
         state.loadingStatus = LoadingStatus.Initializing;
+        state.errors = null;
     });
-    builder.addCase(loginError, (state) => {
+    builder.addCase(loginError, (state, action) => {
         state.loadingStatus = LoadingStatus.Failed;
+        state.errors = action.payload;
     });
     builder.addCase(loginFullfiled, (state, action) => {
         state.loadingStatus = LoadingStatus.Fetched;
@@ -46,6 +56,10 @@ const reducer = createReducer(initialState, (builder) => {
         state.accessToken = null;
         state.refreshToken = null;
         state.user = null;
+    });
+    builder.addCase(clearAuthErrors, (state) => {
+        state.loadingStatus = LoadingStatus.NotInitialized;
+        state.errors = null;
     });
     builder.addCase(setTokensAndUser, (state, action) => {
         state.accessToken = action.payload.accessToken;

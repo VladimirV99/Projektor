@@ -4,6 +4,8 @@ import {
     loginPending,
     logoutFullfiled,
     registerFailed,
+    registerFulfilled,
+    registerPending,
 } from '../actions';
 import * as API from '../api';
 import { userLoginRequest, userRegisterRequest } from '../models';
@@ -18,8 +20,12 @@ export const loginCustomer = (user: userLoginRequest) => (dispatch: any) => {
 
             dispatch(loginFullfiled(response.data));
         })
-        .catch((error) => {
-            dispatch(loginError());
+        .catch((err) => {
+            if (err.response.status === 401) {
+                dispatch(loginError({ message: 'Invalid credentials' }));
+            } else {
+                dispatch(loginError({ message: 'Something went wrong' }));
+            }
         });
 };
 
@@ -35,8 +41,10 @@ export const logoutCustomer = () => (dispatch: any) => {
 
 export const registerCustomer =
     (user: userRegisterRequest) => (dispatch: any) => {
+        dispatch(registerPending());
         return API.createUser(user)
             .then(() => {
+                dispatch(registerFulfilled());
                 dispatch(
                     loginCustomer({
                         email: user.email,
@@ -45,6 +53,10 @@ export const registerCustomer =
                 );
             })
             .catch((res) => {
-                dispatch(registerFailed(res.response.data.errors));
+                if (res.response.status === 400) {
+                    dispatch(registerFailed(res.response.data.errors));
+                } else {
+                    dispatch(registerFailed(null));
+                }
             });
     };

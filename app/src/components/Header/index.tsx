@@ -275,33 +275,33 @@ const Header = () => {
         isLoggedIn ? (
             renderLoggedUserMenu()
         ) : (
-            <ButtonGroup>
-                <div style={{ paddingRight: '10px' }}>
-                    <BootstrapButton
-                        variant="light"
-                        onClick={onSignUpLinkClicked}
-                    >
-                        Sign Up
-                    </BootstrapButton>
-                </div>
+            <>
+                <BootstrapButton
+                    variant="light"
+                    onClick={onSignUpLinkClicked}
+                    style={{ marginRight: '5px' }}
+                >
+                    Sign Up
+                </BootstrapButton>
 
-                <BootstrapButton variant="light" onClick={onSignInLinkClicked}>
+                <BootstrapButton
+                    variant="light"
+                    onClick={onSignInLinkClicked}
+                    style={{ marginLeft: '5px' }}
+                >
                     Sign In
                 </BootstrapButton>
-            </ButtonGroup>
+            </>
         );
 
     const renderModals = () => (
         <Fragment>
-            <SignUp
-                shouldRender={signUpModal}
-                onModalClose={() => dispatch(openSignUpForm(false))}
-            />
-            <SignIn
-                shouldRender={signInModal}
-                onModalClose={() => dispatch(openSignInForm(false))}
-                onSignUpLinkClicked={onSignUpLinkClicked}
-            />
+            {signUpModal && (
+                <SignUp onModalClose={() => dispatch(openSignUpForm(false))} />
+            )}
+            {signInModal && (
+                <SignIn onModalClose={() => dispatch(openSignInForm(false))} />
+            )}
         </Fragment>
     );
     return (

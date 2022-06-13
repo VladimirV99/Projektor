@@ -7,7 +7,7 @@ namespace Review.Repositories
     {
         Task<WatchedMovie> AddWatchedMovie(WatchedMovie watchedMovie);
         Task<bool> HasWatchedMovie(string userId, int movieId);
-        Task<bool> RemoveWatchedMovie(int movieId, string userId);
+        Task<bool> RemoveWatchedMovie(int movieId, string userId, int reservationId);
         Task<MovieReview?> CreateReview(MovieReview review);
         Task<MovieReview?> GetReview(int movieId, string reviewerId);
         Task<IEnumerable<MovieReview>> GetReviewsForMovie(int movieId, DateTime? createdAfter, int perPage = Settings.PAGE_SIZE_DEFAULT);

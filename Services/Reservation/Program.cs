@@ -1,6 +1,7 @@
 using System.Reflection;
 using Common.Auth.Extensions;
 using Common.Auth.Models;
+using MassTransit;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.OpenApi.Models;
 using Reservation.Data;
@@ -23,6 +24,20 @@ builder.Services.AddTransient<IDataSeeder, DataSeeder>();
 builder.Services.AddScoped<IHallService, HallService>();
 
 builder.Services.AddAutoMapper(Assembly.GetExecutingAssembly());
+
+builder.Services.AddMassTransit(config =>
+{
+    var eventBusSettings = builder.Configuration.GetSection("EventBus");
+    
+    config.UsingRabbitMq((ctx, cfg) =>
+    {
+        cfg.Host(eventBusSettings["Host"], h =>
+        {
+            h.Username(eventBusSettings["Username"]);
+            h.Password(eventBusSettings["Password"]);
+        });
+    });
+});
 
 builder.Services.AddControllers();
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle

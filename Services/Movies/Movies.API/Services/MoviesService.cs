@@ -1,6 +1,6 @@
 ﻿using Movies.API.Constants;
-using Movies.API.Data;
-using Movies.API.Entities;
+using Movies.Common.Data;
+using Movies.Common.Entities;
 using Movies.API.Models;
 
 namespace Movies.API.Services;

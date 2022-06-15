@@ -1,9 +1,9 @@
 ﻿using System.ComponentModel.DataAnnotations;
-using Movies.API.Constants;
+using Movies.Common.Constants;
 
-namespace Movies.API.Entities
+namespace Movies.Common.Entities
 {
-    public class Genre
+    public class Role
     {
         [Required(ErrorMessage = ErrorMessages.ID_REQUIRED)]
         public int Id { get; set; }
@@ -11,6 +11,6 @@ namespace Movies.API.Entities
         [Required(ErrorMessage = ErrorMessages.NAME_REQUIRED)]
         public string Name { get; set; }
 
-        public List<Movie> Movies { get; set; }
+        public string? Description { get; set; }
     }
 }

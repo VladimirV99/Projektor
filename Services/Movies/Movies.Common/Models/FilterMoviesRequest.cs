@@ -1,8 +1,8 @@
 ﻿using System.ComponentModel.DataAnnotations;
 using Microsoft.AspNetCore.Mvc;
-using Movies.API.Constants;
+using Movies.Common.Constants;
 
-namespace Movies.API.Models;
+namespace Movies.Common.Models;
 
 public class FilterMoviesRequest
 {

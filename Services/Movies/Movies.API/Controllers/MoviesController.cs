@@ -3,10 +3,10 @@ using Common.Auth;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Movies.API.Constants;
-using Movies.API.Data;
-using Movies.API.Entities;
 using Movies.API.Models;
 using Movies.API.Services;
+using Movies.Common.Data;
+using Movies.Common.Models;
 
 namespace Movies.API.Controllers
 {

@@ -3,21 +3,21 @@
 FROM mcr.microsoft.com/dotnet/aspnet:6.0 AS base
 WORKDIR /app
 EXPOSE 80
+EXPOSE 443
 
 FROM mcr.microsoft.com/dotnet/sdk:6.0 AS build
 WORKDIR /src
-COPY ["Services/Movies/Movies.API/Movies.API.csproj", "Services/Movies/Movies.API/"]
-COPY ["Common/Auth/Auth.csproj", "Common/Auth/"]
+COPY ["Services/Movies/Movies.GRPC/Movies.GRPC.csproj", "Services/Movies/Movies.GRPC/"]
 COPY ["Services/Movies/Movies.Common/Movies.Common.csproj", "Services/Movies/Movies.Common/"]
-RUN dotnet restore "Services/Movies/Movies.API/Movies.API.csproj"
+RUN dotnet restore "Services/Movies/Movies.GRPC/Movies.GRPC.csproj"
 COPY . .
-WORKDIR "/src/Services/Movies/Movies.API"
-RUN dotnet build "Movies.API.csproj" -c Release -o /app/build
+WORKDIR "/src/Services/Movies/Movies.GRPC"
+RUN dotnet build "Movies.GRPC.csproj" -c Release -o /app/build
 
 FROM build AS publish
-RUN dotnet publish "Movies.API.csproj" -c Release -o /app/publish
+RUN dotnet publish "Movies.GRPC.csproj" -c Release -o /app/publish
 
 FROM base AS final
 WORKDIR /app
 COPY --from=publish /app/publish .
-ENTRYPOINT ["dotnet", "Movies.API.dll"]
+ENTRYPOINT ["dotnet", "Movies.GRPC.dll"]

@@ -1,8 +1,9 @@
 ﻿using Microsoft.Data.SqlClient;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Logging;
 using Polly;
 
-namespace Movies.API.Data
+namespace Movies.Common.Data
 {
     public class DataSeeder : IDataSeeder
     {

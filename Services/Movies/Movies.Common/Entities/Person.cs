@@ -1,7 +1,7 @@
 ﻿using System.ComponentModel.DataAnnotations;
-using Movies.API.Constants;
+using Movies.Common.Constants;
 
-namespace Movies.API.Entities
+namespace Movies.Common.Entities
 {
     public class Person
     {

@@ -1,4 +1,4 @@
-﻿namespace Movies.API.Data
+﻿namespace Movies.Common.Data
 {
     public interface IDataSeeder
     {

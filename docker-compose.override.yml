@@ -50,6 +50,16 @@ services:
     ports:
       - "5000:80"
 
+  movies.grpc:
+    container_name: movies.grpc
+    environment:
+      - ASPNETCORE_ENVIRONMENT=Development
+      - "ConnectionStrings:MoviesConnectionString=Server=projektor_mssql;Database=MoviesDb;User Id=sa;Password=MatfRs2_MSSQL;"
+    depends_on:
+      - projektor_mssql
+    ports:
+      - "5100:80"
+
   identity:
     container_name: identity
     environment:
@@ -126,3 +136,4 @@ services:
       - screening.grpc
     ports:
       - "5006:80"
+

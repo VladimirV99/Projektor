@@ -4,9 +4,9 @@ using Common.Auth.Extensions;
 using Common.Auth.Models;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.OpenApi.Models;
-using Movies.API.Data;
 using Movies.API.Extensions;
 using Movies.API.Services;
+using Movies.Common.Data;
 
 var builder = WebApplication.CreateBuilder(args);
 

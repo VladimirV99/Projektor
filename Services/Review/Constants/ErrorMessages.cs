@@ -17,6 +17,8 @@
 
         public const string USER_ID_REQUIRED = "User must be specified";
 
+        public const string RESERVATION_ID_REQUIRED = "Reservation must be specified";
+
         public const string PAGE_SIZE_RANGE = "Page size must be between 1 and 100";
 
         public const string USER_MOVIE_NOT_WATCHED = "User has not watched that movie";

@@ -41,7 +41,7 @@ namespace Review.Data
         {
             using var connection = _dbContext.GetConnection();
 
-            const int DATABASE_VERSION = 4;
+            const int DATABASE_VERSION = 5;
 
             var infoTableExists = connection.ExecuteScalar<bool>(
                 "SELECT EXISTS (SELECT FROM information_schema.tables WHERE table_schema LIKE 'public' AND table_type LIKE 'BASE TABLE' AND table_name = 'dbinfo')"
@@ -73,7 +73,7 @@ namespace Review.Data
                 );
 
                 connection.Execute(
-                    "CREATE TABLE WatchedMovies (MovieId INT NOT NULL, UserId VARCHAR(100) NOT NULL REFERENCES Users(Id) ON DELETE CASCADE, WatchedOn TIMESTAMP NOT NULL, PRIMARY KEY (MovieId, UserId))"
+                    "CREATE TABLE WatchedMovies (MovieId INT NOT NULL, UserId VARCHAR(100) NOT NULL REFERENCES Users(Id) ON DELETE CASCADE, ReservationId INT NOT NULL, WatchedOn TIMESTAMP NOT NULL, PRIMARY KEY (MovieId, UserId, ReservationId))"
                 );
 
                 connection.Execute(

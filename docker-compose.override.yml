@@ -110,8 +110,10 @@ services:
     environment:
       - ASPNETCORE_ENVIRONMENT=Development
       - "ConnectionStrings:ReviewConnectionString=Server=projektor_postgres;Database=ReviewDB;User Id=admin;Password=admin123;"
+      - "EventBus:Host=amqp://projektor_rabbitmq:5672"
     depends_on:
       - projektor_postgres
+      - projektor_rabbitmq
     ports:
       - "5007:80"
 
@@ -124,5 +126,6 @@ services:
     depends_on:
       - projektor_mssql
       - screening.grpc
+      - "EventBus:Host=amqp://projektor_rabbitmq:5672"
     ports:
       - "5006:80"

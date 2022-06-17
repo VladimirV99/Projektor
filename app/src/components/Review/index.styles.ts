@@ -1,9 +1,20 @@
+import { Button } from '@mui/material';
 import styled from 'styled-components';
 
 export const ReviewContainer = styled.div`
     background-color: white;
     margin: 0.5rem;
     padding: 0.5rem;
+    position: relative;
+`;
+
+export const ReviewHeader = styled.div`
+    display: flex;
+    align-items: center;
+`;
+
+export const ReviewScore = styled.span`
+    margin-right: 0.5rem;
 `;
 
 export const ReviewSummary = styled.p`
@@ -20,4 +31,10 @@ export const ReviewUser = styled.p`
 
 export const Bold = styled.span`
     font-weight: 600;
+`;
+
+export const DeleteReviewButton = styled(Button)`
+    position: absolute;
+    right: 1rem;
+    top: 1rem;
 `;

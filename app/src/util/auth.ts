@@ -1,3 +1,5 @@
+import { ROLE_ADMINISTRATOR, ROLE_CUSTOMER } from 'constants/common';
+
 export const getUserRoles = () => {
     const accessToken = window.localStorage.getItem('accessToken');
 
@@ -5,13 +7,21 @@ export const getUserRoles = () => {
         return [];
     }
 
-    const rolesEncoded = JSON.parse(window.atob(accessToken.split('.')[1]))[
-        'http://schemas.microsoft.com/ws/2008/06/identity/claims/role'
-    ];
+    try {
+        const rolesEncoded = JSON.parse(window.atob(accessToken.split('.')[1]))[
+            'http://schemas.microsoft.com/ws/2008/06/identity/claims/role'
+        ];
 
-    const roleArray = rolesEncoded.isArray ? rolesEncoded : [rolesEncoded];
-
-    return roleArray;
+        const roleArray = Array.isArray(rolesEncoded)
+            ? rolesEncoded
+            : [rolesEncoded];
+        return roleArray;
+    } catch (err) {
+        // If the token is invalid return empty list of roles instead of crashing
+        return [];
+    }
 };
 
-export const isUserAdmin = () => getUserRoles().includes('Administrator');
+export const isUserAdmin = () => getUserRoles().includes(ROLE_ADMINISTRATOR);
+
+export const isUserCustomer = () => getUserRoles().includes(ROLE_CUSTOMER);

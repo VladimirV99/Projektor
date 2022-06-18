@@ -2,21 +2,34 @@
 {
     public class ReservationEmailEvent
     {
-        public string To { get; set; } = null!;
-        public string ReservationNumber { get; set; } = null!;
-        public string Movie { get; set; } = null!;
-        public string Hall { get; set; } = null!;
-        public string Seat { get; set; } = null!;
+        public class Seat
+        {
+            public int Row { get; set; }
+            public int Column { get; set; }
+
+            public Seat(int row, int column)
+            {
+                Row = row;
+                Column = column;
+            }
+        }
+        
+        public string To { get; set; }
+        public int ReservationNumber { get; set; }
+        public string Movie { get; set; }
+        public string Hall { get; set; }
+        public Seat[] Seats { get; set; }
         public DateTime Time { get; set; }
         public double Price { get; set; }
 
-        public ReservationEmailEvent(string to, string reservationNumber, string movie, string hall, string seat, DateTime time, double price)
+        public ReservationEmailEvent(string to, int reservationNumber, string movie, string hall,
+            Seat[] seats, DateTime time, double price)
         {
             To = to ?? throw new ArgumentNullException(nameof(to));
-            ReservationNumber = reservationNumber ?? throw new ArgumentNullException(nameof(reservationNumber));
+            ReservationNumber = reservationNumber;
             Movie = movie ?? throw new ArgumentNullException(nameof(movie));
             Hall = hall ?? throw new ArgumentNullException(nameof(hall));
-            Seat = seat ?? throw new ArgumentNullException(nameof(seat));
+            Seats = seats ?? throw new ArgumentNullException(nameof(seats));
             Time = time;
             Price = price;
         }

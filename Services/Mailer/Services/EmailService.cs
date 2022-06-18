@@ -12,7 +12,7 @@ namespace Mailer.Services
         private readonly EmailSettings _emailSettings;
         private readonly ILogger<EmailService> _logger;
 
-        private Dictionary<string, string> _templateCache = new();
+        private readonly Dictionary<string, string> _templateCache = new();
 
         public EmailService(IOptions<EmailSettings> emailSettings, ILogger<EmailService> logger)
         {
@@ -60,13 +60,17 @@ namespace Mailer.Services
             }
             email.Body = builder.ToMessageBody();
 
+            // TODO remove this
+            // _logger.LogInformation("Email sent: '" + email.Subject + "' to '" + email.To + "'");
+            // return true;
+            
             // Send email
             using SmtpClient smtp = new();
             try
             {
                 _logger.LogInformation("Sending email via server {ServerName}:{ServerPort}", _emailSettings.Host, _emailSettings.Port);
-                smtp.Connect(_emailSettings.Host, _emailSettings.Port, SecureSocketOptions.StartTls);
-                smtp.Authenticate(_emailSettings.Address, _emailSettings.Password);
+                await smtp.ConnectAsync(_emailSettings.Host, _emailSettings.Port, SecureSocketOptions.StartTls);
+                await smtp.AuthenticateAsync(_emailSettings.Address, _emailSettings.Password);
                 await smtp.SendAsync(email);
             }
             catch (Exception ex)
@@ -78,35 +82,40 @@ namespace Mailer.Services
             {
                 if (smtp.IsConnected)
                 {
-                    smtp.Disconnect(true);
+                    await smtp.DisconnectAsync(true);
                 }
             }
 
             return true;
         }
 
+        private string? GetTemplate(string name)
+        {
+            if (_templateCache.ContainsKey(name))
+            {
+                return _templateCache.GetValueOrDefault(name, "");
+            }
+
+            var templatePath = $"{Directory.GetCurrentDirectory()}/Templates/{name}.html";
+            try
+            {
+                var template = File.ReadAllText(templatePath);
+                _templateCache.Add(name, template);
+                return template;
+            } 
+            catch (Exception ex)
+            {
+                _logger.LogError("Could not parse template file {Template}: {Error}", templatePath, ex.Message);
+                return null;
+            }
+        }
+
         public async Task<bool> SendWelcomeEmail(WelcomeEmailModel welcomeModel)
         {
-            const string templateKey = "Welcome";
-            string mailBody;
-            if (_templateCache.ContainsKey(templateKey))
+            var mailBody = GetTemplate("WelcomeTemplate");
+            if (mailBody == null)
             {
-                mailBody = _templateCache.GetValueOrDefault(templateKey, "");
-            }
-            else
-            {
-                string templatePath = $"{Directory.GetCurrentDirectory()}/Templates/WelcomeTemplate.html";
-                try
-                {
-                    string template = File.ReadAllText(templatePath);
-                    _templateCache.Add(templateKey, template);
-                    mailBody = template;
-                } 
-                catch (Exception ex)
-                {
-                    _logger.LogError("Could not parse template file {Template}: {Error}", templatePath, ex.Message);
-                    return false;
-                }
+                return false;
             }
             
             mailBody = string.Format(mailBody, welcomeModel.Name);
@@ -121,47 +130,93 @@ namespace Mailer.Services
             return await SendEmail(email);
         }
 
-        public async Task<bool> SendReservationEmail(ReservationEmailModel reservationModel)
+        public async Task<bool> SendReservationEmail(ReservationEmailModel model)
         {
-            const string templateKey = "Reservation";
-            string mailBody;
-            if (_templateCache.ContainsKey(templateKey))
+            var mailBody = GetTemplate("ReservationTemplate");
+            if (mailBody == null)
             {
-                mailBody = _templateCache.GetValueOrDefault(templateKey, "");
-            }
-            else
-            {
-                string templatePath = $"{Directory.GetCurrentDirectory()}/Templates/ReservationTemplate.html";
-                try
-                {
-                    string template = File.ReadAllText(templatePath);
-                    _templateCache.Add(templateKey, template);
-                    mailBody = template;
-                }
-                catch (Exception ex)
-                {
-                    _logger.LogError("Could not parse template file {Template}: {Error}", templatePath, ex.Message);
-                    return false;
-                }
+                return false;
             }
 
             using QRCodeGenerator qrGenerator = new();
-            using QRCodeData qrCodeData = qrGenerator.CreateQrCode(reservationModel.ReservationNumber, QRCodeGenerator.ECCLevel.Q);
+            using QRCodeData qrCodeData =
+                qrGenerator.CreateQrCode(model.ReservationNumber.ToString("D4"), QRCodeGenerator.ECCLevel.Q);
 
             // This directly converts the code to base64, but doesn't work with dotnet6 until version 2.0
             //using Base64QRCode qrCode = new Base64QRCode(qrCodeData);
             //string qrCodeText = qrCode.GetGraphic(20);
 
             using PngByteQRCode qrCode = new(qrCodeData);
-            string qrCodeText = Convert.ToBase64String(qrCode.GetGraphic(20));
+            var qrCodeText = Convert.ToBase64String(qrCode.GetGraphic(20));
 
-            mailBody = string.Format(mailBody, reservationModel.Movie, reservationModel.Time, reservationModel.Hall,
-                reservationModel.Seat, reservationModel.Price, reservationModel.ReservationNumber, qrCodeText);
+            mailBody = string.Format(mailBody, model.ReservationNumber, model.Movie, model.Time, model.Hall,
+                string.Join(", ", model.Seats.Select(s => Convert.ToChar('A' + s.Row).ToString() + (s.Column + 1))),
+                model.Price, qrCodeText);
 
             var email = new EmailModel
             {
-                To = reservationModel.To,
-                Subject = "Projektor Reservation Confirmation",
+                To = model.To,
+                Subject = "Projektor: Reservation Confirmation",
+                Body = mailBody,
+                IsHTML = true
+            };
+            return await SendEmail(email);
+        }
+
+        public async Task<bool> SendCancelReservationEmail(CancelReservationEmailModel model)
+        {
+            var mailBody = GetTemplate("CancelReservationTemplate");
+            if (mailBody == null)
+            {
+                return false;
+            }
+            
+            mailBody = string.Format(mailBody, model.ReservationNumber, model.Movie, model.Time);
+
+            var email = new EmailModel
+            {
+                To = model.To,
+                Subject = "Projektor: Reservation Canceled",
+                Body = mailBody,
+                IsHTML = true
+            };
+            return await SendEmail(email);
+        }
+
+        public async Task<bool> SendRescheduleScreeningEmail(RescheduleScreeningEmailModel model)
+        {
+            var mailBody = GetTemplate("RescheduleScreeningTemplate");
+            if (mailBody == null)
+            {
+                return false;
+            }
+            
+            mailBody = string.Format(mailBody, model.ReservationNumber, model.Movie, model.OldTime, model.NewTime);
+
+            var email = new EmailModel
+            {
+                To = model.To,
+                Subject = "Projektor: Screening Time Moved",
+                Body = mailBody,
+                IsHTML = true
+            };
+            return await SendEmail(email);
+        }
+
+        public async Task<bool> SendCancelScreeningEmail(CancelScreeningEmailModel model)
+        {
+            var mailBody = GetTemplate("CancelScreeningTemplate");
+            if (mailBody == null)
+            {
+                return false;
+            }
+            
+            mailBody = string.Format(mailBody, model.ReservationNumber, model.Movie, model.Time);
+
+            var email = new EmailModel
+            {
+                To = model.To,
+                Subject = "Projektor: Screening Canceled",
                 Body = mailBody,
                 IsHTML = true
             };

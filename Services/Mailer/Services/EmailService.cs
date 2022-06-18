@@ -61,8 +61,8 @@ namespace Mailer.Services
             email.Body = builder.ToMessageBody();
 
             // TODO remove this
-            // _logger.LogInformation("Email sent: '" + email.Subject + "' to '" + email.To + "'");
-            // return true;
+            _logger.LogInformation("Email sent: '" + email.Subject + "' to '" + email.To + "'");
+            return true;
             
             // Send email
             using SmtpClient smtp = new();

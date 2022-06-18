@@ -45,7 +45,8 @@ namespace Mailer.Controllers
             var model = new WelcomeEmailModel
             {
                 To = "test@test.com",
-                Name = "John Doe"
+                FirstName = "John",
+                LastName = "Doe"
             };
             if (await _emailService.SendWelcomeEmail(model))
             {

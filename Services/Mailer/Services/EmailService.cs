@@ -110,7 +110,7 @@ namespace Mailer.Services
             }
         }
 
-        public async Task<bool> SendWelcomeEmail(WelcomeEmailModel welcomeModel)
+        public async Task<bool> SendWelcomeEmail(WelcomeEmailModel model)
         {
             var mailBody = GetTemplate("WelcomeTemplate");
             if (mailBody == null)
@@ -118,11 +118,11 @@ namespace Mailer.Services
                 return false;
             }
             
-            mailBody = string.Format(mailBody, welcomeModel.Name);
+            mailBody = string.Format(mailBody, model.FirstName, model.LastName);
 
             var email = new EmailModel
             {
-                To = welcomeModel.To,
+                To = model.To,
                 Subject = "Welcome to Projektor",
                 Body = mailBody,
                 IsHTML = true

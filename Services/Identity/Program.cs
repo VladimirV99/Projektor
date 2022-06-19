@@ -5,6 +5,7 @@ using Identity.Extensions;
 using Identity.Services;
 using Microsoft.OpenApi.Models;
 using System.Reflection;
+using MassTransit;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -16,6 +17,20 @@ builder.Services.ConfigureJWT(builder.Configuration.GetSection("JWT").Get<JwtSet
 builder.Services.AddAutoMapper(Assembly.GetExecutingAssembly());
 
 builder.Services.AddScoped<IAuthenticationService, AuthenticationService>();
+
+builder.Services.AddMassTransit(config =>
+{
+    var eventBusSettings = builder.Configuration.GetSection("EventBus");
+    
+    config.UsingRabbitMq((ctx, cfg) =>
+    {
+        cfg.Host(eventBusSettings["Host"], h =>
+        {
+            h.Username(eventBusSettings["Username"]);
+            h.Password(eventBusSettings["Password"]);
+        });
+    });
+});
 
 builder.Services.AddControllers().AddFluentValidation(fv =>
 {

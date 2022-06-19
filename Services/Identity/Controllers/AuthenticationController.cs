@@ -6,6 +6,8 @@ using Identity.Services;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using System.Security.Claims;
+using Common.EventBus.Events;
+using MassTransit;
 
 namespace Identity.Controllers
 {
@@ -13,9 +15,13 @@ namespace Identity.Controllers
     [Route("api/v1/[controller]")]
     public class AuthenticationController : IdentityControllerBase
     {
-        public AuthenticationController(ILogger<AuthenticationController> logger, IMapper mapper, IIdentityRepository repository, IAuthenticationService authService) 
-            : base(logger, mapper, repository, authService)
+        private readonly IPublishEndpoint _publishEndpoint;
+
+        public AuthenticationController(ILogger<AuthenticationController> logger, IMapper mapper,
+            IIdentityRepository repository, IAuthenticationService authService, IPublishEndpoint publishEndpoint) :
+            base(logger, mapper, repository, authService)
         {
+            _publishEndpoint = publishEndpoint ?? throw new ArgumentNullException(nameof(publishEndpoint));
         }
 
         [HttpPost("[action]")]
@@ -23,7 +29,15 @@ namespace Identity.Controllers
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         public async Task<IActionResult> RegisterCustomer([FromBody] UserRegisterRequest userRegisterRequest)
         {
-            return await RegisterUserWithRoles(userRegisterRequest, new string[] { Roles.CUSTOMER });
+            var result = await RegisterUserWithRoles(userRegisterRequest, new string[] { Roles.CUSTOMER });
+
+            await _publishEndpoint.Publish(new WelcomeEmailEvent(
+                userRegisterRequest.Email,
+                userRegisterRequest.FirstName,
+                userRegisterRequest.LastName
+            ));
+            
+            return result;
         }
 
         [HttpPost("[action]")]

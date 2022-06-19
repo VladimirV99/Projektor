@@ -19,5 +19,4 @@ RUN dotnet publish "Mailer.csproj" -c Release -o /app/publish
 FROM base AS final
 WORKDIR /app
 COPY --from=publish /app/publish .
-COPY --from=build /src/Services/Mailer/Templates ./Templates
 ENTRYPOINT ["dotnet", "Mailer.dll"]

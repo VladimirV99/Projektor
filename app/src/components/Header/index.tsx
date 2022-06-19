@@ -64,10 +64,10 @@ const Header = () => {
         ];
     }, []);
 
+    const isAdmin = isUserAdmin();
+
     const settings: { name: string; link?: string; onClick?: () => void }[] =
         useMemo(() => {
-            const isAdmin = isUserAdmin();
-
             const adminLinks = isAdmin
                 ? [{ name: 'Admin Dashboard', link: '/admin' }]
                 : [];
@@ -83,7 +83,7 @@ const Header = () => {
                     },
                 },
             ];
-        }, []);
+        }, [isAdmin]);
 
     const isLoggedIn = useSelector(selectIsUserLoggedIn);
 
@@ -275,7 +275,7 @@ const Header = () => {
         isLoggedIn ? (
             renderLoggedUserMenu()
         ) : (
-            <>
+            <Fragment>
                 <BootstrapButton
                     variant="light"
                     onClick={onSignUpLinkClicked}
@@ -291,7 +291,7 @@ const Header = () => {
                 >
                     Sign In
                 </BootstrapButton>
-            </>
+            </Fragment>
         );
 
     const renderModals = () => (

@@ -1,80 +1,141 @@
-import { useState } from 'react';
+import { useState, useMemo, useEffect } from 'react';
 import { Formik } from 'formik';
-import { Button } from '@mui/material';
+import { Alert, Button } from '@mui/material';
 import ModalCheKoV from 'components/Modal';
 import * as TRANSLATIONS from 'translations';
 import FormInput from 'components/FormInput';
 import { useDispatch, useSelector } from 'react-redux';
 import { registerCustomer } from 'redux/auth/modules';
-import { MIN_PASSWORD_LENGTH } from 'constants/index';
-import { selectAuthErrors } from 'redux/auth/selectors';
-import { PASSWORDS_DONT_MATCH, PASSWORD_TOO_SHORT } from 'translations';
+import { LoadingStatus, MIN_PASSWORD_LENGTH } from 'constants/index';
+import { selectAuthErrors, selectAuthStatus } from 'redux/auth/selectors';
+import {
+    REQUIRED,
+    INVALID_EMAIL,
+    PASSWORDS_DONT_MATCH,
+    PASSWORD_TOO_SHORT,
+} from 'translations';
+import { clearAuthErrors } from 'redux/auth/actions';
 
 type Props = {
-    shouldRender: boolean;
     onModalClose: () => void;
 };
 
-const SignUp = ({ shouldRender, onModalClose }: Props) => {
+type Validation = {
+    firstName: string | undefined;
+    lastName: string | undefined;
+    email: string | undefined;
+    password: string | undefined;
+    passwordConfirmed: string | undefined;
+};
+
+const SignUp = ({ onModalClose }: Props) => {
     const [firstName, setFirstName] = useState<string>('');
     const [lastName, setLastName] = useState<string>('');
     const [email, setEmail] = useState<string>('');
     const [password, setPassword] = useState<string>('');
     const [passwordConfirmed, setPasswordConfirmed] = useState<string>('');
-    const [errors, setErrors] = useState({ password: '' });
 
+    const [errors, setErrors] = useState({
+        firstName: undefined,
+        lastName: undefined,
+        email: undefined,
+        password: undefined,
+        passwordConfirmed: undefined,
+    } as Validation);
+
+    const hasError = useMemo(() => {
+        return (
+            errors.firstName !== undefined ||
+            errors.lastName !== undefined ||
+            errors.email !== undefined ||
+            errors.password !== undefined ||
+            errors.passwordConfirmed !== undefined
+        );
+    }, [errors]);
+
+    const isFilled = useMemo(() => {
+        return firstName && lastName && email && password && passwordConfirmed;
+    }, [firstName, lastName, email, password, passwordConfirmed]);
+
+    const apiStatus = useSelector(selectAuthStatus);
     const apiErrors = useSelector(selectAuthErrors);
     const dispatch = useDispatch();
 
-    const isSubmitting =
-        firstName && lastName && email && password && passwordConfirmed;
+    useEffect(() => {
+        if (apiStatus === LoadingStatus.Failed && apiErrors !== null)
+            setErrors({ ...errors, ...(apiErrors as Validation) });
+        setSubmitting(false);
+    }, [apiStatus, apiErrors]);
+
+    const [isSubmitting, setSubmitting] = useState<boolean>(false);
 
     const validate = () => {
+        let errors: Validation = {
+            firstName: undefined,
+            lastName: undefined,
+            email: undefined,
+            password: undefined,
+            passwordConfirmed: undefined,
+        };
+        let hasError = false;
+
+        if (firstName.trim().length == 0) {
+            errors.firstName = REQUIRED;
+            hasError = true;
+        }
+        if (lastName.trim().length == 0) {
+            errors.lastName = REQUIRED;
+            hasError = true;
+        }
+        if (email.trim().length == 0) {
+            errors.email = REQUIRED;
+            hasError = true;
+        } else if (
+            !/^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/.test(email)
+        ) {
+            errors.email = INVALID_EMAIL;
+            hasError = true;
+        }
         if (password !== passwordConfirmed) {
-            setErrors({ ...errors, password: PASSWORDS_DONT_MATCH });
-            return errors;
+            errors.passwordConfirmed = PASSWORDS_DONT_MATCH;
+            hasError = true;
+        }
+        if (password.length < MIN_PASSWORD_LENGTH) {
+            errors.password = PASSWORD_TOO_SHORT;
+            hasError = true;
         }
 
-        if (password.length < MIN_PASSWORD_LENGTH) {
-            setErrors({ ...errors, password: PASSWORD_TOO_SHORT });
-            return errors;
-        }
+        setErrors(errors);
+        if (hasError) return errors;
     };
 
     return (
-        <ModalCheKoV shouldRender={shouldRender} onModalClose={onModalClose}>
-            <div style={{ backgroundColor: 'white' }}>
+        <ModalCheKoV
+            shouldRender={true}
+            onModalClose={() => {
+                onModalClose();
+                dispatch(clearAuthErrors());
+            }}
+        >
+            <div
+                style={{
+                    backgroundColor: 'white',
+                    display: 'flex',
+                    flexDirection: 'column',
+                    height: 'fit-content',
+                    padding: '2rem',
+                    margin: 'auto',
+                    borderRadius: '5px',
+                }}
+            >
                 <h1 style={{ textAlign: 'center' }}>
                     {TRANSLATIONS.SIGN_UP_LABEL}
                 </h1>
-                <div style={{ paddingBottom: '16px' }}>
-                    {apiErrors && (
-                        <span
-                            style={{
-                                color: 'red',
-                                textAlign: 'center',
-                                display: 'block',
-                            }}
-                        >
-                            {apiErrors.Email[0]}
-                        </span>
-                    )}
-                    {errors.password && (
-                        <span
-                            style={{
-                                color: 'red',
-                                textAlign: 'center',
-                                display: 'block',
-                            }}
-                        >
-                            {errors.password}
-                        </span>
-                    )}
-                </div>
                 <Formik
                     validate={validate}
                     initialValues={{ email, password, passwordConfirmed }}
                     onSubmit={async () => {
+                        setSubmitting(true);
                         dispatch(
                             registerCustomer({
                                 email,
@@ -88,54 +149,89 @@ const SignUp = ({ shouldRender, onModalClose }: Props) => {
                     {({ handleSubmit }) => (
                         <form
                             style={{
-                                flexDirection: 'column',
-                                display: 'flex',
-                                width: '300px',
-                                justifyContent: 'center',
+                                width: '350px',
                             }}
                             onSubmit={handleSubmit}
                         >
                             <FormInput
                                 type="text"
                                 label={TRANSLATIONS.FIRST_NAME_LABEL}
-                                onChange={(e) =>
-                                    setFirstName(e.currentTarget.value)
-                                }
+                                onChange={(e) => {
+                                    setFirstName(e.currentTarget.value);
+                                    setErrors({
+                                        ...errors,
+                                        firstName: undefined,
+                                    });
+                                }}
                                 value={firstName}
+                                error={errors.firstName}
                             />
                             <FormInput
                                 type="text"
                                 label={TRANSLATIONS.LAST_NAME_LABEL}
-                                onChange={(e) =>
-                                    setLastName(e.currentTarget.value)
-                                }
+                                onChange={(e) => {
+                                    setLastName(e.currentTarget.value);
+                                    setErrors({
+                                        ...errors,
+                                        lastName: undefined,
+                                    });
+                                }}
                                 value={lastName}
+                                error={errors.lastName}
                             />
                             <FormInput
-                                type="email"
+                                type="text"
                                 label={TRANSLATIONS.EMAIL_LABEL}
-                                onChange={(e) =>
-                                    setEmail(e.currentTarget.value)
-                                }
+                                onChange={(e) => {
+                                    setEmail(e.currentTarget.value);
+                                    setErrors({
+                                        ...errors,
+                                        email: undefined,
+                                    });
+                                }}
                                 value={email}
+                                error={errors.email}
                             />
                             <FormInput
                                 type="password"
                                 label={TRANSLATIONS.PASSWORD_LABEL}
-                                onChange={(e) =>
-                                    setPassword(e.currentTarget.value)
-                                }
+                                onChange={(e) => {
+                                    setPassword(e.currentTarget.value);
+                                    setErrors({
+                                        ...errors,
+                                        password: undefined,
+                                        passwordConfirmed: undefined,
+                                    });
+                                }}
                                 value={password}
+                                error={errors.password}
                             />
                             <FormInput
                                 type="password"
                                 label={TRANSLATIONS.CONFIRM_PASSWORD_LABEL}
-                                onChange={(e) =>
-                                    setPasswordConfirmed(e.currentTarget.value)
-                                }
+                                onChange={(e) => {
+                                    setPasswordConfirmed(e.currentTarget.value);
+                                    setErrors({
+                                        ...errors,
+                                        password: undefined,
+                                        passwordConfirmed: undefined,
+                                    });
+                                }}
                                 value={passwordConfirmed}
+                                error={errors.passwordConfirmed}
                             />
-                            <Button type="submit" disabled={!isSubmitting}>
+                            {apiStatus === LoadingStatus.Failed &&
+                                apiErrors === null && (
+                                    <Alert severity="error">
+                                        Something went wrong
+                                    </Alert>
+                                )}
+                            <Button
+                                type="submit"
+                                variant="contained"
+                                fullWidth
+                                disabled={isSubmitting || !isFilled || hasError}
+                            >
                                 {TRANSLATIONS.SUBMIT_LABEL}
                             </Button>
                         </form>

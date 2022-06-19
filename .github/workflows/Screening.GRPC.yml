@@ -1,0 +1,34 @@
+name: Screening.GRPC
+
+on:
+  workflow_dispatch:
+  push:
+    branches:
+      - main
+    
+    paths:
+      - "Services/Screening/Screening.Common/**"
+      - "Services/Screening/Screening.GRPC/**"
+      - ".github/workflows/Screening.GRPC.yml"
+      
+  pull_request:
+    branches:
+      - main
+    
+    paths:
+      - "Services/Screening/Screening.Common/**"
+      - "Services/Screening/Screening.GRPC/**"
+      - ".github/workflows/Screening.GRPC.yml"
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+      - name: Build the Screening.GRPC service
+        shell: bash
+        run: |
+          cd Services/Screening/Screening.GRPC
+          dotnet build

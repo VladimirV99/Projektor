@@ -3,12 +3,14 @@
     public class WelcomeEmailEvent
     {
         public string To { get; set; }
-        public string Name { get; set; }
-
-        public WelcomeEmailEvent(string to, string name)
+        public string FirstName { get; set; }
+        public string LastName { get; set; }
+        
+        public WelcomeEmailEvent(string to, string firstName, string lastName)
         {
             To = to ?? throw new ArgumentNullException(nameof(to));
-            Name = name ?? throw new ArgumentNullException(nameof(name));
+            FirstName = firstName ?? throw new ArgumentNullException(nameof(firstName));
+            LastName = lastName ?? throw new ArgumentNullException(nameof(lastName));
         }
     }
 }

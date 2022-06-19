@@ -121,6 +121,13 @@ namespace Reservation.Repositories
                 .ToListAsync();
         }
 
+        public async Task<IEnumerable<Entities.Reservation>> GetReservationsForScreening(int screeningId)
+        {
+            return await _dbContext.Reservations
+                .Where(r => r.Screening.Id == screeningId)
+                .ToListAsync();
+        }
+
         public async Task<bool> DeleteReservation(int id)
         {
             var reservation = await _dbContext.Reservations.FindAsync(id);

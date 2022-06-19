@@ -9,5 +9,7 @@ export const CONFIRM_PASSWORD_LABEL = 'Confirm password';
 export const SIGN_UP_LABEL = 'Sign up';
 export const SUBMIT_LABEL = 'Submit';
 
+export const REQUIRED = 'Required';
+export const INVALID_EMAIL = 'Email is invalid';
 export const PASSWORDS_DONT_MATCH = "Passwords don't match";
 export const PASSWORD_TOO_SHORT = 'Password must be at least 8 characters long';

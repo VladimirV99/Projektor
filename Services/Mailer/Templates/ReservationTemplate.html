@@ -3,32 +3,36 @@
 <table>
   <tr>
     <td>Movie:</td>
-    <td>{0}</td>
+    <td>{1}</td>
   </tr>
   <tr>
     <td>Date:</td>
-    <td>{1:dd.MM.yyyy}</td>
+    <td>{2:dd.MM.yyyy}</td>
   </tr>
   <tr>
     <td>Time:</td>
-    <td>{1:HH:mm}</td>
+    <td>{2:HH:mm}</td>
   </tr>
   <tr>
     <td>Hall:</td>
-    <td>{2}</td>
-  </tr>
-  <tr>
-    <td>Seat:</td>
     <td>{3}</td>
   </tr>
   <tr>
+    <td>Seats:</td>
+    <td>{4}</td>
+  </tr>
+  <tr>
     <td>Price:</td>
-    <td>{4:0.00}</td>
+    <td>{5:0.00}</td>
   </tr>
 </table>
 
-<img src="data:image/png;base64,{6}" width="250" alt="{5}" />
+<img src="data:image/png;base64,{6}" width="250" alt="{0}" />
 
 <p>
-Reservation number: {5}
+Reservation number: {0:D4}
+</p>
+
+<p>You can cancel this reservation in the 'My Reservations' section of your account at 
+  <a href="http://localhost:3000" target="_blank" rel="noreferrer">http://localhost:3000</a>
 </p>

@@ -18,7 +18,20 @@ export const selectIsUserLoggedIn = createSelector(
     (user) => user !== null
 );
 
+export const selectAuthStatus = createSelector(
+    [getState],
+    (state) => state.loadingStatus
+);
 export const selectAuthErrors = createSelector(
     [getState],
     (state) => state.errors
+);
+
+export const selectShowSignUpForm = createSelector(
+    [getState],
+    (state) => state.showSignUpForm
+);
+export const selectShowSignInForm = createSelector(
+    [getState],
+    (state) => state.showSignInForm
 );

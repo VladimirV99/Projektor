@@ -9,7 +9,13 @@ namespace Mailer.Mapper
         public EmailProfile()
         {
             CreateMap<WelcomeEmailEvent, WelcomeEmailModel>();
+
+            CreateMap<ReservationEmailEvent.Seat, ReservationEmailModel.Seat>();
             CreateMap<ReservationEmailEvent, ReservationEmailModel>();
+            CreateMap<CancelReservationEmailEvent, CancelReservationEmailModel>();
+            
+            CreateMap<RescheduleScreeningEmailEvent, RescheduleScreeningEmailModel>();
+            CreateMap<CancelScreeningEmailEvent, CancelScreeningEmailModel>();
         }
     }
 }

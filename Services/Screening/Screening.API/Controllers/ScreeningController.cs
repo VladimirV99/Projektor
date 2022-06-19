@@ -3,6 +3,8 @@ using Screening.Common.Data;
 using Screening.API.Models;
 using AutoMapper;
 using Screening.Common.Entities;
+using Microsoft.AspNetCore.Authorization;
+using Common.Auth;
 
 namespace Screening.Common.Controllers
 {
@@ -10,7 +12,6 @@ namespace Screening.Common.Controllers
     [Route("api/v1/[controller]")]
     public class ScreeningController : ControllerBase
     {
-		// TODO Auth
         private readonly IScreeningRepository _repository;
         private readonly IMapper _mapper;
 
@@ -40,6 +41,7 @@ namespace Screening.Common.Controllers
         [HttpGet("[action]/{id}")]
         [ProducesResponseType(typeof(IEnumerable<ScreeningModel>), StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
+        [Authorize(Roles = Roles.ADMINISTRATOR)]
         public async Task<ActionResult<IEnumerable<ScreeningModel>>> GetScreeningsByHallId(int id)
         {
             var hall = _repository.GetHallById(id);
@@ -67,6 +69,7 @@ namespace Screening.Common.Controllers
         [HttpGet("[action]")]
         [ProducesResponseType(typeof(IEnumerable<ScreeningModel>), StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
+        [Authorize(Roles = Roles.ADMINISTRATOR)]
         public async Task<ActionResult<IEnumerable<ScreeningModel>>> GetScreeningsByHallIdAtTime([FromBody] GetScreeningsByHallIdAtTimeRequest request)
         {
             var hall = _repository.GetHallById(request.HallId);
@@ -79,6 +82,7 @@ namespace Screening.Common.Controllers
         [HttpGet("[action]/{id}")]
         [ProducesResponseType(typeof(IEnumerable<HallModel>), StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
+        [Authorize(Roles = Roles.ADMINISTRATOR)]
         public async Task<ActionResult<HallModel>> GetHallById(int id)
         {
             var hall = await _repository.GetHallById(id);
@@ -89,6 +93,7 @@ namespace Screening.Common.Controllers
 
         [HttpGet("[action]")]
         [ProducesResponseType(typeof(IEnumerable<HallModel>), StatusCodes.Status200OK)]
+        [Authorize(Roles = Roles.ADMINISTRATOR)]
         public async Task<ActionResult<HallModel>> GetHalls()
         {
             var halls = await _repository.GetAllHalls();
@@ -97,31 +102,26 @@ namespace Screening.Common.Controllers
 
         [HttpGet("[action]")]
         [ProducesResponseType(typeof(IEnumerable<HallModel>), StatusCodes.Status200OK)]
+        [Authorize(Roles = Roles.ADMINISTRATOR)]
         public async Task<ActionResult<HallModel>> GetHallsBySearchString([FromQuery] string searchString)
         {
             var halls = await _repository.GetHallsBySearchString(searchString);
             return Ok(_mapper.Map<IEnumerable<HallModel>>(halls));
         }
-
+        // This is a debug function
         [HttpGet("[action]")]
         [ProducesResponseType(typeof(IEnumerable<MovieModel>), StatusCodes.Status200OK)]
+        [Authorize(Roles = Roles.ADMINISTRATOR)]
         public async Task<ActionResult<MovieModel>> GetMovies()
         {
             var movies = await _repository.GetMovies();
             return Ok(_mapper.Map<IEnumerable<MovieModel>>(movies));
         }
 
-        [HttpGet("[action]")]
-        [ProducesResponseType(typeof(IEnumerable<MovieModel>), StatusCodes.Status200OK)]
-        public async Task<ActionResult<MovieModel>> GetMoviesBySearchString([FromQuery] string searchString)
-        {
-            var movies = await _repository.GetMoviesBySearchString(searchString);
-            return Ok(_mapper.Map<IEnumerable<MovieModel>>(movies));
-        }
-
         [HttpPost("[action]")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        [Authorize(Roles = Roles.ADMINISTRATOR)]
         public async Task<IActionResult> InsertScreening([FromBody] InsertScreeningRequest request)
         {
             var movie = await _repository.GetMovieById(request.MovieId);
@@ -136,6 +136,7 @@ namespace Screening.Common.Controllers
         [HttpPost("[action]")]
         [ProducesResponseType(StatusCodes.Status201Created)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        [Authorize(Roles = Roles.ADMINISTRATOR)]
         public async Task<IActionResult> InsertMovie([FromBody] InsertMovieRequest request)
         {
             var movie = await _repository.GetMovieById(request.Id);
@@ -146,9 +147,11 @@ namespace Screening.Common.Controllers
             return StatusCode(StatusCodes.Status201Created);
         }
 
+        // This is a debug function, halls should be fetched from reservation service
         [HttpPost("[action]")]
         [ProducesResponseType(StatusCodes.Status201Created)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        [Authorize(Roles = Roles.ADMINISTRATOR)]
         public async Task<IActionResult> InsertHall([FromBody] InsertHallRequest request)
         {
             var hall = await _repository.GetHallById(request.Id);
@@ -162,6 +165,7 @@ namespace Screening.Common.Controllers
         [HttpPatch("[action]")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
+        [Authorize(Roles = Roles.ADMINISTRATOR)]
         public async Task<IActionResult> UpdateScreening([FromBody] UpdateScreeningRequest request)
         {
             await _repository.UpdateScreening(request.ScreeningId, request.Moment, request.MovieId, request.HallId);
@@ -172,6 +176,7 @@ namespace Screening.Common.Controllers
         [HttpDelete("[action]/{id}")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
+        [Authorize(Roles = Roles.ADMINISTRATOR)]
         public async Task<ActionResult> DeleteScreeningById(int id)
         {
             return await _repository.DeleteScreening(id) ? Ok() : NotFound();
@@ -181,6 +186,7 @@ namespace Screening.Common.Controllers
         [HttpDelete("[action]/{id}")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
+        [Authorize(Roles = Roles.ADMINISTRATOR)]
         public async Task<IActionResult> DeleteMovieById(int id)
         {
             return await _repository.DeleteMovie(id) ? Ok() : NotFound();

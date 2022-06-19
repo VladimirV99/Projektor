@@ -19,6 +19,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\..\..\Common\Auth\Auth.csproj" />
     <ProjectReference Include="..\Screening.Common\Screening.Common.csproj" />
   </ItemGroup>
 

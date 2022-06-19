@@ -5,7 +5,7 @@ on:
   push:
     branches:
       - main
-
+    
     paths:
       - "Common/Auth/**"
       - "Services/Review/**"
@@ -14,7 +14,7 @@ on:
   pull_request:
     branches:
       - main
-
+    
     paths:
       - "Common/Auth/**"
       - "Services/Review/**"
@@ -23,7 +23,7 @@ on:
 jobs:
   build:
     runs-on: ubuntu-latest
-
+    
     steps:
       - name: Checkout code
         uses: actions/checkout@v3

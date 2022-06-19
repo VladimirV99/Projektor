@@ -3,11 +3,11 @@ name: PrettierCheck
 on:
   workflow_dispatch:
   pull_request:
-    branches: [main]
+    branches: [ main ]
     paths:
       - "app/**"
       - ".github/workflows/Prettier.yml"
-
+    
 jobs:
   CheckPrettier:
     runs-on: ubuntu-latest

@@ -10,7 +10,7 @@
         }
       ],
       "UpstreamPathTemplate": "/api/{version}/Administrator/{everything}",
-      "UpstreamHttpMethod": ["Get", "Post", "Delete", "Options"]
+      "UpstreamHttpMethod": [ "Get", "Post", "Delete", "Options" ]
     },
     {
       "DownstreamPathTemplate": "/api/{version}/Authentication/{everything}",
@@ -22,7 +22,7 @@
         }
       ],
       "UpstreamPathTemplate": "/api/{version}/Authentication/{everything}",
-      "UpstreamHttpMethod": ["Get", "Post", "Options"]
+      "UpstreamHttpMethod": [ "Get", "Post", "Options" ]
     },
     {
       "DownstreamPathTemplate": "/api/{version}/User/{everything}",
@@ -34,7 +34,7 @@
         }
       ],
       "UpstreamPathTemplate": "/api/{version}/User/{everything}",
-      "UpstreamHttpMethod": ["Get", "Post", "Put", "Delete", "Options"]
+      "UpstreamHttpMethod": [ "Get", "Post", "Put", "Delete", "Options" ]
     },
     {
       "DownstreamPathTemplate": "/api/{version}/Movies/{everything}",
@@ -46,7 +46,7 @@
         }
       ],
       "UpstreamPathTemplate": "/api/{version}/Movies/{everything}",
-      "UpstreamHttpMethod": ["Get", "Post", "Put", "Delete", "Options"]
+      "UpstreamHttpMethod": [ "Get", "Post", "Put", "Delete", "Options" ]
     },
     {
       "DownstreamPathTemplate": "/api/{version}/Review/{everything}",
@@ -58,7 +58,7 @@
         }
       ],
       "UpstreamPathTemplate": "/api/{version}/Review/{everything}",
-      "UpstreamHttpMethod": ["Get", "Post", "Put", "Delete", "Options"]
+      "UpstreamHttpMethod": [ "Get", "Post", "Put", "Delete", "Options" ]
     },
     {
       "DownstreamPathTemplate": "/api/{version}/Screening/{everything}",
@@ -70,7 +70,7 @@
         }
       ],
       "UpstreamPathTemplate": "/api/{version}/Screening/{everything}",
-      "UpstreamHttpMethod": ["Get", "Post", "Patch", "Delete", "Options"]
+      "UpstreamHttpMethod": [ "Get", "Post", "Patch", "Delete", "Options" ]
     },
     {
       "DownstreamPathTemplate": "/api/{version}/Hall/{everything}",
@@ -82,7 +82,7 @@
         }
       ],
       "UpstreamPathTemplate": "/api/{version}/Hall/{everything}",
-      "UpstreamHttpMethod": ["Get", "Post", "Put", "Delete", "Options"]
+      "UpstreamHttpMethod": [ "Get", "Post", "Put", "Delete", "Options" ]
     },
     {
       "DownstreamPathTemplate": "/api/{version}/Reservation/{everything}",
@@ -94,7 +94,7 @@
         }
       ],
       "UpstreamPathTemplate": "/api/{version}/Reservation/{everything}",
-      "UpstreamHttpMethod": ["Get", "Post", "Put", "Delete", "Options"]
+      "UpstreamHttpMethod": [ "Get", "Post", "Put", "Delete", "Options" ]
     }
   ]
 }

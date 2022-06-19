@@ -7,13 +7,11 @@
 Projektor is a microservice application for managing basic cinema operations. It supports managing movies, organizing screenings, reserving tickets and user reviews for previously watched movies.
 
 ## Required software
-
 - .NET 6
 - Docker
 - Node.js
 
 ## Running the application
-
 1. Run docker compose in the solution directory:
    ```
    docker-compose up --build -d
@@ -51,14 +49,13 @@ This account cannot be deleted as it will be recreated when the service restarts
 ![Movies Workflow Status](https://img.shields.io/github/workflow/status/VladimirV99/Projektor/Movies/main?style=for-the-badge)
 
 #### Seeding the database:
-
 1. Start the database container from the project root:
    ```
    docker-compose up --build -d projektor_mssql
    ```
 2. Execute the seed sql script:
    ```
-   docker exec -it projektor_mssql opt/mssql-tools/bin/sqlcmd -S localhost -U sa -P MatfRs2_MSSQL -d MoviesDB -e -i /var/seed/seed_script.sql
+   docker exec -it projektor_mssql opt/mssql-tools/bin/sqlcmd -S localhost -U sa -P MatfRs2_MSSQL -d MoviesDB -e -i /var/seed/seed_script.sql 
    ```
 
 ### Screening
@@ -88,13 +85,11 @@ User information is received from the identity service using gRPC if a local cop
 Mailer is used by other services to send notification emails. It receives requests from the event bus on the `mail-queue` channel. The account from which the email is sent should be set in the "Email" section of the configuration file.
 
 ## Authors
-
 - [Vladimir Vuksanović, 1006/2021](https://github.com/VladimirV99)
 - [Aleksa Kojadinović, 1021/2021](https://github.com/aleksakojadinovic)
 - [Lazar Čeliković, 1063/2021](https://github.com/Hos1g4k1)
 
 ## License
-
 Copyright (c) CheKoV. All rights reserved.
 
 Licensed under the [MIT](https://github.com/VladimirV99/Projektor/blob/main/LICENSE) license.

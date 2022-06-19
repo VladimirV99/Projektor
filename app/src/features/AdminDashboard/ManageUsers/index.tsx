@@ -30,6 +30,7 @@ import { logoutCustomer } from 'redux/auth/modules';
 import { ROLE_ADMINISTRATOR, ROLE_CUSTOMER } from 'constants/common';
 import SomethingWentWrong from 'components/SomethingWentWrong';
 import { selectUser } from 'redux/auth/selectors';
+import { Navigate } from 'react-router-dom';
 
 type ManageUsersProps = {
     role: string;
@@ -139,8 +140,6 @@ const ManageUsers = ({ role }: ManageUsersProps) => {
         }
     });
 
-    if (users === null) return null;
-
     const renderPagination = () => (
         <Pagination
             count={numberOfPages}
@@ -204,56 +203,61 @@ const ManageUsers = ({ role }: ManageUsersProps) => {
                         </TableRow>
                     </TableHead>
                     <TableBody>
-                        {users.map((user) => (
-                            <TableRow
-                                key={user.id}
-                                sx={{
-                                    '&:last-child td, &:last-child th': {
-                                        border: 0,
-                                    },
-                                }}
-                            >
-                                <TableCell
-                                    align="left"
-                                    component="th"
-                                    scope="row"
+                        {users &&
+                            users.map((user) => (
+                                <TableRow
+                                    key={user.id}
+                                    sx={{
+                                        '&:last-child td, &:last-child th': {
+                                            border: 0,
+                                        },
+                                    }}
                                 >
-                                    {user.id}
-                                </TableCell>
-                                <TableCell
-                                    align="left"
-                                    component="th"
-                                    scope="row"
-                                >
-                                    {user.firstName}
-                                </TableCell>
-                                <TableCell
-                                    align="left"
-                                    component="th"
-                                    scope="row"
-                                >
-                                    {user.lastName}
-                                </TableCell>
-                                <TableCell
-                                    align="left"
-                                    component="th"
-                                    scope="row"
-                                >
-                                    {user.email}
-                                </TableCell>
-                                <TableCell align="left" height={100}>
-                                    {currentUser.id !== user.id && (
-                                        <Button
-                                            onClick={() => {
-                                                setDeleteUserEmail(user.email);
-                                            }}
-                                        >
-                                            <FontAwesomeIcon icon={faTrash} />
-                                        </Button>
-                                    )}
-                                </TableCell>
-                            </TableRow>
-                        ))}
+                                    <TableCell
+                                        align="left"
+                                        component="th"
+                                        scope="row"
+                                    >
+                                        {user.id}
+                                    </TableCell>
+                                    <TableCell
+                                        align="left"
+                                        component="th"
+                                        scope="row"
+                                    >
+                                        {user.firstName}
+                                    </TableCell>
+                                    <TableCell
+                                        align="left"
+                                        component="th"
+                                        scope="row"
+                                    >
+                                        {user.lastName}
+                                    </TableCell>
+                                    <TableCell
+                                        align="left"
+                                        component="th"
+                                        scope="row"
+                                    >
+                                        {user.email}
+                                    </TableCell>
+                                    <TableCell align="left" height={100}>
+                                        {currentUser?.id !== user.id && (
+                                            <Button
+                                                onClick={() => {
+                                                    setDeleteUserEmail(
+                                                        user.email
+                                                    );
+                                                }}
+                                            >
+                                                <FontAwesomeIcon
+                                                    icon={faTrash}
+                                                />
+                                            </Button>
+                                        )}
+                                    </TableCell>
+                                </TableRow>
+                            ))}
                     </TableBody>
                 </Table>
             </TableContainer>

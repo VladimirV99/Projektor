@@ -3,6 +3,7 @@ using Identity.Entities;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using System.Linq.Expressions;
+using Common.Auth;
 
 namespace Identity.Repositories
 {
@@ -28,6 +29,50 @@ namespace Identity.Repositories
         public async Task<IEnumerable<User>> GetAllUsers()
         {
             return await _userManager.Users.ToListAsync();
+        }
+
+        public async Task<(int, IEnumerable<User>)> GetCustomers(string searchString, int page, int pageSize)
+        {
+            var customerRole = await _roleManager.FindByNameAsync(Roles.CUSTOMER);
+
+            var count = await _dbContext.UserRoles
+                .Where(ur => ur.RoleId == customerRole.Id)
+                .Join(_dbContext.Users.AsQueryable(), ur => ur.UserId, u => u.Id, (ur, u) => u)
+                .Where(u => u.Email.Contains(searchString))
+                .CountAsync();
+            
+            var users = await _dbContext.UserRoles
+                .Where(ur => ur.RoleId == customerRole.Id)
+                .Join(_dbContext.Users.AsQueryable(), ur => ur.UserId, u => u.Id, (ur, u) => u)
+                .Where(u => u.Email.Contains(searchString))
+                .OrderBy(u => u.Email)
+                .Skip((page - 1) * pageSize)
+                .Take(pageSize)
+                .ToListAsync();
+            
+            return (count, users);
+        }
+
+        public async Task<(int, IEnumerable<User>)> GetAdministrators(string searchString, int page, int pageSize)
+        {
+            var administratorRole = await _roleManager.FindByNameAsync(Roles.ADMINISTRATOR);
+
+            var count = await _dbContext.UserRoles
+                .Where(ur => ur.RoleId == administratorRole.Id)
+                .Join(_dbContext.Users.AsQueryable(), ur => ur.UserId, u => u.Id, (ur, u) => u)
+                .Where(u => u.Email.Contains(searchString))
+                .CountAsync();
+                
+            var users = await _dbContext.UserRoles
+                .Where(ur => ur.RoleId == administratorRole.Id)
+                .Join(_dbContext.Users.AsQueryable(), ur => ur.UserId, u => u.Id, (ur, u) => u)
+                .Where(u => u.Email.Contains(searchString))
+                .OrderBy(u => u.Email)
+                .Skip((page - 1) * pageSize)
+                .Take(pageSize)
+                .ToListAsync();
+                
+            return (count, users);
         }
 
         public async Task<User?> GetUserByEmail(string email)

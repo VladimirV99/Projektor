@@ -16,3 +16,4 @@ export enum LoadingStatus {
 export const MIN_PASSWORD_LENGTH = 8;
 
 export const ROLE_ADMINISTRATOR = 'Administrator';
+export const ROLE_CUSTOMER = 'Customer';

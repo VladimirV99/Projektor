@@ -7,6 +7,8 @@ namespace Identity.Repositories
     {
         Task<bool> CreateUser(User user, string password);
         Task<IEnumerable<User>> GetAllUsers();
+        Task<(int, IEnumerable<User>)> GetCustomers(string searchString, int page, int pageSize);
+        Task<(int, IEnumerable<User>)> GetAdministrators(string searchString, int page, int pageSize);
         Task<User?> GetUserByEmail(string email);
         Task<bool> CheckUserPassword(User user, string password);
         Task ChangeUserName(User user, string firstName, string lastName);

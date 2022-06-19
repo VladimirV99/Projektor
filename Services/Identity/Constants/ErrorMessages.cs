@@ -21,5 +21,9 @@
         public const string NEW_PASSWORD_SAME = "New password can't be the same as old";
 
         public const string REFRESH_TOKEN_REQUIRED = "Refresh token is required";
+
+        public const string PAGE_NUMBER_REQUIRED = "Page number is required";
+        public const string PAGE_NUMBER_RANGE = "Page number must be greater or equal to 1";
+        public const string PAGE_SIZE_RANGE = "Page size must be between 1 and 20";
     }
 }

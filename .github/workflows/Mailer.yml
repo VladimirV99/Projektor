@@ -5,16 +5,16 @@ on:
   push:
     branches:
       - main
-    
+
     paths:
       - "Common/EventBus/**"
       - "Services/Mailer/**"
       - ".github/workflows/Mailer.yml"
-      
+
   pull_request:
     branches:
       - main
-    
+
     paths:
       - "Common/EventBus/**"
       - "Services/Mailer/**"
@@ -23,7 +23,7 @@ on:
 jobs:
   build:
     runs-on: ubuntu-latest
-    
+
     steps:
       - name: Checkout code
         uses: actions/checkout@v3

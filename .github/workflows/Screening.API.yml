@@ -5,16 +5,16 @@ on:
   push:
     branches:
       - main
-    
+
     paths:
       - "Services/Screening/Screening.Common/**"
       - "Services/Screening/Screening.API/**"
       - ".github/workflows/Screening.API.yml"
-      
+
   pull_request:
     branches:
       - main
-    
+
     paths:
       - "Services/Screening/Screening.Common/**"
       - "Services/Screening/Screening.API/**"
@@ -23,7 +23,7 @@ on:
 jobs:
   build:
     runs-on: ubuntu-latest
-    
+
     steps:
       - name: Checkout code
         uses: actions/checkout@v3

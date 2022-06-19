@@ -1,0 +1,23 @@
+#See https://aka.ms/containerfastmode to understand how Visual Studio uses this Dockerfile to build your images for faster debugging.
+
+FROM mcr.microsoft.com/dotnet/aspnet:6.0 AS base
+WORKDIR /app
+EXPOSE 80
+
+FROM mcr.microsoft.com/dotnet/sdk:6.0 AS build
+WORKDIR /src
+COPY ["Services/Screening/Screening.API/Screening.API.csproj", "Services/Screening/Screening.API/"]
+COPY ["Services/Screening/Screening.Common/Screening.Common.csproj", "Services/Screening/Screening.Common/"]
+COPY ["Common/Auth/Auth.csproj", "Common/Auth/"]
+RUN dotnet restore "Services/Screening/Screening.API/Screening.API.csproj"
+COPY . .
+WORKDIR "/src/Services/Screening/Screening.API"
+RUN dotnet build "Screening.API.csproj" -c Release -o /app/build
+
+FROM build AS publish
+RUN dotnet publish "Screening.API.csproj" -c Release -o /app/publish
+
+FROM base AS final
+WORKDIR /app
+COPY --from=publish /app/publish .
+ENTRYPOINT ["dotnet", "Screening.API.dll"]

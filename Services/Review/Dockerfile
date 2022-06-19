@@ -8,6 +8,7 @@ FROM mcr.microsoft.com/dotnet/sdk:6.0 AS build
 WORKDIR /src
 COPY ["Services/Review/Review.csproj", "Services/Review/"]
 COPY ["Common/Auth/Auth.csproj", "Common/Auth/"]
+COPY ["Common/EventBus/EventBus.csproj", "Common/EventBus/"]
 RUN dotnet restore "Services/Review/Review.csproj"
 COPY . .
 WORKDIR "/src/Services/Review"

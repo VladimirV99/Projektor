@@ -2,7 +2,6 @@ import { Fragment, useEffect, useMemo, useState } from 'react';
 import { useDispatch } from 'react-redux';
 import Movie from 'models/Movie';
 import CreateOrUpdateMovieRequest from 'models/Movie/CreateOrUpdateMovieRequest';
-import ModalCheKoV from 'components/Modal';
 import styled from 'styled-components';
 import { Button, TextField } from '@mui/material';
 import * as selectors from 'redux/movies/selectors';

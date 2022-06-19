@@ -11,6 +11,9 @@ namespace Review.Models
         [Required(ErrorMessage = ErrorMessages.USER_ID_REQUIRED)]
         public string UserId { get; set; } = null!;
 
+        [Required(ErrorMessage = ErrorMessages.RESERVATION_ID_REQUIRED)]
+        public int ReservationId { get; set; }
+
         [Required(ErrorMessage = ErrorMessages.WATCHED_TIME_REQUIRED)]
         public DateTime WatchedOn { get; set; }
 

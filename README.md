@@ -60,7 +60,8 @@ This account cannot be deleted as it will be recreated when the service restarts
 
 ### Screening
 
-![Screening Workflow Status](https://img.shields.io/github/workflow/status/VladimirV99/Projektor/Screening/main?style=for-the-badge)
+![Screening.API Workflow Status](https://img.shields.io/github/workflow/status/VladimirV99/Projektor/Screening.API/main?style=for-the-badge&label=Screening.API)
+![Screening.GRPC Workflow Status](https://img.shields.io/github/workflow/status/VladimirV99/Projektor/Screening.GRPC/main?style=for-the-badge&label=Screening.GRPC)
 
 ### Reservation
 

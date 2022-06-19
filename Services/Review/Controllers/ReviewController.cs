@@ -1,5 +1,6 @@
 ﻿using AutoMapper;
 using Common.Auth;
+using Common.Auth.Util;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Review.Constants;
@@ -26,8 +27,8 @@ namespace Review.Controllers
         }
 
         // This is a debug function
-        // Watched movies should be added asynchronously by the reservation service
-        // [Authorize(Roles = Roles.ADMINISTRATOR)]
+        // Watched movies are added asynchronously by the reservation service
+        [Authorize(Roles = Roles.ADMINISTRATOR)]
         [HttpPost("[action]")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
@@ -46,12 +47,46 @@ namespace Review.Controllers
                     LastName = request.LastName
                 });
             }
-            
-            // TODO Check if movie exists from movie service using RPC
 
             // Add record to database
             await _repository.AddWatchedMovie(_mapper.Map<WatchedMovie>(request));
             return Ok();
+        }
+
+        // This is a debug function
+        [Authorize(Roles = Roles.ADMINISTRATOR)]
+        [HttpPost("[action]")]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        public async Task<ActionResult<bool>> HasUserWatchedMovie([FromBody] HasWatchedMovieRequest request)
+        {
+            var result = await _repository.HasWatchedMovie(request.UserId, request.MovieId);
+            return Ok(result);
+        }
+
+        // This is a debug function
+        [Authorize(Roles = Roles.ADMINISTRATOR)]
+        [HttpDelete("[action]")]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        public async Task<ActionResult<bool>> RemoveWatchedMovie([FromBody] WatchedMovieRequest request)
+        {
+            var result = await _repository.RemoveWatchedMovie(request.MovieId, request.UserId, request.ReservationId);
+            return result ? Ok() : NotFound();
+        }
+
+        [Authorize(Roles = Roles.CUSTOMER)]
+        [HttpGet("[action]/{movieId}")]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        public async Task<ActionResult<bool>> HasWatchedMovie(int movieId)
+        {
+            var userId = UserClaimsHelper.GetIdFromClaims(User);
+            if (userId == null)
+            {
+                return NotFound();
+            }
+
+            return Ok(await _repository.HasWatchedMovie(userId, movieId));
         }
 
         [Authorize(Roles = Roles.CUSTOMER)]

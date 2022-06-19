@@ -10,6 +10,6 @@ public class ReservationProfile : Profile
     {
         CreateMap<Entities.Reservation, ReservationModel>();
         CreateMap<Movie, MovieModel>().ReverseMap();
-        CreateMap<Screening, ScreeningModel>().ReverseMap();
+        CreateMap<Entities.Screening, ScreeningModel>().ReverseMap();
     }
 }

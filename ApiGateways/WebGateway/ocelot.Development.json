@@ -65,7 +65,7 @@
       "DownstreamScheme": "http",
       "DownstreamHostAndPorts": [
         {
-          "Host": "screening",
+          "Host": "screening.api",
           "Port": 80
         }
       ],

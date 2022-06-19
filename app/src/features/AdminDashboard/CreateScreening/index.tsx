@@ -126,6 +126,7 @@ const CreateScreening = ({
                             onOptionClicked={({ id, label }) => {
                                 setSelectedMovieId(id);
                             }}
+                            extractData={(data) => data.movies}
                         />
                     </div>
                     <div>

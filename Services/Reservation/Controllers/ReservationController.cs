@@ -19,13 +19,15 @@ namespace Reservation.Controllers
         private readonly IReservationRepository _repository;
         private readonly IMapper _mapper;
         private readonly IPublishEndpoint _publishEndpoint;
+        private readonly ScreeningService _screeningService;
 
         public ReservationController(IReservationRepository repository, IMapper mapper,
-            IPublishEndpoint publishEndpoint)
+            IPublishEndpoint publishEndpoint, ScreeningService service)
         {
             _repository = repository ?? throw new ArgumentNullException(nameof(repository));
             _mapper = mapper ?? throw new ArgumentNullException(nameof(mapper));
             _publishEndpoint = publishEndpoint ?? throw new ArgumentNullException(nameof(publishEndpoint));
+            _screeningService = service ?? throw new ArgumentNullException(nameof(service));
         }
 
         [Authorize(Roles = Roles.CUSTOMER)]

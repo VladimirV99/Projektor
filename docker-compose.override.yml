@@ -123,9 +123,10 @@ services:
       - ASPNETCORE_ENVIRONMENT=Development
       - "ConnectionStrings:ReservationsConnectionString=Server=projektor_mssql;Database=ReservationDB;User Id=sa;Password=MatfRs2_MSSQL;"
       - "gRPC:ScreeningUrl=http://screening.grpc"
+      - "EventBus:Host=amqp://projektor_rabbitmq:5672"
     depends_on:
       - projektor_mssql
       - screening.grpc
-      - "EventBus:Host=amqp://projektor_rabbitmq:5672"
+      - projektor_rabbitmq
     ports:
       - "5006:80"

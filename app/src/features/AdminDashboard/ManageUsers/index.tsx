@@ -23,7 +23,7 @@ import axiosAuthInstance from 'axios/instance';
 import CreateUserRequest from 'models/User/CreateUserRequest';
 import CreateNewUser from '../CreateNewUser';
 import { useDispatch } from 'react-redux';
-import { logoutCustomer } from 'redux/auth/actions';
+import { logoutCustomer } from 'redux/auth/modules';
 
 const ManageUsers = () => {
     const [users, setUsers] = useState<User[] | null>(null);

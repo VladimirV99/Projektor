@@ -9,7 +9,7 @@ export const GET_SCREENINGS_FOR_HALL_URL = (hallId: number) =>
 
 export const GET_MOVIES_BY_SEARCH_STRING = urlJoin(
     URL_BASE,
-    `/Screening/GetMoviesBySearchString`
+    '/Movies/FilterMovies'
 );
 
 export const GET_HALLS_BY_SEARCH_STRING = urlJoin(

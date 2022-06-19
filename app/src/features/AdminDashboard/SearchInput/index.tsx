@@ -15,7 +15,7 @@ function SearchInput({
     searchEndpoint,
     onOptionClicked,
     getOptions,
-    extractData = (data) => data
+    extractData = (data) => data,
 }: Props): JSX.Element {
     const [searchTermInput, setSearchTermInput] = useState('');
     const [searchTerm] = useDebounce(searchTermInput, 500);

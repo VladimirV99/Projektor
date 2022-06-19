@@ -12,6 +12,7 @@
   <ItemGroup>
     <PackageReference Include="AutoMapper" Version="11.0.1" />
     <PackageReference Include="AutoMapper.Extensions.Microsoft.DependencyInjection" Version="11.0.0" />
+    <PackageReference Include="Grpc.AspNetCore" Version="2.46.0" />
     <PackageReference Include="MassTransit" Version="8.0.2" />
     <PackageReference Include="MassTransit.AspNetCore" Version="7.3.1" />
     <PackageReference Include="MassTransit.RabbitMQ" Version="8.0.2" />
@@ -33,6 +34,12 @@
   <ItemGroup>
     <ProjectReference Include="..\..\Common\Auth\Auth.csproj" />
     <ProjectReference Include="..\..\Common\EventBus\EventBus.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Protobuf Include="..\Screening\Screening.GRPC\Protos\screening.proto" GrpcServices="Client">
+      <Link>Protos\screening.proto</Link>
+    </Protobuf>
   </ItemGroup>
 
 </Project>

@@ -11,7 +11,7 @@ services:
     volumes:
       - mssql_data:/var/opt/mssql/data
       - ./Services/Movies/Movies.API/Seed:/var/seed
-      - ./Services/Screening/Seed:/var/seed_screening
+      - ./Services/Screening/Screening.Common/Seed:/var/seed_screening
 
   projektor_rabbitmq:
     container_name: projektor_rabbitmq
@@ -70,8 +70,8 @@ services:
     ports:
       - "5009:80"
 
-  screening:
-    container_name: screening
+  screening.api:
+    container_name: screening.api
     environment:
       - ASPNETCORE_ENVIRONMENT=Development
       - "ConnectionStrings:ScreeningsConnectionString=Server=projektor_mssql;Database=ScreeningDb;User Id=sa;Password=MatfRs2_MSSQL;"
@@ -79,6 +79,16 @@ services:
       - projektor_mssql
     ports:
       - "5008:80"
+
+  screening.grpc:
+    container_name: screening.grpc
+    environment:
+      - ASPNETCORE_ENVIRONMENT=Development
+      - "ConnectionStrings:ScreeningsConnectionString=Server=projektor_mssql;Database=ScreeningDb;User Id=sa;Password=MatfRs2_MSSQL;"
+    depends_on:
+      - projektor_mssql
+    ports:
+      - "5221:80"
 
   webgateway:
     container_name: webgateway
@@ -89,7 +99,8 @@ services:
       - identity
       - mailer
       - review
-      - screening
+      - screening.api
+      - screening.grpc
       - reservation
     ports:
       - "7060:80"
@@ -111,10 +122,11 @@ services:
     environment:
       - ASPNETCORE_ENVIRONMENT=Development
       - "ConnectionStrings:ReservationsConnectionString=Server=projektor_mssql;Database=ReservationDB;User Id=sa;Password=MatfRs2_MSSQL;"
+      - "gRPC:ScreeningUrl=http://screening.grpc"
       - "EventBus:Host=amqp://projektor_rabbitmq:5672"
     depends_on:
       - projektor_mssql
+      - screening.grpc
       - projektor_rabbitmq
     ports:
       - "5006:80"
-

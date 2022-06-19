@@ -31,11 +31,17 @@ services:
       context: .
       dockerfile: Services/Mailer/Dockerfile
 
-  screening:
-    image: ${DOCKER_REGISTRY-}screening
+  screening.api:
+    image: ${DOCKER_REGISTRY-}screening.api
     build:
       context: .
-      dockerfile: Services/Screening/Dockerfile
+      dockerfile: Services/Screening/Screening.API/Dockerfile
+
+  screening.grpc:
+    image: ${DOCKER_REGISTRY-}screening.grpc
+    build:
+      context: .
+      dockerfile: Services/Screening/Screening.GRPC/Dockerfile
 
   webgateway:
     image: ${DOCKER_REGISTRY-}webgateway
@@ -59,4 +65,3 @@ volumes:
   mssql_data:
   postgres_data:
   pgadmin_data:
-

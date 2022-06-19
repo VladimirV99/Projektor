@@ -6,6 +6,26 @@ export const GET_ALL_USERS_URL = urlJoin(
     '/Administrator/GetAllUsers'
 );
 
+export const GET_CUSTOMERS_URL = (
+    searchString: string,
+    page: number,
+    perPage: number
+) =>
+    urlJoin(
+        URL_BASE,
+        `/Administrator/GetCustomers?searchString=${searchString}&page=${page}&perPage=${perPage}`
+    );
+
+export const GET_ADMINISTRATORS_URL = (
+    searchString: string,
+    page: number,
+    perPage: number
+) =>
+    urlJoin(
+        URL_BASE,
+        `/Administrator/GetAdministrators?searchString=${searchString}&page=${page}&perPage=${perPage}`
+    );
+
 export const DELETE_USER_BY_EMAIL_URL = (email: string) =>
     urlJoin(URL_BASE, `Administrator/DeleteUserByEmail/${email}`);
 

@@ -3,6 +3,7 @@ using Common.Auth;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Movies.API.Constants;
+using Movies.API.Grpc;
 using Movies.API.Models;
 using Movies.API.Services;
 using Movies.Common.Data;
@@ -16,13 +17,15 @@ namespace Movies.API.Controllers
 	{
         private readonly IMoviesRepository _repository;
         private readonly IMoviesService _service;
+        private readonly ScreeningService _screeningService;
         private readonly IMapper _mapper;
 
-        public MoviesController(IMoviesRepository repository, IMoviesService service, IMapper mapper)
+        public MoviesController(IMoviesRepository repository, IMoviesService service, IMapper mapper, ScreeningService screeningService)
         {
             _repository = repository ?? throw new ArgumentNullException(nameof(repository));
             _service = service ?? throw new ArgumentNullException(nameof(service));
             _mapper = mapper ?? throw new ArgumentNullException(nameof(mapper));
+            _screeningService = screeningService ?? throw new ArgumentNullException(nameof(screeningService));
         }
         
         // TODO: Most of these endpoints probably won't be needed anywhere, but I'm leaving them here for now.
@@ -105,6 +108,11 @@ namespace Movies.API.Controllers
         [ProducesResponseType(StatusCodes.Status200OK)]
         public async Task<IActionResult> DeleteMovie(int id)
         {
+            var success = await _screeningService.DeleteMovie(id);
+            if (!success)
+            {
+                return BadRequest();
+            }
             await _repository.DeleteMovie(id);
             return Ok();
         }

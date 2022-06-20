@@ -2,6 +2,7 @@ using Screening.Common.Data;
 using Microsoft.EntityFrameworkCore;
 using System.Reflection;
 using Screening.Common.Extensions;
+using Movies.GRPC;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -16,6 +17,8 @@ builder.Services.AddControllers();
 builder.Services.AddAutoMapper(Assembly.GetExecutingAssembly());
 builder.Services.AddScoped<IScreeningRepository, ScreeningRepository>();
 builder.Services.AddTransient<IDataSeeder, DataSeeder>();
+builder.Services.AddGrpcClient<MoviesProtoService.MoviesProtoServiceBase>(o =>
+    o.Address = new Uri(builder.Configuration["gRPC:MoviesUrl"]));
 
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();

@@ -10,6 +10,10 @@
   </PropertyGroup>
 
   <ItemGroup>
+	  <PackageReference Include="Grpc.Tools" Version="2.46.3">
+	    <PrivateAssets>all</PrivateAssets>
+	    <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+	  </PackageReference>
 	  <PackageReference Include="Microsoft.EntityFrameworkCore.Tools" Version="6.0.5">
 	    <PrivateAssets>all</PrivateAssets>
 	    <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
@@ -19,7 +23,15 @@
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\..\Movies\Movies.GRPC\Movies.GRPC.csproj" />
     <ProjectReference Include="..\Screening.Common\Screening.Common.csproj" />
   </ItemGroup>
+    
+  <ItemGroup>
+      <Protobuf Include="..\..\Movies\Movies.GRPC\Protos\movies.proto" GrpcServices="Client">
+          <Link>Protos\movies.proto</Link>
+      </Protobuf>
+  </ItemGroup>
+
 
 </Project>

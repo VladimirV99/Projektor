@@ -1,6 +1,8 @@
 ﻿using AutoMapper;
 using Common.Auth;
 using Common.Auth.Util;
+using Common.EventBus.Events;
+using MassTransit;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Reservation.Entities;
@@ -16,14 +18,16 @@ namespace Reservation.Controllers
     {
         private readonly IReservationRepository _repository;
         private readonly IMapper _mapper;
+        private readonly IPublishEndpoint _publishEndpoint;
         private readonly ScreeningService _screeningService;
 
         public ReservationController(IReservationRepository repository, IMapper mapper,
-            ScreeningService screeningService)
+            IPublishEndpoint publishEndpoint, ScreeningService service)
         {
             _repository = repository ?? throw new ArgumentNullException(nameof(repository));
             _mapper = mapper ?? throw new ArgumentNullException(nameof(mapper));
-            _screeningService = screeningService ?? throw new ArgumentNullException(nameof(screeningService));
+            _publishEndpoint = publishEndpoint ?? throw new ArgumentNullException(nameof(publishEndpoint));
+            _screeningService = service ?? throw new ArgumentNullException(nameof(service));
         }
 
         [Authorize(Roles = Roles.CUSTOMER)]
@@ -73,6 +77,10 @@ namespace Reservation.Controllers
                 return ValidationProblem(ModelState);
             }
             
+            // TODO Price could depend on the movie length, day of the week...
+            // Price is calculated by summing the price for each seat
+            var price = seats.Aggregate(0, (double acc, Seat s) => acc + s.PriceMultiplier * 300.0);
+            
             // Create reservation
             var reservation = new Entities.Reservation
             {
@@ -80,10 +88,30 @@ namespace Reservation.Controllers
                 Screening = new Entities.Screening { Id = screening.Id, MovieStart = screening.MovieStart },
                 User = _mapper.Map<User>(userInfo),
                 Seats = seats,
-                // TODO Price could depend on the movie length, day of the week...
-                Price = seats.Aggregate(0, (double acc, Seat s) => acc + s.PriceMultiplier * 300.0)
+                Price = price
             };
             await _repository.CreateReservation(reservation);
+
+            // Notify review service
+            await _publishEndpoint.Publish(new AddWatchedMovieEvent
+            (
+                screening.Movie.Id,
+                _mapper.Map<Common.EventBus.Models.User>(userInfo),
+                reservation.Id,
+                screening.MovieStart
+            ));
+            
+            // Notify mailer service
+            await _publishEndpoint.Publish(new ReservationEmailEvent(
+                userInfo.Email,
+                reservation.Id,
+                screening.Movie.Title,
+                hall.Name,
+                seats.Select(s => new ReservationEmailEvent.Seat(s.Row, s.Column)).ToArray(),
+                screening.MovieStart,
+                price
+            ));
+            
             return CreatedAtAction(
                 nameof(GetReservation),
                 new {Id = reservation.Id},
@@ -103,15 +131,39 @@ namespace Reservation.Controllers
             {
                 return NotFound();
             }
+            
+            // Get user data from access token
+            var userInfo = UserClaimsHelper.GetUserFromClaims(User);
 
             // Check if reservation belongs to user trying to cancel it
-            if (reservation.User.Id == UserClaimsHelper.GetIdFromClaims(User))
+            if (reservation.User.Id != userInfo.Id)
             {
                 return Unauthorized();
             }
-            
+
             var result = await _repository.DeleteReservation(id);
-            return result ? Ok() : NotFound();
+            if (!result)
+            {
+                return NotFound();
+            }
+            
+            // Notify review service
+            await _publishEndpoint.Publish(new RemoveWatchedMovieEvent
+            (
+                reservation.Movie.Id,
+                reservation.User.Id,
+                reservation.Id
+            ));
+            
+            // Notify mailer service
+            await _publishEndpoint.Publish(new CancelReservationEmailEvent(
+                userInfo.Email,
+                reservation.Id,
+                reservation.Movie.Title,
+                reservation.Screening.MovieStart
+            ));
+            
+            return Ok();
         }
         
         [Authorize(Roles = Roles.ADMINISTRATOR)]
@@ -119,7 +171,21 @@ namespace Reservation.Controllers
         [ProducesResponseType(StatusCodes.Status200OK)]
         public async Task<IActionResult> CancelScreening(int screeningId)
         {
+            var reservations = await _repository.GetReservationsForScreening(screeningId);
+            
             await _repository.DeleteReservationsForScreening(screeningId);
+            
+            // Notify mailer service
+            foreach (var reservation in reservations)
+            {
+                await _publishEndpoint.Publish(new CancelScreeningEmailEvent(
+                    reservation.User.Email,
+                    reservation.Id,
+                    reservation.Movie.Title,
+                    reservation.Screening.MovieStart
+                ));
+            }
+
             return Ok();
         }
         

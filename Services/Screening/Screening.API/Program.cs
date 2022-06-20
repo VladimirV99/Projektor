@@ -3,10 +3,15 @@ using Microsoft.EntityFrameworkCore;
 using System.Reflection;
 using Screening.Common.Extensions;
 using Movies.GRPC;
+using Common.Auth.Models;
+using Common.Auth.Extensions;
+using Microsoft.OpenApi.Models;
 
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
+
+builder.Services.ConfigureJWT(builder.Configuration.GetSection("JWT").Get<JwtSettings>());
 
 builder.Services.AddDbContext<ScreeningContext>(options =>
 {
@@ -22,8 +27,17 @@ builder.Services.AddGrpcClient<MoviesProtoService.MoviesProtoServiceBase>(o =>
 
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
-builder.Services.AddSwaggerGen();
-
+builder.Services.AddSwaggerGen(options =>
+{
+    options.SwaggerDoc("v1", new OpenApiInfo
+    {
+        Version = "v1",
+        Title = "Screening Server",
+        Description = "Screening Server for Projektor Application"
+    });
+    options.AddJwtSecurityDefinition();
+    options.AddAuthOperationFilter();
+});
 
 var app = builder.Build();
 
@@ -41,6 +55,7 @@ if (app.Environment.IsDevelopment())
     );
 }
 
+app.UseAuthentication();
 app.UseAuthorization();
 
 app.MapControllers();

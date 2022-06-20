@@ -29,10 +29,34 @@ namespace Identity.Controllers
 
         [HttpGet("[action]")]
         [ProducesResponseType(typeof(IEnumerable<UserDetails>), StatusCodes.Status200OK)]
-        public async Task<IActionResult> GetAllUsers()
+        public async Task<ActionResult<IEnumerable<UserDetails>>> GetAllUsers()
         {
             var users = await _repository.GetAllUsers();
             return Ok(_mapper.Map<IEnumerable<UserDetails>>(users));
+        }
+        
+        [HttpGet("[action]")]
+        [ProducesResponseType(typeof(PaginatedUserResponse), StatusCodes.Status200OK)]
+        public async Task<ActionResult<PaginatedUserResponse>> GetCustomers([FromQuery] string? searchString, [FromQuery] PaginationRequest pagination)
+        {
+            var (count, users) = await _repository.GetCustomers(searchString ?? "", pagination.Page, pagination.PerPage);
+            return Ok(new PaginatedUserResponse
+            {
+                Count = count,
+                Users = _mapper.Map<IEnumerable<UserDetails>>(users)
+            });
+        }
+        
+        [HttpGet("[action]")]
+        [ProducesResponseType(typeof(PaginatedUserResponse), StatusCodes.Status200OK)]
+        public async Task<ActionResult<PaginatedUserResponse>> GetAdministrators([FromQuery] string? searchString, [FromQuery] PaginationRequest pagination)
+        {
+            var (count, users) = await _repository.GetAdministrators(searchString ?? "", pagination.Page, pagination.PerPage);
+            return Ok(new PaginatedUserResponse
+            {
+                Count = count,
+                Users = _mapper.Map<IEnumerable<UserDetails>>(users)
+            });
         }
 
         [HttpGet("[action]/{email}")]

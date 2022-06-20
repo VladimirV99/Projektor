@@ -8,12 +8,14 @@ type Props = {
     searchEndpoint: string;
     onOptionClicked: (option: any) => void;
     getOptions: (results: any[]) => { id: any; label: string }[];
+    extractData?: (data: any) => any;
 };
 
 function SearchInput({
     searchEndpoint,
     onOptionClicked,
     getOptions,
+    extractData = (data) => data,
 }: Props): JSX.Element {
     const [searchTermInput, setSearchTermInput] = useState('');
     const [searchTerm] = useDebounce(searchTermInput, 500);
@@ -30,7 +32,7 @@ function SearchInput({
                 },
             })
             .then((response) => {
-                setSearchResults(response.data);
+                setSearchResults(extractData(response.data));
             })
             .catch(() => {});
     }, [searchTerm]);

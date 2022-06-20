@@ -13,6 +13,8 @@
         <PackageReference Include="AutoMapper" Version="11.0.1" />
         <PackageReference Include="AutoMapper.Extensions.Microsoft.DependencyInjection" Version="11.0.0" />
         <PackageReference Include="Dapper" Version="2.0.123" />
+        <PackageReference Include="MassTransit" Version="8.0.2" />
+        <PackageReference Include="MassTransit.RabbitMQ" Version="8.0.2" />
         <PackageReference Include="Microsoft.VisualStudio.Azure.Containers.Tools.Targets" Version="1.14.0" />
         <PackageReference Include="Npgsql" Version="6.0.4" />
         <PackageReference Include="Polly" Version="7.2.3" />
@@ -21,6 +23,7 @@
 
     <ItemGroup>
       <ProjectReference Include="..\..\Common\Auth\Auth.csproj" />
+      <ProjectReference Include="..\..\Common\EventBus\EventBus.csproj" />
     </ItemGroup>
 
 </Project>

@@ -11,15 +11,18 @@ import {
     DELETE_REVIEW_URL,
     GET_REVIEWS_FOR_MOVIE_URL,
     GET_REVIEW_BY_ID_URL,
+    REMOVE_REVIEW_URL,
     UPDATE_REVIEW_URL,
 } from 'constants/api/reviews';
 import axios from 'axios';
 import ReviewBox from 'components/Review';
-import { useSelector } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import { selectIsUserLoggedIn, selectUser } from 'redux/auth/selectors';
 import * as S from './index.styles';
 import StarIcon from 'components/StarIcon';
 import { parseServerDate } from 'util/dateUtils';
+import { isUserCustomer } from 'util/auth';
+import { openSignInForm } from 'redux/auth/actions';
 
 type CreateReviewRequest = {
     isAlreadyCreated: boolean;
@@ -56,6 +59,8 @@ const MovieReviews = ({
         return <CircularProgress />;
     }
 
+    const dispatch = useDispatch();
+
     const isLoggedIn = useSelector(selectIsUserLoggedIn);
     const user = useSelector(selectUser);
 
@@ -76,6 +81,7 @@ const MovieReviews = ({
 
     const [showDeleteModal, setShowDeleteModal] = useState<boolean>(false);
     const [deleteStatus, setDeleteStatus] = useState<Status>('idle');
+    const [deleteUserId, setDeleteUserId] = useState<string | null>(null);
 
     const reviewValidationErrors = useMemo<UserReviewErrors>(() => {
         const errors: UserReviewErrors = {
@@ -230,17 +236,105 @@ const MovieReviews = ({
             });
     };
 
+    const removeUserReview = (userId: string) => {
+        axiosAuthInstance
+            .delete(REMOVE_REVIEW_URL(movieId, userId))
+            .then(() => {
+                setReviewCount(reviewCount - 1);
+                setReviews(reviews.filter((r) => r.reviewer.id !== userId));
+                setDeleteStatus('success');
+            })
+            .catch(() => {
+                setDeleteStatus('error');
+            });
+    };
+
+    const deleteReview = () => {
+        if (deleteUserId === null) {
+            deleteUserReview();
+        } else {
+            removeUserReview(deleteUserId);
+        }
+    };
+
+    const renderDeleteModal = useCallback(() => {
+        return (
+            <Modal show={showDeleteModal}>
+                <Modal.Header>
+                    <Modal.Title>Delete review</Modal.Title>
+                </Modal.Header>
+                <Modal.Body>
+                    {deleteStatus === 'idle' && (
+                        <div>
+                            {deleteUserId === null
+                                ? 'Are you sure you want to delete your review?'
+                                : 'Are you sure you want to delete this review?'}
+                            <br />
+                            This action cannot be undone.
+                        </div>
+                    )}
+                    {deleteStatus === 'pending' && <div>Please wait...</div>}
+                    {deleteStatus === 'error' && (
+                        <div>Something went wrong. Please try again.</div>
+                    )}
+                    {deleteStatus === 'success' && (
+                        <div>Review successfully deleted</div>
+                    )}
+                </Modal.Body>
+                <Modal.Footer>
+                    {(deleteStatus === 'success' ||
+                        deleteStatus === 'error') && (
+                        <Button
+                            onClick={() => {
+                                setShowDeleteModal(false);
+                                setDeleteStatus('idle');
+                            }}
+                        >
+                            Close
+                        </Button>
+                    )}
+                    {(deleteStatus === 'idle' ||
+                        deleteStatus === 'pending') && (
+                        <Fragment>
+                            <Button
+                                disabled={deleteStatus === 'pending'}
+                                onClick={() => {
+                                    setShowDeleteModal(false);
+                                    setDeleteStatus('idle');
+                                }}
+                            >
+                                Cancel
+                            </Button>
+                            <Button
+                                onClick={deleteReview}
+                                disabled={deleteStatus === 'pending'}
+                            >
+                                Delete
+                            </Button>
+                        </Fragment>
+                    )}
+                </Modal.Footer>
+            </Modal>
+        );
+    }, [showDeleteModal, deleteStatus]);
+
     const renderUserReview = useCallback(() => {
         if (!isLoggedIn) {
-            // TODO open login panel
             return (
                 <S.ReviewContainer>
                     <h5>
                         To leave a review, please{' '}
-                        <Link to="/login">log in</Link>
+                        <Link
+                            to="#"
+                            onClick={() => dispatch(openSignInForm(true))}
+                        >
+                            log in
+                        </Link>
                     </h5>
                 </S.ReviewContainer>
             );
+        } else if (!isUserCustomer()) {
+            return null;
         }
         return (
             <S.ReviewContainer>
@@ -249,6 +343,7 @@ const MovieReviews = ({
                 {userReview.isAlreadyCreated && (
                     <S.DeleteReviewButton
                         onClick={() => {
+                            setDeleteUserId(null);
                             setShowDeleteModal(true);
                         }}
                     >
@@ -328,63 +423,6 @@ const MovieReviews = ({
                         Post
                     </Button>
                 )}
-
-                <Modal show={showDeleteModal}>
-                    <Modal.Header>
-                        <Modal.Title>Delete review</Modal.Title>
-                    </Modal.Header>
-                    <Modal.Body>
-                        {deleteStatus === 'idle' && (
-                            <div>
-                                Are you sure you want to delete your review?
-                                <br />
-                                This action cannot be undone.
-                            </div>
-                        )}
-                        {deleteStatus === 'pending' && (
-                            <div>Please wait...</div>
-                        )}
-                        {deleteStatus === 'error' && (
-                            <div>Something went wrong. Please try again.</div>
-                        )}
-                        {deleteStatus === 'success' && (
-                            <div>Review successfully deleted</div>
-                        )}
-                    </Modal.Body>
-                    <Modal.Footer>
-                        {(deleteStatus === 'success' ||
-                            deleteStatus === 'error') && (
-                            <Button
-                                onClick={() => {
-                                    setShowDeleteModal(false);
-                                    setDeleteStatus('idle');
-                                }}
-                            >
-                                Close
-                            </Button>
-                        )}
-                        {(deleteStatus === 'idle' ||
-                            deleteStatus === 'pending') && (
-                            <Fragment>
-                                <Button
-                                    disabled={deleteStatus === 'pending'}
-                                    onClick={() => {
-                                        setShowDeleteModal(false);
-                                        setDeleteStatus('idle');
-                                    }}
-                                >
-                                    Cancel
-                                </Button>
-                                <Button
-                                    onClick={deleteUserReview}
-                                    disabled={deleteStatus === 'pending'}
-                                >
-                                    Delete
-                                </Button>
-                            </Fragment>
-                        )}
-                    </Modal.Footer>
-                </Modal>
             </S.ReviewContainer>
         );
     }, [
@@ -394,18 +432,23 @@ const MovieReviews = ({
         userReviewStatus,
         reviewValidationErrors,
         hasReviewValidationError,
-        showDeleteModal,
-        deleteStatus,
     ]);
 
     const renderReviews = useCallback(() => {
         return (
             <Fragment>
-                {reviews.length > 0 ? (
+                {reviewCount > 0 ? (
                     <Fragment>
                         {reviews.map((review, i) => {
                             return (
-                                <ReviewBox key={i} review={review}></ReviewBox>
+                                <ReviewBox
+                                    key={i}
+                                    review={review}
+                                    onRemoveClick={(userId: string) => {
+                                        setDeleteUserId(userId);
+                                        setShowDeleteModal(true);
+                                    }}
+                                ></ReviewBox>
                             );
                         })}
                         {reviews.length < reviewCount && (
@@ -458,6 +501,7 @@ const MovieReviews = ({
 
             {renderUserReview()}
             {renderReviews()}
+            {renderDeleteModal()}
         </Fragment>
     );
 };

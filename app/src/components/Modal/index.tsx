@@ -15,7 +15,7 @@ const ModalCheKoV = ({
         <Modal
             open={shouldRender}
             onBackdropClick={onModalClose}
-            style={{ display: 'flex', justifyContent: 'center' }}
+            style={{ display: 'flex' }}
         >
             {children}
         </Modal>

@@ -19,6 +19,9 @@ builder.Services.AddMassTransit(config =>
 
     config.AddConsumer<WelcomeEmailConsumer>();
     config.AddConsumer<ReservationEmailConsumer>();
+    config.AddConsumer<CancelReservationEmailConsumer>();
+    config.AddConsumer<RescheduleScreeningEmailConsumer>();
+    config.AddConsumer<CancelScreeningEmailConsumer>();
 
     config.UsingRabbitMq((ctx, cfg) =>
     {
@@ -32,14 +35,22 @@ builder.Services.AddMassTransit(config =>
         {
             c.ConfigureConsumer<WelcomeEmailConsumer>(ctx);
             c.ConfigureConsumer<ReservationEmailConsumer>(ctx);
+            c.ConfigureConsumer<CancelReservationEmailConsumer>(ctx);
+            c.ConfigureConsumer<RescheduleScreeningEmailConsumer>(ctx);
+            c.ConfigureConsumer<CancelScreeningEmailConsumer>(ctx);
         });
     });
 });
 
-builder.Services.AddControllers();
-// Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
-builder.Services.AddEndpointsApiExplorer();
-builder.Services.AddSwaggerGen();
+// EmailController is only used for test purposes. It is disabled in production.
+if (builder.Environment.IsDevelopment())
+{
+    builder.Services.AddControllers();
+    
+    // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
+    builder.Services.AddEndpointsApiExplorer();
+    builder.Services.AddSwaggerGen();
+}
 
 var app = builder.Build();
 

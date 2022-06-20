@@ -23,6 +23,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\..\..\Common\Auth\Auth.csproj" />
     <ProjectReference Include="..\..\Movies\Movies.GRPC\Movies.GRPC.csproj" />
     <ProjectReference Include="..\Screening.Common\Screening.Common.csproj" />
   </ItemGroup>

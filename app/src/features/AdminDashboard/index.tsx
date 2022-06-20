@@ -8,6 +8,7 @@ import Helmet from 'react-helmet';
 import ManageScreenings from './ManageScreenings';
 import ManagePeople from './ManagePeople';
 import ManageUsers from './ManageUsers';
+import { ROLE_ADMINISTRATOR, ROLE_CUSTOMER } from 'constants/common';
 
 interface TabPanelProps {
     children?: React.ReactNode;
@@ -38,8 +39,9 @@ type TabValuesType = {
 const tabValues: TabValuesType = {
     movies: 0,
     people: 1,
-    users: 2,
-    screenings: 3,
+    screenings: 2,
+    customers: 3,
+    administrators: 4,
 };
 
 const AdminDashboard = () => {
@@ -78,8 +80,9 @@ const AdminDashboard = () => {
                     >
                         <Tab label="Movies" />
                         <Tab label="People" />
-                        <Tab label="Users" />
                         <Tab label="Screenings" />
+                        <Tab label="Customers" />
+                        <Tab label="Administrators" />
                     </Tabs>
                 </Box>
                 <TabPanel value={value} index={0}>
@@ -89,10 +92,13 @@ const AdminDashboard = () => {
                     <ManagePeople />
                 </TabPanel>
                 <TabPanel value={value} index={2}>
-                    <ManageUsers />
+                    <ManageScreenings />
                 </TabPanel>
                 <TabPanel value={value} index={3}>
-                    <ManageScreenings />
+                    <ManageUsers role={ROLE_CUSTOMER} />
+                </TabPanel>
+                <TabPanel value={value} index={4}>
+                    <ManageUsers role={ROLE_ADMINISTRATOR} />
                 </TabPanel>
             </Box>
         </Fragment>

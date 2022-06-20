@@ -10,6 +10,7 @@ namespace Reservation.Mapper
         public UserProfile()
         {
             CreateMap<UserInfo, User>();
+            CreateMap<UserInfo, Common.EventBus.Models.User>();
             CreateMap<User, UserModel>();
         }
     }

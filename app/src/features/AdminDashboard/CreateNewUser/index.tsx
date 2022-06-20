@@ -101,6 +101,7 @@ const CreateNewUser = ({ user, onClose, onBackdropClick, callback }: Props) => {
                     <FormTextInputField>
                         <TextField
                             label="Password"
+                            type="password"
                             value={userInput.password ?? ''}
                             onChange={(e) => {
                                 setUserInput({

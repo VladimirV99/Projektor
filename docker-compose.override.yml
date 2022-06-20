@@ -65,8 +65,10 @@ services:
     environment:
       - ASPNETCORE_ENVIRONMENT=Development
       - "ConnectionStrings:IdentityConnectionString=Server=projektor_mssql;Database=IdentityDb;User Id=sa;Password=MatfRs2_MSSQL;"
+      - "EventBus:Host=amqp://projektor_rabbitmq:5672"
     depends_on:
       - projektor_mssql
+      - projektor_rabbitmq
     ports:
       - "5010:80"
   
@@ -120,8 +122,10 @@ services:
     environment:
       - ASPNETCORE_ENVIRONMENT=Development
       - "ConnectionStrings:ReviewConnectionString=Server=projektor_postgres;Database=ReviewDB;User Id=admin;Password=admin123;"
+      - "EventBus:Host=amqp://projektor_rabbitmq:5672"
     depends_on:
       - projektor_postgres
+      - projektor_rabbitmq
     ports:
       - "5007:80"
 
@@ -131,9 +135,11 @@ services:
       - ASPNETCORE_ENVIRONMENT=Development
       - "ConnectionStrings:ReservationsConnectionString=Server=projektor_mssql;Database=ReservationDB;User Id=sa;Password=MatfRs2_MSSQL;"
       - "gRPC:ScreeningUrl=http://screening.grpc"
+      - "EventBus:Host=amqp://projektor_rabbitmq:5672"
     depends_on:
       - projektor_mssql
       - screening.grpc
+      - projektor_rabbitmq
     ports:
       - "5006:80"
 

@@ -8,6 +8,7 @@ FROM mcr.microsoft.com/dotnet/sdk:6.0 AS build
 WORKDIR /src
 COPY ["Services/Screening/Screening.API/Screening.API.csproj", "Services/Screening/Screening.API/"]
 COPY ["Services/Screening/Screening.Common/Screening.Common.csproj", "Services/Screening/Screening.Common/"]
+COPY ["Common/Auth/Auth.csproj", "Common/Auth/"]
 RUN dotnet restore "Services/Screening/Screening.API/Screening.API.csproj"
 COPY . .
 WORKDIR "/src/Services/Screening/Screening.API"

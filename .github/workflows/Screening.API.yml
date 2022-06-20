@@ -7,6 +7,7 @@ on:
       - main
     
     paths:
+      - "Common/Auth/**"
       - "Services/Screening/Screening.Common/**"
       - "Services/Screening/Screening.API/**"
       - ".github/workflows/Screening.API.yml"
@@ -16,6 +17,7 @@ on:
       - main
     
     paths:
+      - "Common/Auth/**"
       - "Services/Screening/Screening.Common/**"
       - "Services/Screening/Screening.API/**"
       - ".github/workflows/Screening.API.yml"

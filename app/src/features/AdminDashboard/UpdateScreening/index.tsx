@@ -3,15 +3,10 @@ import styled from 'styled-components';
 import { Button, TextField } from '@mui/material';
 import { Modal } from 'react-bootstrap';
 import Screening from 'models/Screening';
-import {
-    UPDATE_SCREENING_URL,
-    GET_MOVIES_BY_SEARCH_STRING,
-    GET_HALLS_BY_SEARCH_STRING,
-} from 'constants/api/screenings';
+import { UPDATE_SCREENING_URL } from 'constants/api/screenings';
 import axios from 'axios';
 import { DateTimePicker } from '@mui/lab';
 import dayjs from 'dayjs';
-import SearchInput from '../SearchInput';
 
 type Props = {
     screening: Screening;
@@ -31,16 +26,13 @@ const UpdateScreening = ({
     });
 
     const [updateStatus, setUpdateStatus] = useState('idle');
-    const [createStatus, setCreateStatus] = useState('idle');
 
     const handleUpdateSubmit = () => {
-        setCreateStatus('pending');
+        setUpdateStatus('pending');
         axios
             .patch(UPDATE_SCREENING_URL, {
                 screeningId: screeningInput.id,
                 moment: screeningInput.movieStart,
-                movieId: screeningInput.movie?.id,
-                hallId: screeningInput.hall?.id,
             })
             .then((response) => {
                 callback();
@@ -86,10 +78,8 @@ const UpdateScreening = ({
             >
                 <Modal.Header>
                     <h4>
-                        Editing:{' '}
-                        <i>
-                            {screening.movie?.title} | {screening.hall!.name}
-                        </i>
+                        Editing: <em>{screening.movie?.title} </em>|{' '}
+                        <em>{screening.hall!.name}</em>
                     </h4>
                 </Modal.Header>
 
@@ -106,47 +96,10 @@ const UpdateScreening = ({
                                 });
                             }}
                             value={new Date(screeningInput.movieStart)}
-                            renderInput={(props) => <TextField {...props} />}
+                            renderInput={(props) => (
+                                <TextField {...props} fullWidth />
+                            )}
                             ampm={false}
-                        />
-                    </div>
-                    <div>
-                        <FormInputFieldTitle>Movie</FormInputFieldTitle>
-                        <SearchInput
-                            searchEndpoint={GET_MOVIES_BY_SEARCH_STRING}
-                            getOptions={(movies) =>
-                                movies.map(({ id, title, length }) => ({
-                                    id,
-                                    label: `${title} ${length}`,
-                                }))
-                            }
-                            onOptionClicked={({ id, label }) => {
-                                const splitted = label.split(' ');
-                                const title = splitted[0];
-                                const length = splitted[1];
-                                setScreeningInput({
-                                    ...screeningInput,
-                                    movie: { id, title, length },
-                                });
-                            }}
-                        />
-                    </div>
-                    <div>
-                        <FormInputFieldTitle>Hall</FormInputFieldTitle>
-                        <SearchInput
-                            searchEndpoint={GET_HALLS_BY_SEARCH_STRING}
-                            getOptions={(halls) =>
-                                halls.map(({ id, name }) => ({
-                                    id,
-                                    label: `${name}`,
-                                }))
-                            }
-                            onOptionClicked={({ id, label }) => {
-                                setScreeningInput({
-                                    ...screeningInput,
-                                    hall: { id, name: label },
-                                });
-                            }}
                         />
                     </div>
                 </Modal.Body>

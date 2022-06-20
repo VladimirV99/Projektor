@@ -168,7 +168,13 @@ namespace Screening.Common.Controllers
         [Authorize(Roles = Roles.ADMINISTRATOR)]
         public async Task<IActionResult> UpdateScreening([FromBody] UpdateScreeningRequest request)
         {
-            await _repository.UpdateScreening(request.ScreeningId, request.Moment, request.MovieId, request.HallId);
+            var screening = await _repository.GetScreeningById(request.ScreeningId);
+            if (screening == null)
+            {
+                return NotFound();
+            }
+            
+            await _repository.UpdateScreening(request.ScreeningId, request.Moment);
 
             return Ok();
         }

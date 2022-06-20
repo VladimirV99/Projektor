@@ -121,15 +121,18 @@ namespace Screening.Common.Data
             await _dbContext.SaveChangesAsync();
         }
 
-        public async Task UpdateScreening(int id, DateTime moment, int movieId, int hallId)
+        public async Task UpdateScreening(int id, DateTime moment)
         {
             var screening = await _dbContext
                 .Screenings
                 .FindAsync(id);
+                
+            if (screening == null)
+            {
+                return;
+            }
 
             screening.MovieStart = moment;
-            screening.HallId = hallId;
-            screening.MovieId = movieId;
 
             await _dbContext.SaveChangesAsync();
         }

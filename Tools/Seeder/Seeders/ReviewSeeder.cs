@@ -47,4 +47,42 @@ public static class ReviewSeeder
             throw;
         }
     }
+    
+    public static void Clear()
+    {
+        try
+        {
+            TableRecord[] tables = {
+                new ("users", false),
+                new ("watchedmovies", false),
+                new ("reviews", false)
+            };
+            
+            PostgresHelper.ClearData(
+                "Server=localhost;Database=ReviewDB;User Id=admin;Password=admin123;",
+                tables
+            );
+        }
+        catch (Exception e)
+        {
+            Console.WriteLine(e);
+            throw;
+        }
+    }
+
+    public static void Drop()
+    {
+        try
+        {
+            PostgresHelper.DropDatabase(
+                "Server=localhost;Database=postgres;User Id=admin;Password=admin123;",
+                "ReviewDB"
+            );
+        }
+        catch (Exception e)
+        {
+            Console.WriteLine(e);
+            throw;
+        }
+    }
 }

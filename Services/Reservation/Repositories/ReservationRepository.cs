@@ -128,6 +128,19 @@ namespace Reservation.Repositories
                 .ToListAsync();
         }
 
+        public async Task<bool> UpdateReservationStartTime(int id, DateTime newTime)
+        {
+            var reservation = await _dbContext.Reservations.FindAsync(id);
+            if (reservation == null)
+            {
+                return false;
+            }
+
+            reservation.Screening.MovieStart = newTime;
+            await _dbContext.SaveChangesAsync();
+            return true;
+        }
+
         public async Task<bool> DeleteReservation(int id)
         {
             var reservation = await _dbContext.Reservations.FindAsync(id);

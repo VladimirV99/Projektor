@@ -77,8 +77,10 @@ services:
     environment:
       - ASPNETCORE_ENVIRONMENT=Development
       - "ConnectionStrings:ScreeningsConnectionString=Server=projektor_mssql;Database=ScreeningDb;User Id=sa;Password=MatfRs2_MSSQL;"
+      - "EventBus:Host=amqp://projektor_rabbitmq:5672"
     depends_on:
       - projektor_mssql
+      - projektor_rabbitmq
     ports:
       - "5008:80"
 

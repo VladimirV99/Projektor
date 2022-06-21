@@ -4,6 +4,7 @@ using System.Reflection;
 using Screening.Common.Extensions;
 using Common.Auth.Models;
 using Common.Auth.Extensions;
+using MassTransit;
 using Microsoft.OpenApi.Models;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -21,6 +22,20 @@ builder.Services.AddControllers();
 builder.Services.AddAutoMapper(Assembly.GetExecutingAssembly());
 builder.Services.AddScoped<IScreeningRepository, ScreeningRepository>();
 builder.Services.AddTransient<IDataSeeder, DataSeeder>();
+
+builder.Services.AddMassTransit(config =>
+{
+    var eventBusSettings = builder.Configuration.GetSection("EventBus");
+
+    config.UsingRabbitMq((ctx, cfg) =>
+    {
+        cfg.Host(eventBusSettings["Host"], h =>
+        {
+            h.Username(eventBusSettings["Username"]);
+            h.Password(eventBusSettings["Password"]);
+        });
+    });
+});
 
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();

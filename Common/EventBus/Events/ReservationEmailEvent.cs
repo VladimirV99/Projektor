@@ -4,8 +4,8 @@
     {
         public class Seat
         {
-            public int Row { get; set; }
-            public int Column { get; set; }
+            public int Row { get; }
+            public int Column { get; }
 
             public Seat(int row, int column)
             {
@@ -14,13 +14,13 @@
             }
         }
         
-        public string To { get; set; }
-        public int ReservationNumber { get; set; }
-        public string Movie { get; set; }
-        public string Hall { get; set; }
-        public Seat[] Seats { get; set; }
-        public DateTime Time { get; set; }
-        public double Price { get; set; }
+        public string To { get; }
+        public int ReservationNumber { get; }
+        public string Movie { get; }
+        public string Hall { get; }
+        public Seat[] Seats { get; }
+        public DateTime Time { get; }
+        public double Price { get; }
 
         public ReservationEmailEvent(string to, int reservationNumber, string movie, string hall,
             Seat[] seats, DateTime time, double price)

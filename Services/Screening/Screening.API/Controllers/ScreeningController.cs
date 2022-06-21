@@ -5,6 +5,8 @@ using AutoMapper;
 using Screening.Common.Entities;
 using Microsoft.AspNetCore.Authorization;
 using Common.Auth;
+using Common.EventBus.Events;
+using MassTransit;
 
 namespace Screening.Common.Controllers
 {
@@ -14,11 +16,13 @@ namespace Screening.Common.Controllers
     {
         private readonly IScreeningRepository _repository;
         private readonly IMapper _mapper;
+        private readonly IPublishEndpoint _publishEndpoint;
 
-        public ScreeningController(IScreeningRepository repository, IMapper mapper)
+        public ScreeningController(IScreeningRepository repository, IMapper mapper, IPublishEndpoint publishEndpoint)
         {
             _repository = repository ?? throw new ArgumentNullException(nameof(repository));
             _mapper = mapper ?? throw new ArgumentNullException(nameof(mapper));
+            _publishEndpoint = publishEndpoint ?? throw new ArgumentNullException(nameof(publishEndpoint));
         }
 
         [HttpGet("[action]/{id}")]
@@ -173,9 +177,22 @@ namespace Screening.Common.Controllers
             {
                 return NotFound();
             }
-            
-            await _repository.UpdateScreening(request.ScreeningId, request.Moment);
 
+            if (request.Moment == screening.MovieStart)
+            {
+                return Ok();
+            }
+            
+            var oldTime = screening.MovieStart;
+            await _repository.UpdateScreening(request.ScreeningId, request.Moment);
+                
+            // Notify reservation service
+            await _publishEndpoint.Publish(new RescheduleScreeningEvent(
+                screening.Id,
+                oldTime,
+                request.Moment
+            ));
+            
             return Ok();
         }
 
@@ -185,7 +202,16 @@ namespace Screening.Common.Controllers
         [Authorize(Roles = Roles.ADMINISTRATOR)]
         public async Task<ActionResult> DeleteScreeningById(int id)
         {
-            return await _repository.DeleteScreening(id) ? Ok() : NotFound();
+            var result = await _repository.DeleteScreening(id);
+            if (!result)
+            {
+                return NotFound();
+            }
+
+            // Notify reservation service
+            await _publishEndpoint.Publish(new CancelScreeningEvent(id));
+            
+            return Ok();
         }
 
         // This is a debug function, movies should be fetched from movie service

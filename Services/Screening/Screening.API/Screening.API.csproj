@@ -10,6 +10,8 @@
   </PropertyGroup>
 
   <ItemGroup>
+	  <PackageReference Include="MassTransit" Version="8.0.3" />
+	  <PackageReference Include="MassTransit.RabbitMQ" Version="8.0.3" />
 	  <PackageReference Include="Microsoft.EntityFrameworkCore.Tools" Version="6.0.5">
 	    <PrivateAssets>all</PrivateAssets>
 	    <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
@@ -20,6 +22,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\..\..\Common\Auth\Auth.csproj" />
+    <ProjectReference Include="..\..\..\Common\EventBus\EventBus.csproj" />
     <ProjectReference Include="..\Screening.Common\Screening.Common.csproj" />
   </ItemGroup>
 

@@ -2,9 +2,9 @@ namespace Common.EventBus.Events
 {
     public class RemoveWatchedMovieEvent
     {
-        public int MovieId { get; set; }
-        public string UserId { get; set; }
-        public int ReservationId { get; set; }
+        public int MovieId { get; }
+        public string UserId { get; }
+        public int ReservationId { get; }
 
         public RemoveWatchedMovieEvent(int movieId, string userId, int reservationId)
         {

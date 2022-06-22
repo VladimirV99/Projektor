@@ -35,7 +35,7 @@ const ScreeningSchedule = ({
                                                 )}
                                             </S.ScreeningItemTime>
                                             <S.ScreeningItemHall>
-                                                Hall {screening.hall!.id}
+                                                {screening.hall!.name}
                                             </S.ScreeningItemHall>
                                         </S.ScreeningItem>
                                     );

@@ -1,5 +1,4 @@
 using System.ComponentModel.DataAnnotations;
-using Microsoft.EntityFrameworkCore.Query.SqlExpressions;
 using Reservation.Constants;
 
 namespace Reservation.Models

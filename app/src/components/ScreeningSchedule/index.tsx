@@ -17,7 +17,7 @@ const ScreeningSchedule = ({
                 return (
                     <div key={i}>
                         <S.ScheduleKey>
-                            {toDateString(new Date(group.key))}
+                            {toDateString(new Date(parseInt(group.key)))}
                         </S.ScheduleKey>
                         <div>
                             {group.screenings.map(

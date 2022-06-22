@@ -67,18 +67,6 @@ namespace Screening.Common.Data
                 .SingleOrDefaultAsync();
         }
 
-        public async Task<bool> GetCanChangeMovieLength(int screeningId, int movieId, int newLength, int hallId)
-        {
-            _dbContext
-                .Screenings
-                .Where(s => s.HallId == hallId)   // same hall
-                .Where(s => s.Id != screeningId)  // not this screening
-                
-                
-                
-                
-        }
-
         public async Task<Movie?> GetMovieById(int id)
         {
             return await _dbContext

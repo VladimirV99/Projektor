@@ -1,4 +1,4 @@
-import { Button } from '@mui/material';
+import { IconButton } from '@mui/material';
 import styled from 'styled-components';
 
 export const ReviewContainer = styled.div`
@@ -33,7 +33,7 @@ export const Bold = styled.span`
     font-weight: 600;
 `;
 
-export const DeleteReviewButton = styled(Button)`
+export const DeleteReviewButton = styled(IconButton)`
     position: absolute;
     right: 1rem;
     top: 1rem;

@@ -108,6 +108,7 @@ services:
       - ASPNETCORE_ENVIRONMENT=Development
     depends_on:
       - movies.api
+      - movies.grpc
       - identity
       - mailer
       - review

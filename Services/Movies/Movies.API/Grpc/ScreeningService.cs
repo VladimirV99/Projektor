@@ -1,4 +1,5 @@
-﻿using Screening.GRPC;
+﻿using Grpc.Core;
+using Screening.GRPC;
 
 namespace Movies.API.Grpc;
 
@@ -13,7 +14,15 @@ public class ScreeningService
 
     public async Task<bool> DeleteMovie(int id)
     {
-        var response = await _client.DeleteMovieAsync(new DeleteMovieRequest {Id = id});
-        return response.Success;
+        try
+        {
+            var response = await _client.DeleteMovieAsync(new DeleteMovieRequest {Id = id});
+            return response.Success;
+        }
+        catch (RpcException)
+        {
+            return false;
+        }
+        
     }
 }

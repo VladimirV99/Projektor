@@ -10,6 +10,9 @@
   </PropertyGroup>
 
   <ItemGroup>
+	  <PackageReference Include="Google.Protobuf" Version="3.21.1" />
+	  <PackageReference Include="Grpc.Core.Api" Version="2.46.1" />
+	  <PackageReference Include="Grpc.Net.ClientFactory" Version="2.46.0" />
 	  <PackageReference Include="Grpc.Tools" Version="2.46.3">
 	    <PrivateAssets>all</PrivateAssets>
 	    <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
@@ -24,7 +27,6 @@
 
   <ItemGroup>
     <ProjectReference Include="..\..\..\Common\Auth\Auth.csproj" />
-    <ProjectReference Include="..\..\Movies\Movies.GRPC\Movies.GRPC.csproj" />
     <ProjectReference Include="..\Screening.Common\Screening.Common.csproj" />
   </ItemGroup>
     

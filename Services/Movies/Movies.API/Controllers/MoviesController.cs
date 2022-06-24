@@ -106,6 +106,7 @@ namespace Movies.API.Controllers
         [HttpDelete("[action]/{id}")]
         [Authorize(Roles = Roles.ADMINISTRATOR)]
         [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
         public async Task<IActionResult> DeleteMovie(int id)
         {
             var success = await _screeningService.DeleteMovie(id);

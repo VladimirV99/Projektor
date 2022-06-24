@@ -10,8 +10,10 @@ type Props = {
 const Row = ({row, rowIndex, onClick}: Props) => {
 
     return (
-        <div>
-            {row.map((seat, index) => <div style={{ margin: 5}}><Seat onSeatClick={onClick} rowIndex={rowIndex} columnIndex={index} isReserved={seat.reserved} /></div>)}
+        <div style={{display: 'flex', flexDirection: 'row'}}>
+            {row.map((seat, index) => 
+                <div style={{ margin: 5 }}><Seat onSeatClick={onClick} rowIndex={rowIndex} columnIndex={index} isReserved={seat.reserved} /></div>
+            )}
         </div>
     )
 };

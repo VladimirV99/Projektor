@@ -1,3 +1,4 @@
+import { BorderHorizontalRounded } from "@mui/icons-material";
 import { useState } from "react";
 
 type Props = {
@@ -40,7 +41,9 @@ const Seat = ({ isReserved, rowIndex, columnIndex, onSeatClick }: Props) => {
                     height: 50,
                     borderWidth: 1, 
                     borderColor: 'black', 
-                    backgroundColor: getBackgroundColor()
+                    backgroundColor: getBackgroundColor(),
+                    borderTopLeftRadius: 20,
+                    borderTopRightRadius: 20,
                 }
             } />
     )

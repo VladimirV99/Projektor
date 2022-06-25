@@ -35,6 +35,7 @@ const Seat = ({ isReserved, rowIndex, columnIndex, onSeatClick }: Props) => {
     return (
         <button
             onClick={() => { selectSeat(); onSeatClick(rowIndex, columnIndex) }}
+            disabled={isReserved}
             style={
                 {
                     width: 50,

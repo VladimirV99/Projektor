@@ -39,12 +39,8 @@ const ReservationDetailsScreen = () => {
     const formSelectedMatrix = (seats: SeatModel[][]) => {
         const n = seats.length;
         const m = seats[0].length;
-        let matrix = [];
-
-        for (let i = 0; i < n; i++) {
-            matrix.push(Array(m).fill(false));
-        }
-        return matrix;
+        
+        return Array(n).fill(Array(m).fill(false));
     };
 
     const recalculatePrice = () => {

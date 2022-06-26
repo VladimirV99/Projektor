@@ -120,7 +120,7 @@ const ReservationDetailsScreen = () => {
                         borderRadius: '5px',
                     }}
                 >
-                    <h4>{`You successfuly created reservation for ${
+                    <h4>{`You successfully created reservation for ${
                         screening?.movie?.title
                     } for ${new Date(screening!.movieStart).toLocaleString()}.
                         We sent you an email with more information.`}</h4>

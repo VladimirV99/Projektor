@@ -22,7 +22,7 @@ import { Link, useNavigate } from 'react-router-dom';
 import { logoutCustomer } from 'redux/auth/modules';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faCamera } from '@fortawesome/free-solid-svg-icons';
-import { isUserAdmin } from 'util/auth';
+import { isUserAdmin, isUserCustomer } from 'util/auth';
 import {
     selectShowSignUpForm,
     selectShowSignInForm,
@@ -64,27 +64,6 @@ const Header = () => {
         ];
     }, []);
 
-    const isAdmin = isUserAdmin();
-
-    const settings: { name: string; link?: string; onClick?: () => void }[] =
-        useMemo(() => {
-            const adminLinks = isAdmin
-                ? [{ name: 'Admin Dashboard', link: '/admin' }]
-                : [];
-
-            return [
-                ...adminLinks,
-                { name: 'Profile Settings', link: '/profile_settings' },
-                { name: 'Reservations', link: '/reservations' },
-                {
-                    name: 'Logout',
-                    onClick: () => {
-                        dispatch(logoutCustomer());
-                    },
-                },
-            ];
-        }, [isAdmin]);
-
     const isLoggedIn = useSelector(selectIsUserLoggedIn);
 
     const signInModal = useSelector(selectShowSignInForm);
@@ -109,6 +88,38 @@ const Header = () => {
 
     const user = useSelector(selectUser);
     const initials = user ? user.firstName[0] + user.lastName[0] : 'AA';
+
+    const isAdmin = useMemo(
+        () => isLoggedIn && isUserAdmin(),
+        [isLoggedIn, user]
+    );
+    const isCustomer = useMemo(
+        () => isLoggedIn && isUserCustomer(),
+        [isLoggedIn, user]
+    );
+
+    const settings: { name: string; link?: string; onClick?: () => void }[] =
+        useMemo(() => {
+            const adminLinks = isAdmin
+                ? [{ name: 'Admin Dashboard', link: '/admin' }]
+                : [];
+
+            const customerLinks = isCustomer
+                ? [{ name: 'My Reservations', link: '/reservations' }]
+                : [];
+
+            return [
+                ...adminLinks,
+                ...customerLinks,
+                { name: 'Profile Settings', link: '/profile_settings' },
+                {
+                    name: 'Logout',
+                    onClick: () => {
+                        dispatch(logoutCustomer());
+                    },
+                },
+            ];
+        }, [isAdmin, isCustomer]);
 
     const renderMenu = () => (
         <Fragment>

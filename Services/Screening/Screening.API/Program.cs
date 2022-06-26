@@ -2,10 +2,12 @@ using Screening.Common.Data;
 using Microsoft.EntityFrameworkCore;
 using System.Reflection;
 using Screening.Common.Extensions;
+using Movies.GRPC;
 using Common.Auth.Models;
 using Common.Auth.Extensions;
 using MassTransit;
 using Microsoft.OpenApi.Models;
+using Screening.API.Grpc;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -21,7 +23,10 @@ builder.Services.AddDbContext<ScreeningContext>(options =>
 builder.Services.AddControllers();
 builder.Services.AddAutoMapper(Assembly.GetExecutingAssembly());
 builder.Services.AddScoped<IScreeningRepository, ScreeningRepository>();
+builder.Services.AddScoped<MoviesService, MoviesService>();
 builder.Services.AddTransient<IDataSeeder, DataSeeder>();
+builder.Services.AddGrpcClient<MoviesProtoService.MoviesProtoServiceClient>(o =>
+    o.Address = new Uri(builder.Configuration["gRPC:MoviesUrl"]));
 
 builder.Services.AddMassTransit(config =>
 {

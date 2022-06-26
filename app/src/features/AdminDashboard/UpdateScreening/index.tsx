@@ -4,23 +4,17 @@ import { Button, TextField } from '@mui/material';
 import { Modal } from 'react-bootstrap';
 import Screening from 'models/Screening';
 import { UPDATE_SCREENING_URL } from 'constants/api/screenings';
-import axios from 'axios';
 import { DateTimePicker } from '@mui/lab';
 import dayjs from 'dayjs';
+import axiosAuthInstance from 'axios/instance';
 
 type Props = {
     screening: Screening;
     onClose: () => void;
-    onBackdropClick: () => void;
     callback: () => void;
 };
 
-const UpdateScreening = ({
-    screening,
-    onClose,
-    onBackdropClick,
-    callback,
-}: Props) => {
+const UpdateScreening = ({ screening, onClose, callback }: Props) => {
     const [screeningInput, setScreeningInput] = useState<Screening>({
         ...screening,
     });
@@ -29,7 +23,7 @@ const UpdateScreening = ({
 
     const handleUpdateSubmit = () => {
         setUpdateStatus('pending');
-        axios
+        axiosAuthInstance
             .patch(UPDATE_SCREENING_URL, {
                 screeningId: screeningInput.id,
                 moment: screeningInput.movieStart,
@@ -72,10 +66,7 @@ const UpdateScreening = ({
                     </Button>
                 </Modal.Footer>
             </Modal>
-            <Modal
-                show={updateStatus === 'idle'}
-                onBackdropClick={onBackdropClick}
-            >
+            <Modal show={updateStatus === 'idle'}>
                 <Modal.Header>
                     <h4>
                         Editing: <em>{screening.movie?.title} </em>|{' '}

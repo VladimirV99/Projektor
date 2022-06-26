@@ -21,8 +21,8 @@ namespace Reservation.Constants
         public const string SEAT_PRICE_REQUIRED = "Seat price multiplier is required";
         public const string SEAT_PRICE_RANGE = "Seat price multiplier must be between 0 and 2";
 
-        public const string RESERVATION_SEATS_REQUIRED = "";
-        public const string RESERVATION_MIN_SEATS = "";
-        public const string RESERVATION_MAX_SEATS = "";
+        public const string RESERVATION_SEATS_REQUIRED = "Seats are required";
+        public const string RESERVATION_MIN_SEATS = "You must have at least one seat";
+        public const string RESERVATION_MAX_SEATS = "You have selected too many seats";
     }
 }

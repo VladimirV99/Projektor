@@ -29,3 +29,8 @@ export const getUpdateStatus = createSelector(
     [getCoreState],
     (state: MovieSliceType) => state.updateStatus
 );
+
+export const getUpdateError = createSelector(
+    [getCoreState],
+    (state: MovieSliceType) => state.updateError
+);

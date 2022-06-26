@@ -1,4 +1,4 @@
-﻿using Movies.API.Data;
+﻿using Movies.Common.Data;
 
 namespace Movies.API.Extensions
 {

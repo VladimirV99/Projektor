@@ -4,7 +4,10 @@ import { useSelector, useDispatch } from 'react-redux';
 import { Backdrop, CircularProgress } from '@mui/material';
 import useAsyncError from 'hooks/useAsyncError';
 import { getMovie } from 'redux/movie/reducers/Movie';
-import { getScreeningsForMovie } from 'redux/movie/reducers/Screenings';
+import {
+    getScreeningsForMovie,
+    resetScreeningStatus,
+} from 'redux/movie/reducers/Screenings';
 import * as selectors from 'redux/movie/selectors';
 import { removeTime } from 'util/dateUtils';
 import Screening from 'models/Screening';
@@ -44,7 +47,7 @@ const MovieDetailsScreen = (): JSX.Element => {
             .reduce((groups: any, screening: Screening): any => {
                 let day = new Date(screening.movieStart);
                 removeTime(day);
-                let key = day.toString();
+                let key = day.getTime();
 
                 if (!groups.hasOwnProperty(key)) groups[key] = [];
                 groups[key].push(screening);
@@ -53,11 +56,18 @@ const MovieDetailsScreen = (): JSX.Element => {
 
         // Convert dictionary to array of objects
         // returns [{ key: number, screenings: Screening[] }]
-        const groups = Object.entries(dict).map(
-            ([key, value]) => new ScheduleItem(key, value as Screening[])
-        );
+        const groups = Object.entries(dict).map(([key, value]) => {
+            // Sort screenings by start time
+            (value as Screening[]).sort((a, b) => {
+                return (
+                    new Date(a.movieStart).getTime() -
+                    new Date(b.movieStart).getTime()
+                );
+            });
+            return new ScheduleItem(key, value as Screening[]);
+        });
 
-        // Sort by day
+        // Sort groups by day
         groups.sort((a, b) => {
             return parseInt(a.key) - parseInt(b.key);
         });
@@ -109,6 +119,7 @@ const MovieDetailsScreen = (): JSX.Element => {
         ) {
             return;
         }
+        dispatch(resetScreeningStatus());
         dispatch(getMovie(movieId));
     }, [dispatch, movieStatus, movie]);
 

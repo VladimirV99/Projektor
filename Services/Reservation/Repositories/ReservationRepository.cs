@@ -118,6 +118,7 @@ namespace Reservation.Repositories
             return await _dbContext.Reservations
                 .Where(r => r.User.Id == userId)
                 .Include(r => r.Seats)
+                .OrderByDescending(r => r.Screening.MovieStart)
                 .ToListAsync();
         }
 

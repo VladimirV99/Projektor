@@ -12,6 +12,7 @@ export type MovieSliceType = {
     status: 'idle' | 'pending' | 'success' | 'error';
     deleteStatus: 'idle' | 'pending' | 'success' | 'error';
     updateStatus: 'idle' | 'pending' | 'success' | 'error';
+    updateError: string | null;
 };
 
 export const filterMovies = createAsyncThunk(
@@ -37,10 +38,17 @@ export const resetDeleteStatus = createAction('movies/resetDeleteStatus');
 export const createOrUpdateMovie = createAsyncThunk(
     'movies/createOrUpdateMovie',
     async (request: CreateOrUpdateMovieRequest) => {
-        const { data }: ApiSuccess<Movie> = await API.createOrUpdateMovie(
-            request
-        );
-        return data;
+        try {
+            const { data }: ApiSuccess<Movie> = await API.createOrUpdateMovie(
+                request
+            );
+            return data;
+        } catch (e: any) {
+            if (e.response && e.response.data) {
+                throw new Error(e.response.data);
+            }
+            throw new Error('Something went wrong. Please try again later.');
+        }
     }
 );
 
@@ -89,6 +97,7 @@ const moviesSlice = createSlice({
             state.updateStatus = 'success';
         });
         builder.addCase(createOrUpdateMovie.rejected, (state, action) => {
+            state.updateError = action.error?.message ?? null;
             state.updateStatus = 'error';
         });
         builder.addCase(resetUpdateStatus, (state, action) => {

@@ -21,5 +21,6 @@ namespace Screening.Common.Data
         Task UpdateScreening(int id, DateTime moment);
         Task<bool> DeleteScreening(int id);
         Task<bool> DeleteMovie(int id);
+        Task<bool> UpdateMovie(int id, string title, int length);
     }
 }

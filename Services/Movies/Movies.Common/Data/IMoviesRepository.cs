@@ -1,7 +1,7 @@
-﻿using Movies.API.Entities;
-using Movies.API.Models;
+﻿using Movies.Common.Entities;
+using Movies.Common.Models;
 
-namespace Movies.API.Data
+namespace Movies.Common.Data
 {
 	public interface IMoviesRepository
 	{

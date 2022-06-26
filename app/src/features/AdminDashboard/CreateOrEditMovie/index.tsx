@@ -20,7 +20,6 @@ import { Col, Modal, Row } from 'react-bootstrap';
 type Props = {
     movie: Movie;
     onClose: () => void;
-    onBackdropClick: () => void;
 };
 
 type PeopleByRolesType = {
@@ -29,7 +28,7 @@ type PeopleByRolesType = {
     people: { personId: number; name: string }[];
 }[];
 
-const CreateOrEditMovie = ({ movie, onClose, onBackdropClick }: Props) => {
+const CreateOrEditMovie = ({ movie, onClose }: Props) => {
     const [movieInput, setMovieInput] = useState({ ...movie });
     const genres = useSelector(selectors.getGenres);
     const genreOptions = useMemo(
@@ -40,6 +39,7 @@ const CreateOrEditMovie = ({ movie, onClose, onBackdropClick }: Props) => {
 
     const dispatch = useDispatch();
     const updateStatus = useSelector(selectors.getUpdateStatus);
+    const updateError = useSelector(selectors.getUpdateError);
 
     const peopleByRoles = useMemo<PeopleByRolesType>(() => {
         const peopleByRolesTmp = [] as PeopleByRolesType;
@@ -109,9 +109,7 @@ const CreateOrEditMovie = ({ movie, onClose, onBackdropClick }: Props) => {
                             successfully!
                         </div>
                     )}
-                    {updateStatus === 'error' && (
-                        <div>Something went wrong.</div>
-                    )}
+                    {updateStatus === 'error' && <div>{updateError}</div>}
                 </Modal.Body>
                 <Modal.Footer>
                     <Button
@@ -128,10 +126,7 @@ const CreateOrEditMovie = ({ movie, onClose, onBackdropClick }: Props) => {
                     </Button>
                 </Modal.Footer>
             </Modal>
-            <Modal
-                show={updateStatus === 'idle'}
-                onBackdropClick={onBackdropClick}
-            >
+            <Modal show={updateStatus === 'idle'}>
                 <Modal.Header>
                     {movie.id != -1 ? (
                         <h4>

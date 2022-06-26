@@ -12,10 +12,12 @@ import UserProfileSettings from 'features/UserProfileSettings';
 import theme from 'theme';
 import MovieDetailsScreen from 'features/MovieDetailsScreen';
 import WithAuthorization from 'config/withAuthorization';
-import { ROLE_ADMINISTRATOR } from 'constants/index';
+import { ROLE_ADMINISTRATOR, ROLE_CUSTOMER } from 'constants/index';
 import NotFound from 'components/NotFound';
 import { LocalizationProvider } from '@mui/lab';
 import AdapterDateFns from '@mui/lab/AdapterDateFns';
+import MyReservationsScreen from 'features/MyReservationsScreen';
+import ReservationDetailsScreen from 'features/ReservationDetailsScreen';
 
 function App() {
     return (
@@ -35,6 +37,10 @@ function App() {
                                     <Route
                                         path="/movie/:id"
                                         element={<MovieDetailsScreen />}
+                                    />
+                                    <Route
+                                        path="/screening/:id"
+                                        element={<ReservationDetailsScreen />}
                                     />
                                     <Route
                                         path="/admin"
@@ -59,6 +65,16 @@ function App() {
                                     <Route
                                         path="/profile_settings"
                                         element={<UserProfileSettings />}
+                                    />
+                                    <Route
+                                        path="/reservations"
+                                        element={
+                                            <WithAuthorization
+                                                role={ROLE_CUSTOMER}
+                                            >
+                                                <MyReservationsScreen />
+                                            </WithAuthorization>
+                                        }
                                     />
                                     <Route
                                         path="/not-found"

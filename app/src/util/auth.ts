@@ -25,3 +25,5 @@ export const getUserRoles = () => {
 export const isUserAdmin = () => getUserRoles().includes(ROLE_ADMINISTRATOR);
 
 export const isUserCustomer = () => getUserRoles().includes(ROLE_CUSTOMER);
+
+export const userHasRole = (role: string) => getUserRoles().includes(role);

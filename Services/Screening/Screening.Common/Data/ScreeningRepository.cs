@@ -126,12 +126,11 @@ namespace Screening.Common.Data
             var screening = await _dbContext
                 .Screenings
                 .FindAsync(id);
-                
+            
             if (screening == null)
             {
                 return;
             }
-
             screening.MovieStart = moment;
 
             await _dbContext.SaveChangesAsync();
@@ -164,6 +163,38 @@ namespace Screening.Common.Data
 
             return true;
         }
+
+        public async Task<bool> UpdateMovie(int id, string title, int length)
+        {
+            var movie = await _dbContext.Movies.FirstOrDefaultAsync(m => m.Id == id);
+            if (movie == null)
+            {
+                return true;
+            }
+
+            var query =
+                from screening1 in _dbContext.Screenings
+                join movie1 in _dbContext.Movies on screening1.MovieId equals movie.Id
+                from screening2 in _dbContext.Screenings    
+                where screening1.MovieId == id
+                where screening1.Id != screening2.Id
+                where screening1.HallId == screening2.HallId
+                where screening2.MovieStart >= screening1.MovieStart
+                where screening2.MovieStart <= screening1.MovieStart.AddMinutes(length)
+                select 0;
+
+            if (await query.AnyAsync())
+            {
+                return false;
+            }
+
+            movie.Title = title;
+            movie.Length = length;
+
+            await _dbContext.SaveChangesAsync();
+            return true;
+
+        }   
     }
 }
 

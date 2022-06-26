@@ -1,8 +1,7 @@
 import StarIcon from 'components/StarIcon';
 import Review from 'models/Review';
 import { toDateString, toTimeString } from 'util/dateUtils';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faTrash } from '@fortawesome/free-solid-svg-icons';
+import DeleteIcon from '@mui/icons-material/Delete';
 import { isUserAdmin } from 'util/auth';
 import * as S from './index.styles';
 
@@ -25,11 +24,13 @@ const ReviewBox = ({ review, onRemoveClick }: ReviewProps): JSX.Element => {
             </S.ReviewHeader>
             {isAdmin && (
                 <S.DeleteReviewButton
+                    color="error"
+                    aria-label="delete review"
                     onClick={() => {
                         onRemoveClick(reviewer.id);
                     }}
                 >
-                    <FontAwesomeIcon icon={faTrash} />
+                    <DeleteIcon />
                 </S.DeleteReviewButton>
             )}
             <S.ReviewUser>

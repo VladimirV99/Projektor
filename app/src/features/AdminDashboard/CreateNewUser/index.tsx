@@ -9,11 +9,10 @@ import axiosAuthInstance from 'axios/instance';
 type Props = {
     user: CreateUserRequest;
     onClose: () => void;
-    onBackdropClick: () => void;
     callback: () => void;
 };
 
-const CreateNewUser = ({ user, onClose, onBackdropClick, callback }: Props) => {
+const CreateNewUser = ({ user, onClose, callback }: Props) => {
     const [userInput, setUserInput] = useState<CreateUserRequest>({ ...user });
     const [createStatus, setCreateStatus] = useState('idle');
 
@@ -39,10 +38,7 @@ const CreateNewUser = ({ user, onClose, onBackdropClick, callback }: Props) => {
 
     return (
         <Fragment>
-            <Modal
-                show={createStatus === 'idle'}
-                onBackdropClick={onBackdropClick}
-            >
+            <Modal show={createStatus === 'idle'}>
                 <Modal.Header>
                     {user.id != -1 ? (
                         <h4>

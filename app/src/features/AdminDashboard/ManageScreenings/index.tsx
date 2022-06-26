@@ -22,6 +22,7 @@ import {
     GET_SCREENINGS_URL,
     DELETE_SCREENING_URL,
 } from 'constants/api/screenings';
+import axiosAuthInstance from 'axios/instance';
 
 const ManageScreenings = () => {
     const [screenings, setScreenings] = useState<Screening[] | null>(null);
@@ -41,7 +42,7 @@ const ManageScreenings = () => {
 
     const deleteScreening = () => {
         setDeleteStatus('pending');
-        axios
+        axiosAuthInstance
             .delete(DELETE_SCREENING_URL(deleteScreeningId!))
             .then((response) => {
                 setShouldRefresh(true);
@@ -149,7 +150,6 @@ const ManageScreenings = () => {
                 <CreateScreening
                     screening={selectedScreening}
                     onClose={() => setSelectedScreening(null)}
-                    onBackdropClick={() => setSelectedScreening(null)}
                     callback={() => setShouldRefresh(true)}
                 />
             )}
@@ -157,7 +157,6 @@ const ManageScreenings = () => {
                 <UpdateScreening
                     screening={selectedScreening}
                     onClose={() => setSelectedScreening(null)}
-                    onBackdropClick={() => setSelectedScreening(null)}
                     callback={() => setShouldRefresh(true)}
                 />
             )}

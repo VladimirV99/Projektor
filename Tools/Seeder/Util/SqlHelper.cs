@@ -119,4 +119,59 @@ public static class SqlHelper
             }
         }
     }
+    
+    public static void ClearData(string connectionString, IEnumerable<TableRecord> tables)
+    {
+        // Connect to database
+        using var connection = new SqlConnection(connectionString);
+        connection.Open();
+
+        Console.WriteLine();
+        PrintVersion(connection);
+        Console.WriteLine();
+        PrintTables(connection);
+        Console.WriteLine();
+
+        // Seed data
+        foreach (var (tableName, overrideKey) in tables)
+        {
+            Console.WriteLine($"Clearing table '{tableName}'");
+
+            if (CheckTableExists(connection, tableName))
+            {
+                // Clear the table if it contains data
+                if (TableHasData(connection, tableName))
+                    TruncateTable(connection, tableName);
+                // Reset id counter for the table
+                if (overrideKey)
+                    ResetIds(connection, tableName);
+            }
+            else
+            {
+                Console.WriteLine($"Error clearing table '{tableName}': Table doesn't exist");
+            }
+        }
+    }
+
+    public static void DropDatabase(string connectionString, string databaseName)
+    {
+        // Connect to database
+        using var connection = new SqlConnection(connectionString);
+        connection.Open();
+
+        Console.WriteLine();
+        PrintVersion(connection);
+        Console.WriteLine();
+        
+        Console.WriteLine($"Dropping database '{databaseName}'");
+        try
+        {
+            using var dropCommand = new SqlCommand($"DROP DATABASE {databaseName}", connection);
+            dropCommand.ExecuteNonQuery();
+        }
+        catch (SqlException e)
+        {
+            Console.WriteLine(e.Errors[0].Message);
+        }
+    }
 }

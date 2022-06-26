@@ -17,6 +17,7 @@ import NotFound from 'components/NotFound';
 import { LocalizationProvider } from '@mui/lab';
 import AdapterDateFns from '@mui/lab/AdapterDateFns';
 import MyReservationsScreen from 'features/MyReservationsScreen';
+import ReservationDetailsScreen from 'features/ReservationDetailsScreen';
 
 function App() {
     return (
@@ -36,6 +37,10 @@ function App() {
                                     <Route
                                         path="/movie/:id"
                                         element={<MovieDetailsScreen />}
+                                    />
+                                    <Route
+                                        path="/screening/:id"
+                                        element={<ReservationDetailsScreen />}
                                     />
                                     <Route
                                         path="/admin"

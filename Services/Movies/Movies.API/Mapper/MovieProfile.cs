@@ -1,7 +1,5 @@
-﻿using System;
-using AutoMapper;
-using Microsoft.AspNetCore.Mvc.Rendering;
-using Movies.API.Entities;
+﻿using AutoMapper;
+using Movies.Common.Entities;
 using Movies.API.Models;
 
 namespace Movies.API.Mapper

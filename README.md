@@ -16,10 +16,11 @@ Projektor is a microservice application for managing basic cinema operations. It
    ```
    docker-compose up --build -d
    ```
+   (*Note: Migrations can fail to apply automatically if the database takes too long to initialize. In that case, restart the services that failed to apply migrations*)
 2. (Optional) Insert dummy data into database by running the seeder tool:
    ```
    cd Tools/Seeder
-   dotnet run --all
+   dotnet run seed --all
    ```
 3. Start the client:
    ```

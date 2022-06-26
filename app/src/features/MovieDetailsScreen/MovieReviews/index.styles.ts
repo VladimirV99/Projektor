@@ -1,4 +1,4 @@
-import { Button, TextField } from '@mui/material';
+import { IconButton, TextField } from '@mui/material';
 import styled from 'styled-components';
 
 export const ReviewContainer = styled.div`
@@ -19,7 +19,7 @@ export const ReviewFormScore = styled.div`
     margin-bottom: 0.5rem;
 `;
 
-export const DeleteReviewButton = styled(Button)`
+export const DeleteReviewButton = styled(IconButton)`
     position: absolute;
     right: 1rem;
     top: 1rem;

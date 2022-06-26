@@ -266,7 +266,6 @@ const ManageUsers = ({ role }: ManageUsersProps) => {
                 <CreateNewUser
                     user={userForCreation}
                     onClose={() => setUserForCreation(null)}
-                    onBackdropClick={() => setUserForCreation(null)}
                     callback={() => setShouldRefresh(true)}
                 />
             )}

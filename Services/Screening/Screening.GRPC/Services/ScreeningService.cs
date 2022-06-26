@@ -7,19 +7,19 @@ namespace Screening.GRPC.Services
     public class ScreeningService : ScreeningProtoService.ScreeningProtoServiceBase
     {
         private readonly ILogger<ScreeningService> _logger;
-        private readonly IScreeningRepository _repostory;
+        private readonly IScreeningRepository _repository;
         private readonly IMapper _mapper;
 
-        public ScreeningService(ILogger<ScreeningService> logger, IScreeningRepository repostory, IMapper mapper)
+        public ScreeningService(ILogger<ScreeningService> logger, IScreeningRepository repository, IMapper mapper)
         {
             _logger = logger ?? throw new ArgumentNullException(nameof(logger));
-            _repostory = repostory ?? throw new ArgumentNullException(nameof(repostory));
+            _repository = repository ?? throw new ArgumentNullException(nameof(repository));
             _mapper = mapper ?? throw new ArgumentNullException(nameof(mapper));
         }
 
-        public async override Task<GetScreeningResponse> GetScreening(GetScreeningRequest request, ServerCallContext context)
+        public override async Task<GetScreeningResponse> GetScreening(GetScreeningRequest request, ServerCallContext context)
         {
-            var screening = await _repostory.GetScreeningById(request.Id);
+            var screening = await _repository.GetScreeningById(request.Id);
 
             if (screening == null)
             {
@@ -27,6 +27,26 @@ namespace Screening.GRPC.Services
             }
 
             return _mapper.Map<GetScreeningResponse>(screening);
+        }
+
+        public override async Task<DeleteMovieResponse> DeleteMovie(DeleteMovieRequest request, ServerCallContext context)
+        {
+            var screenings = (await _repository.GetScreeningsByMovieId(request.Id)).Where(s => s.MovieStart > DateTime.UtcNow);
+            if (screenings.Any())
+            {
+                return new DeleteMovieResponse{Success=false};
+            }
+
+            await _repository.DeleteMovie(request.Id);
+            return new DeleteMovieResponse {Success = true};
+        }
+
+        public override async Task<UpdateMovieResponse> UpdateMovie(UpdateMovieRequest request, ServerCallContext context)
+        {
+            return new UpdateMovieResponse
+            {
+                Success = await _repository.UpdateMovie(request.Id, request.Title, request.Length)
+            };
         }
     }
 }

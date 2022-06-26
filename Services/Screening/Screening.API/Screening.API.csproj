@@ -10,6 +10,13 @@
   </PropertyGroup>
 
   <ItemGroup>
+	  <PackageReference Include="Google.Protobuf" Version="3.21.1" />
+	  <PackageReference Include="Grpc.Core.Api" Version="2.46.1" />
+	  <PackageReference Include="Grpc.Net.ClientFactory" Version="2.46.0" />
+	  <PackageReference Include="Grpc.Tools" Version="2.46.3">
+	    <PrivateAssets>all</PrivateAssets>
+	    <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+	  </PackageReference>
 	  <PackageReference Include="Microsoft.EntityFrameworkCore.Tools" Version="6.0.5">
 	    <PrivateAssets>all</PrivateAssets>
 	    <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
@@ -22,5 +29,12 @@
     <ProjectReference Include="..\..\..\Common\Auth\Auth.csproj" />
     <ProjectReference Include="..\Screening.Common\Screening.Common.csproj" />
   </ItemGroup>
+    
+  <ItemGroup>
+      <Protobuf Include="..\..\Movies\Movies.GRPC\Protos\movies.proto" GrpcServices="Client">
+          <Link>Protos\movies.proto</Link>
+      </Protobuf>
+  </ItemGroup>
+
 
 </Project>

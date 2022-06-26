@@ -19,6 +19,12 @@ services:
       context: .
       dockerfile: Services/Movies/Movies.API/Dockerfile
 
+  movies.grpc:
+    image: ${DOCKER_REGISTRY-}moviesgrpc
+    build:
+      context: .
+      dockerfile: Services/Movies/Movies.GRPC/Dockerfile
+
   identity:
     image: ${DOCKER_REGISTRY-}identity
     build:
@@ -61,7 +67,9 @@ services:
       context: .
       dockerfile: Services/Reservation/Dockerfile
 
+
 volumes:
   mssql_data:
   postgres_data:
   pgadmin_data:
+

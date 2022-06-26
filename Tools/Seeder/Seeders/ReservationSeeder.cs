@@ -24,13 +24,51 @@ public static class ReservationSeeder
                 new ("Halls", dtHalls, true),
                 new ("Seats", dtSeats, false),
                 new ("Reservations", dtReservations, true),
-                new ("ReservationSeat", dtReservationSeats, false),
-                
+                new ("ReservationSeat", dtReservationSeats, false)
             };
             
             SqlHelper.SeedData(
                 "Server=localhost;Database=ReservationDB;User Id=sa;Password=MatfRs2_MSSQL;",
                 seedTables
+            );
+        }
+        catch (Exception e)
+        {
+            Console.WriteLine(e);
+            throw;
+        }
+    }
+    
+    public static void Clear()
+    {
+        try
+        {
+            TableRecord[] tables = {
+                new ("Halls", true),
+                new ("Seats", false),
+                new ("Reservations", true),
+                new ("ReservationSeat", false)
+            };
+            
+            SqlHelper.ClearData(
+                "Server=localhost;Database=ReservationDB;User Id=sa;Password=MatfRs2_MSSQL;",
+                tables
+            );
+        }
+        catch (Exception e)
+        {
+            Console.WriteLine(e);
+            throw;
+        }
+    }
+
+    public static void Drop()
+    {
+        try
+        {
+            SqlHelper.DropDatabase(
+                "Server=localhost;User Id=sa;Password=MatfRs2_MSSQL;",
+                "ReservationDB"
             );
         }
         catch (Exception e)

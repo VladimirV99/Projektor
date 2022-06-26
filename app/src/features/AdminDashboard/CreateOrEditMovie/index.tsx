@@ -126,9 +126,7 @@ const CreateOrEditMovie = ({ movie, onClose }: Props) => {
                     </Button>
                 </Modal.Footer>
             </Modal>
-            <Modal
-                show={updateStatus === 'idle'}
-            >
+            <Modal show={updateStatus === 'idle'}>
                 <Modal.Header>
                     {movie.id != -1 ? (
                         <h4>

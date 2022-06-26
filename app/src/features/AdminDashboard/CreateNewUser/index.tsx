@@ -38,9 +38,7 @@ const CreateNewUser = ({ user, onClose, callback }: Props) => {
 
     return (
         <Fragment>
-            <Modal
-                show={createStatus === 'idle'}
-            >
+            <Modal show={createStatus === 'idle'}>
                 <Modal.Header>
                     {user.id != -1 ? (
                         <h4>

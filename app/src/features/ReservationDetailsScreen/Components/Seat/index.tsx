@@ -1,27 +1,26 @@
-import { BorderHorizontalRounded } from "@mui/icons-material";
-import { useState } from "react";
+import { BorderHorizontalRounded } from '@mui/icons-material';
+import { useState } from 'react';
 
 type Props = {
     isReserved: boolean;
     rowIndex: number;
     columnIndex: number;
     onSeatClick: (i: number, j: number) => void;
-}
+};
 
 const Seat = ({ isReserved, rowIndex, columnIndex, onSeatClick }: Props) => {
-
     const [isSelected, setIsSelected] = useState(false);
 
     const getBackgroundColor = () => {
         let backgroundColor = 'red';
 
         if (isSelected) {
-            backgroundColor = 'yellow'
+            backgroundColor = 'yellow';
         } else if (!isReserved) {
-            backgroundColor = 'green'
+            backgroundColor = 'green';
         }
         return backgroundColor;
-    }
+    };
 
     const selectSeat = () => {
         if (isReserved) return;
@@ -30,24 +29,26 @@ const Seat = ({ isReserved, rowIndex, columnIndex, onSeatClick }: Props) => {
             return;
         }
         setIsSelected(true);
-    }
+    };
 
     return (
         <button
-            onClick={() => { selectSeat(); onSeatClick(rowIndex, columnIndex) }}
+            onClick={() => {
+                selectSeat();
+                onSeatClick(rowIndex, columnIndex);
+            }}
             disabled={isReserved}
-            style={
-                {
-                    width: 50,
-                    height: 50,
-                    borderWidth: 1, 
-                    borderColor: 'black', 
-                    backgroundColor: getBackgroundColor(),
-                    borderTopLeftRadius: 20,
-                    borderTopRightRadius: 20,
-                }
-            } />
-    )
+            style={{
+                width: 50,
+                height: 50,
+                borderWidth: 1,
+                borderColor: 'black',
+                backgroundColor: getBackgroundColor(),
+                borderTopLeftRadius: 20,
+                borderTopRightRadius: 20,
+            }}
+        />
+    );
 };
 
 export default Seat;

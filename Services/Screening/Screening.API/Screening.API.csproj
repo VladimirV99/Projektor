@@ -10,6 +10,8 @@
   </PropertyGroup>
 
   <ItemGroup>
+	  <PackageReference Include="MassTransit" Version="8.0.3" />
+	  <PackageReference Include="MassTransit.RabbitMQ" Version="8.0.3" />
 	  <PackageReference Include="Google.Protobuf" Version="3.21.1" />
 	  <PackageReference Include="Grpc.Core.Api" Version="2.46.1" />
 	  <PackageReference Include="Grpc.Net.ClientFactory" Version="2.46.0" />
@@ -27,6 +29,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\..\..\Common\Auth\Auth.csproj" />
+    <ProjectReference Include="..\..\..\Common\EventBus\EventBus.csproj" />
     <ProjectReference Include="..\Screening.Common\Screening.Common.csproj" />
   </ItemGroup>
     

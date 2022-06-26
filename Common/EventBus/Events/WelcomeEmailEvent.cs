@@ -2,9 +2,9 @@
 {
     public class WelcomeEmailEvent
     {
-        public string To { get; set; }
-        public string FirstName { get; set; }
-        public string LastName { get; set; }
+        public string To { get; }
+        public string FirstName { get; }
+        public string LastName { get; }
         
         public WelcomeEmailEvent(string to, string firstName, string lastName)
         {

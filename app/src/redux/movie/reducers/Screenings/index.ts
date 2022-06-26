@@ -1,4 +1,4 @@
-import { createAsyncThunk, createSlice } from '@reduxjs/toolkit';
+import { createAction, createAsyncThunk, createSlice } from '@reduxjs/toolkit';
 import Screening from 'models/Screening';
 import { ApiSuccess } from 'models';
 import * as API from 'redux/movie/api';
@@ -17,6 +17,8 @@ export const getScreeningsForMovie = createAsyncThunk(
     }
 );
 
+export const resetScreeningStatus = createAction('movie/resetScreeningStatus');
+
 const screeningsSlice = createSlice({
     name: 'screenings',
     initialState: {
@@ -34,6 +36,9 @@ const screeningsSlice = createSlice({
         });
         builder.addCase(getScreeningsForMovie.rejected, (state, action) => {
             state.status = 'error';
+        });
+        builder.addCase(resetScreeningStatus, (state) => {
+            state.status = 'idle';
         });
     },
 });

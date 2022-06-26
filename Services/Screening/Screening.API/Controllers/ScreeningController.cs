@@ -5,6 +5,8 @@ using AutoMapper;
 using Screening.Common.Entities;
 using Microsoft.AspNetCore.Authorization;
 using Common.Auth;
+using Common.EventBus.Events;
+using MassTransit;
 using Screening.API.Grpc;
 
 namespace Screening.Common.Controllers
@@ -16,12 +18,14 @@ namespace Screening.Common.Controllers
         private readonly IScreeningRepository _repository;
         private readonly MoviesService _moviesService;
         private readonly IMapper _mapper;
+        private readonly IPublishEndpoint _publishEndpoint;
 
-        public ScreeningController(IScreeningRepository repository, IMapper mapper, MoviesService moviesService)
+        public ScreeningController(IScreeningRepository repository, IMapper mapper, IPublishEndpoint publishEndpoint, MoviesService moviesService)
         {
             _repository = repository ?? throw new ArgumentNullException(nameof(repository));
             _mapper = mapper ?? throw new ArgumentNullException(nameof(mapper));
-            _moviesService = moviesService ?? throw new ArgumentNullException(nameof(moviesService));;
+            _publishEndpoint = publishEndpoint ?? throw new ArgumentNullException(nameof(publishEndpoint));
+            _moviesService = moviesService ?? throw new ArgumentNullException(nameof(moviesService));
         }
 
         [HttpGet("[action]/{id}")]
@@ -172,8 +176,27 @@ namespace Screening.Common.Controllers
         [Authorize(Roles = Roles.ADMINISTRATOR)]
         public async Task<IActionResult> UpdateScreening([FromBody] UpdateScreeningRequest request)
         {
-            await _repository.UpdateScreening(request.ScreeningId, request.Moment, request.MovieId, request.HallId);
+            var screening = await _repository.GetScreeningById(request.ScreeningId);
+            if (screening == null)
+            {
+                return NotFound();
+            }
 
+            if (request.Moment == screening.MovieStart)
+            {
+                return Ok();
+            }
+            
+            var oldTime = screening.MovieStart;
+            await _repository.UpdateScreening(request.ScreeningId, request.Moment);
+                
+            // Notify reservation service
+            await _publishEndpoint.Publish(new RescheduleScreeningEvent(
+                screening.Id,
+                oldTime,
+                request.Moment
+            ));
+            
             return Ok();
         }
 
@@ -183,7 +206,16 @@ namespace Screening.Common.Controllers
         [Authorize(Roles = Roles.ADMINISTRATOR)]
         public async Task<ActionResult> DeleteScreeningById(int id)
         {
-            return await _repository.DeleteScreening(id) ? Ok() : NotFound();
+            var result = await _repository.DeleteScreening(id);
+            if (!result)
+            {
+                return NotFound();
+            }
+
+            // Notify reservation service
+            await _publishEndpoint.Publish(new CancelScreeningEvent(id));
+            
+            return Ok();
         }
 
         // This is a debug function, movies should be fetched from movie service

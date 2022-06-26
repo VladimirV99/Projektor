@@ -4,7 +4,10 @@ import { useSelector, useDispatch } from 'react-redux';
 import { Backdrop, CircularProgress } from '@mui/material';
 import useAsyncError from 'hooks/useAsyncError';
 import { getMovie } from 'redux/movie/reducers/Movie';
-import { getScreeningsForMovie } from 'redux/movie/reducers/Screenings';
+import {
+    getScreeningsForMovie,
+    resetScreeningStatus,
+} from 'redux/movie/reducers/Screenings';
 import * as selectors from 'redux/movie/selectors';
 import { removeTime } from 'util/dateUtils';
 import Screening from 'models/Screening';
@@ -116,6 +119,7 @@ const MovieDetailsScreen = (): JSX.Element => {
         ) {
             return;
         }
+        dispatch(resetScreeningStatus());
         dispatch(getMovie(movieId));
     }, [dispatch, movieStatus, movie]);
 

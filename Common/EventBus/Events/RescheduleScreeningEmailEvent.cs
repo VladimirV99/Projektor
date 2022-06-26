@@ -2,11 +2,11 @@ namespace Common.EventBus.Events
 {
     public class RescheduleScreeningEmailEvent
     {
-        public string To { get; set; }
-        public int ReservationNumber { get; set; }
-        public string Movie { get; set; }
-        public DateTime OldTime { get; set; }
-        public DateTime NewTime { get; set; }
+        public string To { get; }
+        public int ReservationNumber { get; }
+        public string Movie { get; }
+        public DateTime OldTime { get; }
+        public DateTime NewTime { get; }
 
         public RescheduleScreeningEmailEvent(string to, int reservationNumber, string movie, DateTime oldTime,
             DateTime newTime)

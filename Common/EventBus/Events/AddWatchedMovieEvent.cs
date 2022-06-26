@@ -4,10 +4,10 @@ namespace Common.EventBus.Events
 {
     public class AddWatchedMovieEvent
     {
-        public int MovieId { get; set; }
-        public User User { get; set; }
-        public int ReservationId { get; set; }
-        public DateTime WatchedOn { get; set; }
+        public int MovieId { get; }
+        public User User { get; }
+        public int ReservationId { get; }
+        public DateTime WatchedOn { get; }
 
         public AddWatchedMovieEvent(int movieId, User user, int reservationId, DateTime watchedOn)
         {

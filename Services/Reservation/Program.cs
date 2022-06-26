@@ -1,10 +1,12 @@
 using System.Reflection;
 using Common.Auth.Extensions;
 using Common.Auth.Models;
+using Common.EventBus.Constants;
 using MassTransit;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.OpenApi.Models;
 using Reservation.Data;
+using Reservation.EventBus;
 using Reservation.Extensions;
 using Reservation.Grpc;
 using Reservation.Repositories;
@@ -37,12 +39,21 @@ builder.Services.AddMassTransit(config =>
 {
     var eventBusSettings = builder.Configuration.GetSection("EventBus");
     
+    config.AddConsumer<RescheduleScreeningEventConsumer>();
+    config.AddConsumer<CancelScreeningEventConsumer>();
+    
     config.UsingRabbitMq((ctx, cfg) =>
     {
         cfg.Host(eventBusSettings["Host"], h =>
         {
             h.Username(eventBusSettings["Username"]);
             h.Password(eventBusSettings["Password"]);
+        });
+        
+        cfg.ReceiveEndpoint(EventQueues.RESERVATION, c =>
+        {
+            c.ConfigureConsumer<RescheduleScreeningEventConsumer>(ctx);
+            c.ConfigureConsumer<CancelScreeningEventConsumer>(ctx);
         });
     });
 });

@@ -19,6 +19,7 @@ namespace Reservation.Repositories
         Task<Entities.Reservation?> GetReservationById(int id);
         Task<IEnumerable<Entities.Reservation>> GetReservationsByUser(string userId);
         Task<IEnumerable<Entities.Reservation>> GetReservationsForScreening(int screeningId);
+        Task<bool> UpdateReservationStartTime(int id, DateTime newTime);
         Task<bool> DeleteReservation(int id);
         Task DeleteReservationsForScreening(int screeningId);
         Task<bool> IsSeatReserved(int screeningId, int row, int column);

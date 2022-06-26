@@ -5,6 +5,7 @@ using Screening.Common.Extensions;
 using Movies.GRPC;
 using Common.Auth.Models;
 using Common.Auth.Extensions;
+using MassTransit;
 using Microsoft.OpenApi.Models;
 using Screening.API.Grpc;
 
@@ -26,6 +27,20 @@ builder.Services.AddScoped<MoviesService, MoviesService>();
 builder.Services.AddTransient<IDataSeeder, DataSeeder>();
 builder.Services.AddGrpcClient<MoviesProtoService.MoviesProtoServiceClient>(o =>
     o.Address = new Uri(builder.Configuration["gRPC:MoviesUrl"]));
+
+builder.Services.AddMassTransit(config =>
+{
+    var eventBusSettings = builder.Configuration.GetSection("EventBus");
+
+    config.UsingRabbitMq((ctx, cfg) =>
+    {
+        cfg.Host(eventBusSettings["Host"], h =>
+        {
+            h.Username(eventBusSettings["Username"]);
+            h.Password(eventBusSettings["Password"]);
+        });
+    });
+});
 
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();

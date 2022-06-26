@@ -2,10 +2,10 @@ namespace Common.EventBus.Events
 {
     public class CancelReservationEmailEvent
     {
-        public string To { get; set; }
-        public int ReservationNumber { get; set; }
-        public string Movie { get; set; }
-        public DateTime Time { get; set; }
+        public string To { get; }
+        public int ReservationNumber { get; }
+        public string Movie { get; }
+        public DateTime Time { get; }
 
         public CancelReservationEmailEvent(string to, int reservationNumber, string movie, DateTime time)
         {

@@ -1,5 +1,4 @@
 using System.Data;
-using System.Data.SqlClient;
 using Seeder.Util;
 
 namespace Seeder.Seeders;
@@ -37,6 +36,47 @@ public static class MovieSeeder
             SqlHelper.SeedData(
                 "Server=localhost;Database=MoviesDb;User Id=sa;Password=MatfRs2_MSSQL;",
                 seedTables
+            );
+        }
+        catch (Exception e)
+        {
+            Console.WriteLine(e);
+            throw;
+        }
+    }
+
+    public static void Clear()
+    {
+        try
+        {
+            TableRecord[] tables = {
+                new ("Movies", true),
+                new ("Genres", true),
+                new ("Roles", true),
+                new ("People", true),
+                new ("GenreMovie", false),
+                new ("MoviePeople", false)
+            };
+            
+            SqlHelper.ClearData(
+                "Server=localhost;Database=MoviesDb;User Id=sa;Password=MatfRs2_MSSQL;",
+                tables
+            );
+        }
+        catch (Exception e)
+        {
+            Console.WriteLine(e);
+            throw;
+        }
+    }
+
+    public static void Drop()
+    {
+        try
+        {
+            SqlHelper.DropDatabase(
+                "Server=localhost;User Id=sa;Password=MatfRs2_MSSQL;",
+                "MoviesDb"
             );
         }
         catch (Exception e)

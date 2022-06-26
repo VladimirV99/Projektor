@@ -35,4 +35,42 @@ public static class ScreeningSeeder
             throw;
         }
     }
+    
+    public static void Clear()
+    {
+        try
+        {
+            TableRecord[] tables = {
+                new ("Halls", false),
+                new ("Movies", false),
+                new ("Screenings", true)
+            };
+            
+            SqlHelper.ClearData(
+                "Server=localhost;Database=ScreeningDb;User Id=sa;Password=MatfRs2_MSSQL;",
+                tables
+            );
+        }
+        catch (Exception e)
+        {
+            Console.WriteLine(e);
+            throw;
+        }
+    }
+
+    public static void Drop()
+    {
+        try
+        {
+            SqlHelper.DropDatabase(
+                "Server=localhost;User Id=sa;Password=MatfRs2_MSSQL;",
+                "ScreeningDb"
+            );
+        }
+        catch (Exception e)
+        {
+            Console.WriteLine(e);
+            throw;
+        }
+    }
 }

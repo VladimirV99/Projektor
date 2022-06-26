@@ -16,10 +16,9 @@ import CreateOrUpdatePersonRequest from 'models/People';
 type Props = {
     person: Person;
     onClose: () => void;
-    onBackdropClick: () => void;
 };
 
-const CreateOrEditPerson = ({ person, onClose, onBackdropClick }: Props) => {
+const CreateOrEditPerson = ({ person, onClose }: Props) => {
     const [personInput, setPersonInput] = useState({ ...person });
 
     const dispatch = useDispatch();
@@ -72,10 +71,7 @@ const CreateOrEditPerson = ({ person, onClose, onBackdropClick }: Props) => {
                     </Button>
                 </Modal.Footer>
             </Modal>
-            <Modal
-                show={updateStatus === 'idle'}
-                onBackdropClick={onBackdropClick}
-            >
+            <Modal show={updateStatus === 'idle'}>
                 <Modal.Header>
                     {person.id != -1 ? (
                         <h4>

@@ -1,4 +1,4 @@
-version: '3.4'
+version: "3.4"
 
 services:
   projektor_mssql:
@@ -45,10 +45,21 @@ services:
     environment:
       - ASPNETCORE_ENVIRONMENT=Development
       - "ConnectionStrings:MoviesConnectionString=Server=projektor_mssql;Database=MoviesDb;User Id=sa;Password=MatfRs2_MSSQL;"
+      - "gRPC:ScreeningUrl=http://screening.grpc"
     depends_on:
       - projektor_mssql
     ports:
       - "5000:80"
+
+  movies.grpc:
+    container_name: movies.grpc
+    environment:
+      - ASPNETCORE_ENVIRONMENT=Development
+      - "ConnectionStrings:MoviesConnectionString=Server=projektor_mssql;Database=MoviesDb;User Id=sa;Password=MatfRs2_MSSQL;"
+    depends_on:
+      - projektor_mssql
+    ports:
+      - "5100:80"
 
   identity:
     container_name: identity
@@ -61,7 +72,7 @@ services:
       - projektor_rabbitmq
     ports:
       - "5010:80"
-  
+
   mailer:
     container_name: mailer
     environment:
@@ -77,6 +88,7 @@ services:
     environment:
       - ASPNETCORE_ENVIRONMENT=Development
       - "ConnectionStrings:ScreeningsConnectionString=Server=projektor_mssql;Database=ScreeningDb;User Id=sa;Password=MatfRs2_MSSQL;"
+      - "gRPC:MoviesUrl=http://movies.grpc"
     depends_on:
       - projektor_mssql
     ports:
@@ -98,6 +110,7 @@ services:
       - ASPNETCORE_ENVIRONMENT=Development
     depends_on:
       - movies.api
+      - movies.grpc
       - identity
       - mailer
       - review

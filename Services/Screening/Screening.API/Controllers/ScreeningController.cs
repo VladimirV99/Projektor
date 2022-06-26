@@ -5,6 +5,7 @@ using AutoMapper;
 using Screening.Common.Entities;
 using Microsoft.AspNetCore.Authorization;
 using Common.Auth;
+using Screening.API.Grpc;
 
 namespace Screening.Common.Controllers
 {
@@ -13,12 +14,14 @@ namespace Screening.Common.Controllers
     public class ScreeningController : ControllerBase
     {
         private readonly IScreeningRepository _repository;
+        private readonly MoviesService _moviesService;
         private readonly IMapper _mapper;
 
-        public ScreeningController(IScreeningRepository repository, IMapper mapper)
+        public ScreeningController(IScreeningRepository repository, IMapper mapper, MoviesService moviesService)
         {
             _repository = repository ?? throw new ArgumentNullException(nameof(repository));
             _mapper = mapper ?? throw new ArgumentNullException(nameof(mapper));
+            _moviesService = moviesService ?? throw new ArgumentNullException(nameof(moviesService));;
         }
 
         [HttpGet("[action]/{id}")]
@@ -93,7 +96,6 @@ namespace Screening.Common.Controllers
 
         [HttpGet("[action]")]
         [ProducesResponseType(typeof(IEnumerable<HallModel>), StatusCodes.Status200OK)]
-        [Authorize(Roles = Roles.ADMINISTRATOR)]
         public async Task<ActionResult<HallModel>> GetHalls()
         {
             var halls = await _repository.GetAllHalls();
@@ -102,7 +104,6 @@ namespace Screening.Common.Controllers
 
         [HttpGet("[action]")]
         [ProducesResponseType(typeof(IEnumerable<HallModel>), StatusCodes.Status200OK)]
-        [Authorize(Roles = Roles.ADMINISTRATOR)]
         public async Task<ActionResult<HallModel>> GetHallsBySearchString([FromQuery] string searchString)
         {
             var halls = await _repository.GetHallsBySearchString(searchString);
@@ -124,12 +125,15 @@ namespace Screening.Common.Controllers
         [Authorize(Roles = Roles.ADMINISTRATOR)]
         public async Task<IActionResult> InsertScreening([FromBody] InsertScreeningRequest request)
         {
-            var movie = await _repository.GetMovieById(request.MovieId);
-
-            if (movie == null) return BadRequest();
-
+            var screeningMovie = await _repository.GetMovieById(request.MovieId);
+            if (screeningMovie == null)
+            {
+                var movie = await _moviesService.GetMovieById(request.MovieId);
+                if (movie == null) return BadRequest();
+                await _repository.InsertMovie(new Movie {Id = movie.Id, Length = movie.Length, Title = movie.Title});
+            }
             await _repository.InsertScreening(_mapper.Map<Entities.Screening>(request));
-            return Ok();
+            return Ok();    
         }
 
         // This is a debug function, movies should be fetched from movie service

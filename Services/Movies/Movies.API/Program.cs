@@ -4,9 +4,11 @@ using Common.Auth.Extensions;
 using Common.Auth.Models;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.OpenApi.Models;
-using Movies.API.Data;
 using Movies.API.Extensions;
+using Movies.API.Grpc;
 using Movies.API.Services;
+using Movies.Common.Data;
+using Screening.GRPC;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -18,8 +20,12 @@ builder.Services.AddDbContext<MovieContext>(options =>
     options.EnableSensitiveDataLogging();
 });
 builder.Services.AddScoped<IMoviesRepository, MoviesRepository>();
+builder.Services.AddScoped<ScreeningService, ScreeningService>();
 builder.Services.AddTransient<IDataSeeder, DataSeeder>();
 
+builder.Services.AddGrpcClient<ScreeningProtoService.ScreeningProtoServiceClient>(o =>
+    o.Address = new Uri(builder.Configuration["gRPC:ScreeningUrl"]));
+    
 builder.Services.AddScoped<IMoviesService, MoviesService>();
 
 builder.Services.AddControllers()

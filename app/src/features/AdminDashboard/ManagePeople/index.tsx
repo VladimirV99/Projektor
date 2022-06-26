@@ -276,7 +276,6 @@ const ManagePeople = () => {
                 <CreateOrEditPerson
                     person={selectedPerson}
                     onClose={() => setSelectedPerson(null)}
-                    onBackdropClick={() => {}}
                 />
             )}
             <Modal show={deletePersonId !== null}>

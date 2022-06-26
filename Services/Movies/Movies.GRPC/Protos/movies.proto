@@ -1,0 +1,19 @@
+syntax = "proto3";
+
+option csharp_namespace = "Movies.GRPC";
+
+package Movies;
+
+service MoviesProtoService {
+	rpc GetMovieById (GetMovieByIdRequest) returns (MovieDTO);
+}
+
+message GetMovieByIdRequest {
+	int32 id = 1;
+}
+
+message MovieDTO {
+	int32 id = 1;
+	string title = 2;
+	int32 length = 3;
+}

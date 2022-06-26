@@ -8,6 +8,8 @@ package Screening;
 
 service ScreeningProtoService {
 	rpc GetScreening (GetScreeningRequest) returns (GetScreeningResponse);
+  rpc DeleteMovie (DeleteMovieRequest) returns (DeleteMovieResponse);
+  rpc UpdateMovie (UpdateMovieRequest) returns (UpdateMovieResponse);
 }
 
 message GetScreeningRequest {
@@ -24,4 +26,22 @@ message GetScreeningResponse {
   Movie movie = 2;
   google.protobuf.Timestamp movieStart = 3;
   int32 hallId = 4;
+}
+
+message DeleteMovieRequest {
+  int32 id = 1;
+}
+
+message DeleteMovieResponse {
+  bool success = 1;
+}
+
+message UpdateMovieRequest {
+  int32 id = 1;
+  string title = 2;
+  int32 length = 3;
+}
+
+message UpdateMovieResponse {
+  bool success = 1;
 }

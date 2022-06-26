@@ -1,28 +1,30 @@
 ﻿using Grpc.Core;
 using Screening.GRPC;
 
-namespace Movies.API.Grpc;
-
-public class ScreeningService
+namespace Movies.API.Grpc
 {
-    private readonly ScreeningProtoService.ScreeningProtoServiceClient _client;
-
-    public ScreeningService(ScreeningProtoService.ScreeningProtoServiceClient client)
+    public class ScreeningService
     {
-        _client = client ?? throw new ArgumentNullException(nameof(client));
-    }
+        private readonly ScreeningProtoService.ScreeningProtoServiceClient _client;
 
-    public async Task<bool> DeleteMovie(int id)
-    {
-        try
+        public ScreeningService(ScreeningProtoService.ScreeningProtoServiceClient client)
         {
-            var response = await _client.DeleteMovieAsync(new DeleteMovieRequest {Id = id});
-            return response.Success;
+            _client = client ?? throw new ArgumentNullException(nameof(client));
         }
-        catch (RpcException)
+
+        public async Task<bool> DeleteMovie(int id)
         {
-            return false;
+            try
+            {
+                var response = await _client.DeleteMovieAsync(new DeleteMovieRequest {Id = id});
+                return response.Success;
+            }
+            catch (RpcException)
+            {
+                return false;
+            }
+            
         }
-        
     }
 }
+

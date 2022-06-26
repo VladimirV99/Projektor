@@ -10,19 +10,25 @@ import { Fragment, useEffect, useState } from 'react'
 import { useParams } from 'react-router-dom';
 import Row from './Components/Row';
 import ModalCheKoV from 'components/Modal';
+import { MovieScreen } from './index.styles';
+import { PRICE_BASE } from 'constants/common/index';
 
 const ReservationDetailsScreen = () => {
 
     const { id: screeningId } = useParams();
+
     const [screening, setScreening] = useState<Screening | null>(null);
     const [seats, setSeats] = useState<SeatModel[][] | null>(null);
     const [isModalOpened, setIsModalOpened] = useState<boolean>(false);
     const [selectedSeatMatrix, setSelectedSeatMatrix] = useState<boolean[][] | null>(null);
+    const [currentPrice, setCurrentPrice] = useState<number>(0);
+    const [numberOfSelectedSeats, setNumberOfSelectedSeats] = useState<number>(0);
 
     const changeSelectedMatrix = (i: number, j: number) => {
         let newMatrix = selectedSeatMatrix;
         newMatrix![i][j] = !newMatrix![i][j];
         setSelectedSeatMatrix(newMatrix);
+        recalculatePrice();
     }
 
     const formSelectedMatrix = (seats: SeatModel[][]) => {
@@ -34,6 +40,25 @@ const ReservationDetailsScreen = () => {
             matrix.push(Array(m).fill(false))
         }
         return matrix
+    }
+
+    const recalculatePrice = () => {
+        const n = seats!.length;
+        const m = seats![0].length;
+        let newPrice = 0;
+        let numOfSelected = 0;
+
+        for(let i = 0; i < n; i++){
+            for(let j = 0; j < m; j++){
+                if(selectedSeatMatrix![i][j]){
+                    numOfSelected += 1;
+                    newPrice += seats![i][j].priceMultiplier * PRICE_BASE;
+                }
+            }
+        }
+
+        setNumberOfSelectedSeats(numOfSelected);
+        setCurrentPrice(newPrice);
     }
 
     useEffect(() => {
@@ -52,17 +77,6 @@ const ReservationDetailsScreen = () => {
             )
         }
     }, [screening])
-
-    const showModal = () => {
-        <div style={{width: '100%', height: '100%'}}>
-            <ModalCheKoV shouldRender={true} onModalClose={() => window.location.reload()} >
-                <div style={{ display: 'flex'}}>
-                    <h1>{`You successfuly created reservation for ${screening?.movie?.title} on ${new Date(screening!.movieStart).toLocaleString()}.
-                        We sent you an email with more information.`}</h1>
-                </div>
-            </ModalCheKoV>
-        </div>
-    }
 
     const createReservation = () => {
         const n = seats!.length;
@@ -102,12 +116,18 @@ const ReservationDetailsScreen = () => {
                         We sent you an email with more information.`}</h4>
                 </div>
             </ModalCheKoV>
-            <div style={{ margin: 24, height: '100%', width: '100%' }}>
+            <div style={{ margin: 24 }}>
                 <div style={{ display: 'flex', justifyContent: 'space-between'}}>
-                    <div>Projektor {screening!.hall!.name}</div>
-                    <div>{new Date(screening.movieStart).toLocaleString()}</div>
+                    <h5>{screening!.hall!.name}</h5>
+                    <h5>{screening!.movie?.title}</h5>
+                    <h5>{new Date(screening.movieStart).toLocaleString()}</h5>
                 </div >
                 <hr/>
+                <div style={{ display: 'flex', justifyContent: 'center', marginBottom: 30}}>
+                    <div style={{flexDirection: 'column'}}>
+                        <MovieScreen />
+                    </div>
+                </div>
                 <div style={{ display: 'flex', justifyContent: 'center'}}>
                     <div>
                         {seats.map(((row, index) => {
@@ -115,8 +135,11 @@ const ReservationDetailsScreen = () => {
                         }))}
                     </div>
                 </div>
+                <div>
+                    <h2>Current price: {currentPrice}</h2>
+                </div>
                 <div style={{marginTop: 20}}>
-                    <Button variant="contained" fullWidth onClick={() => createReservation()}>Create reservation</Button>
+                    <Button disabled={numberOfSelectedSeats === 0} variant="contained" fullWidth onClick={() => createReservation()}>Create reservation</Button>
                 </div>
                 <div style={{ display: 'flex', flexDirection: 'row', marginTop: 30}}>
                     <div style={{ marginRight: 30 }}>

@@ -3,14 +3,14 @@ import { Alert, Button, CircularProgress } from '@mui/material';
 import Review from 'models/Review';
 import { Modal } from 'react-bootstrap';
 import { Link } from 'react-router-dom';
-import { faTrash } from '@fortawesome/free-solid-svg-icons';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import DeleteIcon from '@mui/icons-material/Delete';
 import axiosAuthInstance from 'axios/instance';
 import {
     CREATE_REVIEW_URL,
     DELETE_REVIEW_URL,
     GET_REVIEWS_FOR_MOVIE_URL,
     GET_REVIEW_BY_ID_URL,
+    HAS_WATCHED_MOVIE,
     REMOVE_REVIEW_URL,
     UPDATE_REVIEW_URL,
 } from 'constants/api/reviews';
@@ -28,7 +28,9 @@ type CreateReviewRequest = {
     isAlreadyCreated: boolean;
     scoreHover: number;
     summary: string;
+    summaryChanged: boolean;
     body: string;
+    bodyChanged: boolean;
     score: number;
 };
 
@@ -67,11 +69,14 @@ const MovieReviews = ({
     const [reviews, setReviews] = useState<Review[]>([]);
     const [reviewCount, setReviewCount] = useState<number>(0);
 
+    const [hasWatchedMovie, setHasWatchedMovie] = useState<boolean>(false);
     const [userReview, setUserReview] = useState<CreateReviewRequest>({
         isAlreadyCreated: false,
         scoreHover: -1,
         summary: '',
+        summaryChanged: false,
         body: '',
+        bodyChanged: false,
         score: 0,
     });
     const [userReviewStatus, setUserReviewStatus] = useState<UserReviewStatus>({
@@ -89,13 +94,17 @@ const MovieReviews = ({
             body: undefined,
             score: undefined,
         };
-        if (userReview.summary.trim().length === 0) {
-            errors.summary = 'Summary is required';
-        } else if (userReview.summary.trim().length > 50) {
-            errors.summary = "Summary can't be longher than 50 characters";
+        if (userReview.summaryChanged) {
+            if (userReview.summary.trim().length === 0) {
+                errors.summary = 'Summary is required';
+            } else if (userReview.summary.trim().length > 50) {
+                errors.summary = "Summary can't be longher than 50 characters";
+            }
         }
-        if (userReview.body.trim().length === 0) {
-            errors.body = 'Body is required';
+        if (userReview.bodyChanged) {
+            if (userReview.body.trim().length === 0) {
+                errors.body = 'Body is required';
+            }
         }
         if (userReview.score === 0) {
             errors.score = 'Score is required';
@@ -142,6 +151,16 @@ const MovieReviews = ({
                     ...userReview,
                     isAlreadyCreated: true,
                 });
+                if (reviews.length === reviewCount) {
+                    setReviews(
+                        reviews.concat([
+                            {
+                                ...res.data,
+                                createdOn: parseServerDate(res.data.createdOn),
+                            },
+                        ])
+                    );
+                }
                 setReviewCount(reviewCount + 1);
             })
             .catch(() => {
@@ -197,7 +216,7 @@ const MovieReviews = ({
                     reviews.length > 0
                         ? new Date(reviews[reviews.length - 1].createdOn)
                         : null,
-                    1
+                    5
                 )
             )
             .then((res) => {
@@ -225,7 +244,9 @@ const MovieReviews = ({
                     isAlreadyCreated: false,
                     score: 0,
                     summary: '',
+                    summaryChanged: false,
                     body: '',
+                    bodyChanged: false,
                 });
                 setReviewCount(reviewCount - 1);
                 setReviews(reviews.filter((r) => r.reviewer.id !== user.id));
@@ -335,6 +356,12 @@ const MovieReviews = ({
             );
         } else if (!isUserCustomer()) {
             return null;
+        } else if (!hasWatchedMovie) {
+            return (
+                <S.ReviewContainer>
+                    <h5>You can create a review after watching the movie</h5>
+                </S.ReviewContainer>
+            );
         }
         return (
             <S.ReviewContainer>
@@ -342,12 +369,14 @@ const MovieReviews = ({
 
                 {userReview.isAlreadyCreated && (
                     <S.DeleteReviewButton
+                        color="error"
+                        aria-label="delete review"
                         onClick={() => {
                             setDeleteUserId(null);
                             setShowDeleteModal(true);
                         }}
                     >
-                        <FontAwesomeIcon icon={faTrash} />
+                        <DeleteIcon />
                     </S.DeleteReviewButton>
                 )}
 
@@ -378,6 +407,7 @@ const MovieReviews = ({
                         setUserReview({
                             ...userReview,
                             summary: e.target.value,
+                            summaryChanged: true,
                         })
                     }
                 />
@@ -391,6 +421,7 @@ const MovieReviews = ({
                         setUserReview({
                             ...userReview,
                             body: e.target.value,
+                            bodyChanged: true,
                         })
                     }
                 />
@@ -428,10 +459,13 @@ const MovieReviews = ({
     }, [
         isLoggedIn,
         user,
+        hasWatchedMovie,
         userReview,
         userReviewStatus,
         reviewValidationErrors,
         hasReviewValidationError,
+        reviewCount,
+        reviews,
     ]);
 
     const renderReviews = useCallback(() => {
@@ -470,7 +504,15 @@ const MovieReviews = ({
 
     useEffect(() => {
         if (!isLoggedIn) return;
-        // TODO make route [Authorize] or use axios here
+        axiosAuthInstance
+            .get<boolean>(HAS_WATCHED_MOVIE(movieId))
+            .then((res) => {
+                setHasWatchedMovie(res.data);
+            });
+    }, [isLoggedIn]);
+
+    useEffect(() => {
+        if (!isLoggedIn) return;
         axiosAuthInstance
             .get<Review>(GET_REVIEW_BY_ID_URL(movieId, user.id))
             .then((res) => {
@@ -478,7 +520,9 @@ const MovieReviews = ({
                     isAlreadyCreated: true,
                     scoreHover: -1,
                     summary: res.data.summary,
+                    summaryChanged: true,
                     body: res.data.body,
+                    bodyChanged: true,
                     score: res.data.score,
                 });
             })
@@ -487,7 +531,9 @@ const MovieReviews = ({
                     isAlreadyCreated: false,
                     scoreHover: -1,
                     summary: '',
+                    summaryChanged: false,
                     body: '',
+                    bodyChanged: false,
                     score: 0,
                 });
             });

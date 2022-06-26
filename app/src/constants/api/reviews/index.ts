@@ -30,6 +30,9 @@ export const GET_REVIEWS_FOR_MOVIE_URL = (
     return url;
 };
 
+export const HAS_WATCHED_MOVIE = (movieId: number) =>
+    urlJoin(URL_BASE, '/Review/HasWatchedMovie', movieId.toString());
+
 export const CREATE_REVIEW_URL = urlJoin(URL_BASE, '/Review/CreateReview');
 
 export const UPDATE_REVIEW_URL = urlJoin(URL_BASE, '/Review/UpdateReview');

@@ -23,8 +23,21 @@ namespace Movies.API.Grpc
             {
                 return false;
             }
-            
         }
+        
+        public async Task<bool> UpdateMovie(int id, int length, string title)
+        {
+            try
+            {
+                var response = await _client.UpdateMovieAsync(new UpdateMovieRequest{Id = id, Length = length, Title = title});
+                return response.Success;
+            }
+            catch (RpcException)
+            {
+                return false;
+            }
+        }
+        
     }
 }
 

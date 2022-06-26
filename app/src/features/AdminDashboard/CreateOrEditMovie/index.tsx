@@ -40,6 +40,7 @@ const CreateOrEditMovie = ({ movie, onClose, onBackdropClick }: Props) => {
 
     const dispatch = useDispatch();
     const updateStatus = useSelector(selectors.getUpdateStatus);
+    const updateError = useSelector(selectors.getUpdateError);
 
     const peopleByRoles = useMemo<PeopleByRolesType>(() => {
         const peopleByRolesTmp = [] as PeopleByRolesType;
@@ -109,9 +110,7 @@ const CreateOrEditMovie = ({ movie, onClose, onBackdropClick }: Props) => {
                             successfully!
                         </div>
                     )}
-                    {updateStatus === 'error' && (
-                        <div>Something went wrong.</div>
-                    )}
+                    {updateStatus === 'error' && <div>{updateError}</div>}
                 </Modal.Body>
                 <Modal.Footer>
                     <Button

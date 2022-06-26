@@ -2,16 +2,19 @@
 using Movies.Common.Data;
 using Movies.Common.Entities;
 using Movies.API.Models;
+using Movies.API.Grpc;
 
 namespace Movies.API.Services;
 
 public class MoviesService : IMoviesService
 {
     private readonly IMoviesRepository _repository;
+    private readonly ScreeningService _screeningService;
 
-    public MoviesService(IMoviesRepository repository)
+    public MoviesService(IMoviesRepository repository, ScreeningService screeningService)
     {
         _repository = repository ?? throw new ArgumentNullException(nameof(repository));
+        _screeningService = screeningService ?? throw new ArgumentNullException(nameof(screeningService));
     }
 
     private async Task<string?> PopulateGenresAndRoles(Movie movie, List<int> genreIds, List<PersonRole> peopleAndRoles)
@@ -58,7 +61,7 @@ public class MoviesService : IMoviesService
             ImageUrl = createOrUpdateMovieRequest.ImageUrl,
             Genres = new List<Genre>(),
             People = new List<MoviePerson>()
-        }; 
+        };
         
         var errorMessage = await PopulateGenresAndRoles(movie, createOrUpdateMovieRequest.Genres, createOrUpdateMovieRequest.People);
         if (errorMessage != null)
@@ -89,6 +92,11 @@ public class MoviesService : IMoviesService
         if (errorMessage != null)
         {
             return errorMessage;
+        }
+
+        if (!await _screeningService.UpdateMovie(movie.Id, movie.Length, movie.Title))
+        {
+            return "You cannot update this movie's length as it would cause an overlapping screening.";
         }
         
         await _repository.UpdateMovie(movie);

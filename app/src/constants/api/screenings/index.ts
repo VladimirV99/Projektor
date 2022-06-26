@@ -1,6 +1,9 @@
 import urlJoin from 'url-join';
 import URL_BASE from '../global';
 
+export const GET_SCREENING_BY_ID = (screeningId: number) =>
+    urlJoin(URL_BASE, '/Screening/GetScreeningById/', screeningId.toString());
+
 export const GET_SCREENINGS_FOR_MOVIE_URL = (movieId: number) =>
     urlJoin(URL_BASE, '/Screening/GetScreeningsByMovieId/', movieId.toString());
 

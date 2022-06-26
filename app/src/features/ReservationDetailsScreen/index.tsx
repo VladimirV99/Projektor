@@ -39,7 +39,7 @@ const ReservationDetailsScreen = () => {
     const formSelectedMatrix = (seats: SeatModel[][]) => {
         const n = seats.length;
         const m = seats[0].length;
-        
+
         return Array(n).fill(Array(m).fill(false));
     };
 

@@ -96,7 +96,6 @@ namespace Screening.Common.Controllers
 
         [HttpGet("[action]")]
         [ProducesResponseType(typeof(IEnumerable<HallModel>), StatusCodes.Status200OK)]
-        [Authorize(Roles = Roles.ADMINISTRATOR)]
         public async Task<ActionResult<HallModel>> GetHalls()
         {
             var halls = await _repository.GetAllHalls();
@@ -105,7 +104,6 @@ namespace Screening.Common.Controllers
 
         [HttpGet("[action]")]
         [ProducesResponseType(typeof(IEnumerable<HallModel>), StatusCodes.Status200OK)]
-        [Authorize(Roles = Roles.ADMINISTRATOR)]
         public async Task<ActionResult<HallModel>> GetHallsBySearchString([FromQuery] string searchString)
         {
             var halls = await _repository.GetHallsBySearchString(searchString);

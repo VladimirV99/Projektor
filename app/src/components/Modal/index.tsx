@@ -12,11 +12,7 @@ const ModalCheKoV = ({
     onModalClose,
 }: Props): JSX.Element => {
     return (
-        <Modal
-            open={shouldRender}
-            onBackdropClick={onModalClose}
-            style={{ display: 'flex' }}
-        >
+        <Modal open={shouldRender} style={{ display: 'flex' }}>
             {children}
         </Modal>
     );

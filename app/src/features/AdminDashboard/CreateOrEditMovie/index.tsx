@@ -20,7 +20,6 @@ import { Col, Modal, Row } from 'react-bootstrap';
 type Props = {
     movie: Movie;
     onClose: () => void;
-    onBackdropClick: () => void;
 };
 
 type PeopleByRolesType = {
@@ -29,7 +28,7 @@ type PeopleByRolesType = {
     people: { personId: number; name: string }[];
 }[];
 
-const CreateOrEditMovie = ({ movie, onClose, onBackdropClick }: Props) => {
+const CreateOrEditMovie = ({ movie, onClose }: Props) => {
     const [movieInput, setMovieInput] = useState({ ...movie });
     const genres = useSelector(selectors.getGenres);
     const genreOptions = useMemo(
@@ -129,7 +128,6 @@ const CreateOrEditMovie = ({ movie, onClose, onBackdropClick }: Props) => {
             </Modal>
             <Modal
                 show={updateStatus === 'idle'}
-                onBackdropClick={onBackdropClick}
             >
                 <Modal.Header>
                     {movie.id != -1 ? (

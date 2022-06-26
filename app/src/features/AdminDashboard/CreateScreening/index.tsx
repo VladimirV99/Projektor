@@ -9,34 +9,27 @@ import {
     GET_HALLS_BY_SEARCH_STRING,
     INSERT_SCREENING_URL,
 } from 'constants/api/screenings';
-import axios from 'axios';
 import { DateTimePicker } from '@mui/lab';
 import dayjs from 'dayjs';
+import axiosAuthInstance from 'axios/instance';
 
 type Props = {
     screening: Screening;
     onClose: () => void;
-    onBackdropClick: () => void;
     callback: () => void;
 };
 
-const CreateScreening = ({
-    screening,
-    onClose,
-    onBackdropClick,
-    callback,
-}: Props) => {
+const CreateScreening = ({ screening, onClose, callback }: Props) => {
     const [screeningInput, setScreeningInput] = useState<Screening>({
         ...screening,
     });
-    const [updateStatus, setUpdateStatus] = useState('idle');
     const [createStatus, setCreateStatus] = useState('idle');
     const [selectedMovieId, setSelectedMovieId] = useState(screening.movie?.id);
     const [selectedHallId, setSelectedHallId] = useState(screening.hall?.id);
 
     const handleCreateSubmit = () => {
         setCreateStatus('pending');
-        axios
+        axiosAuthInstance
             .post(INSERT_SCREENING_URL, {
                 movieId: selectedMovieId,
                 hallId: selectedHallId,
@@ -56,33 +49,26 @@ const CreateScreening = ({
                     <Modal.Title>Creating a screening</Modal.Title>
                 </Modal.Header>
                 <Modal.Body>
-                    {updateStatus === 'pending' && (
-                        <div>Updating screening...</div>
+                    {createStatus === 'pending' && (
+                        <div>Creating screening...</div>
                     )}
-                    {updateStatus === 'success' && (
+                    {createStatus === 'success' && (
                         <div>Screening created successfully!</div>
                     )}
-                    {updateStatus === 'error' && (
+                    {createStatus === 'error' && (
                         <div>Something went wrong.</div>
                     )}
                 </Modal.Body>
                 <Modal.Footer>
                     <Button
-                        disabled={updateStatus === 'pending'}
-                        onClick={() => {
-                            if (updateStatus === 'success') {
-                                onClose();
-                            }
-                        }}
+                        disabled={createStatus === 'pending'}
+                        onClick={onClose}
                     >
                         Close
                     </Button>
                 </Modal.Footer>
             </Modal>
-            <Modal
-                show={createStatus === 'idle'}
-                onBackdropClick={onBackdropClick}
-            >
+            <Modal show={createStatus === 'idle'}>
                 <Modal.Header>
                     {screening.id != -1 ? (
                         <h4>

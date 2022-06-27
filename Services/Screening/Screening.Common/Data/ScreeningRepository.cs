@@ -54,17 +54,17 @@ namespace Screening.Common.Data
                 .ToListAsync();
         }
 
-        public async Task<Entities.Screening?> GetScreeningByHallIdAtMoment(int id, DateTime start, DateTime end)
+        public async Task<Entities.Screening?> GetScreeningByHallIdAtMoment(int hallId, DateTime start, DateTime end)
         {
             return await _dbContext
                 .Screenings
-                .Where(m => m.Hall.Id == id)
+                .Where(m => m.HallId == hallId)
                 .Include(m => m.Movie)
                 .Where(
                   m => (m.MovieStart > start && m.MovieStart < end) 
                     || (m.MovieStart <= start && m.MovieStart.AddMinutes(m.Movie.Length) > start)
                 )
-                .SingleOrDefaultAsync();
+                .FirstOrDefaultAsync();
         }
 
         public async Task<Movie?> GetMovieById(int id)
@@ -105,10 +105,36 @@ namespace Screening.Common.Data
                 .FindAsync(id);
         }
 
-        public async Task InsertScreening(Entities.Screening screening)
+        public async Task<string?> InsertScreening(Entities.Screening screening)
         {
+            var movie = await _dbContext.Movies.Where(m => m.Id == screening.MovieId).SingleOrDefaultAsync();
+            if (movie == null)
+            {
+                // Already checked in the controller, so shouldn't be possible
+                return "Movie not found";
+            }
+
+            var overlappingScreening = await GetScreeningByHallIdAtMoment(screening.HallId, screening.MovieStart,
+                screening.MovieStart.AddMinutes(movie.Length));
+            if (overlappingScreening != null)
+            {
+                return "Creating this screening at the given time would overlap with another screening.";
+            }
             await _dbContext.Screenings.AddAsync(screening);
-            await _dbContext.SaveChangesAsync();
+            
+            // Cleanup behind the scenes
+            _dbContext
+                .Screenings
+                .RemoveRange(
+                    _dbContext
+                        .Screenings
+                        .Include(s => s.Movie)
+                        .Where(s => s.MovieStart.AddMinutes(s.Movie.Length) < DateTime.UtcNow));
+                
+                
+            await _dbContext.SaveChangesAsync();    
+            
+            return null;
         }
         public async Task InsertMovie(Movie movie)
         {
@@ -121,19 +147,31 @@ namespace Screening.Common.Data
             await _dbContext.SaveChangesAsync();
         }
 
-        public async Task UpdateScreening(int id, DateTime moment)
+        public async Task<string?> UpdateScreening(int id, DateTime moment)
         {
+            
             var screening = await _dbContext
                 .Screenings
-                .FindAsync(id);
+                .Where(s => s.Id == id)
+                .Include(s => s.Movie)
+                .SingleOrDefaultAsync();
             
             if (screening == null)
             {
-                return;
+                return "Screening not found.";
             }
-            screening.MovieStart = moment;
 
+            var overlappingScreening =
+                await GetScreeningByHallIdAtMoment(screening.HallId, moment, moment.AddMinutes(screening.Movie.Length));
+
+            if (overlappingScreening != null && overlappingScreening.Id != screening.Id)
+            {
+                return "Changing this screening's time would overlap with another screening.";
+            }
+
+            screening.MovieStart = moment;
             await _dbContext.SaveChangesAsync();
+            return null;
         }
 
         public async Task<bool> DeleteScreening(int id)
@@ -145,7 +183,7 @@ namespace Screening.Common.Data
             if (screening == null) return false;
 
             _dbContext.Screenings.Remove(screening);
-            _dbContext.SaveChanges();
+            await _dbContext.SaveChangesAsync();
 
             return true;
         }

@@ -136,8 +136,14 @@ namespace Screening.Common.Controllers
                 if (movie == null) return BadRequest();
                 await _repository.InsertMovie(new Movie {Id = movie.Id, Length = movie.Length, Title = movie.Title});
             }
-            await _repository.InsertScreening(_mapper.Map<Entities.Screening>(request));
-            return Ok();    
+            var errors = await _repository.InsertScreening(_mapper.Map<Entities.Screening>(request));
+            if (errors != null)
+            {
+                return BadRequest(errors);
+            }
+
+            return Ok();
+
         }
 
         // This is a debug function, movies should be fetched from movie service
@@ -173,6 +179,7 @@ namespace Screening.Common.Controllers
         [HttpPatch("[action]")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [Authorize(Roles = Roles.ADMINISTRATOR)]
         public async Task<IActionResult> UpdateScreening([FromBody] UpdateScreeningRequest request)
         {
@@ -188,7 +195,11 @@ namespace Screening.Common.Controllers
             }
             
             var oldTime = screening.MovieStart;
-            await _repository.UpdateScreening(request.ScreeningId, request.Moment);
+            var errors = await _repository.UpdateScreening(request.ScreeningId, request.Moment);
+            if (errors != null)
+            {
+                return BadRequest(errors);
+            }
                 
             // Notify reservation service
             await _publishEndpoint.Publish(new RescheduleScreeningEvent(

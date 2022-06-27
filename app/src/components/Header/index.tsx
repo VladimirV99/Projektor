@@ -60,6 +60,7 @@ const Header = () => {
             { name: 'Home', link: '/' },
             { name: 'About Us', link: '/about' },
             { name: 'Browse Movies', link: '/movies' },
+            { name: 'Screenings Calendar', link: '/screenings_calendar' },
             { name: 'Contact Us', link: '/contact' },
         ];
     }, []);

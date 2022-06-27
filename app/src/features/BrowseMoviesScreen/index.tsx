@@ -100,6 +100,14 @@ const BrowseMoviesScreen = (): JSX.Element => {
         }));
     };
 
+    const handleSearchTermChange = (searchTerm: string) => {
+        setFilterMovieRequest((prevState) => ({
+            ...prevState,
+            searchString: searchTerm,
+            Page: 1,
+        }));
+    };
+
     useEffect(() => {
         dispatch(filterMovies(filterMovieRequest));
     }, [filterMovieRequest, dispatch]);
@@ -135,6 +143,7 @@ const BrowseMoviesScreen = (): JSX.Element => {
                             onYearRangeChange={handleYearRangeChange}
                             onLengthRangeChange={handleLengthRangeChange}
                             onGenreIdsChange={handleGenreIdsChange}
+                            onSearchTermChange={handleSearchTermChange}
                         />
                     </S.MovieFiltersContainer>
                 </Col>

@@ -1,9 +1,10 @@
 import React, { Fragment, useEffect, useState } from 'react';
 import 'bootstrap/dist/css/bootstrap.min.css';
-import { Slider } from '@mui/material';
+import { Slider, TextField } from '@mui/material';
 import Genre from 'models/Genre';
 import * as S from './index.styles';
 import FilterLimits from 'models/FilterLimits';
+import { useDebounce } from 'use-debounce';
 
 type MovieFiltersProps = {
     genres: Genre[];
@@ -11,6 +12,7 @@ type MovieFiltersProps = {
     onYearRangeChange: (min: number, max: number) => void;
     onLengthRangeChange: (min: number, max: number) => void;
     onGenreIdsChange: (genreIds: number[] | null) => void;
+    onSearchTermChange: (searchTerm: string) => void;
 };
 
 const MovieFilters = ({
@@ -18,8 +20,13 @@ const MovieFilters = ({
     onYearRangeChange,
     onLengthRangeChange,
     onGenreIdsChange,
+    onSearchTermChange,
     filterLimits,
 }: MovieFiltersProps): JSX.Element => {
+    const [searchInput, setSearchInput] = useState<string>('');
+
+    const [searchTerm] = useDebounce(searchInput, 500);
+
     const [yearRange, setYearRange] = useState<number[]>([
         filterLimits.yearMin,
         filterLimits.yearMax,
@@ -65,9 +72,22 @@ const MovieFilters = ({
         onGenreIdsChange(genreIds.length > 0 ? genreIds : null);
     }, [genreIds]);
 
+    useEffect(() => {
+        if (!searchTerm) {
+            return;
+        }
+        onSearchTermChange(searchTerm);
+    }, [searchTerm]);
+
     return (
         <Fragment>
             <h3>Advanced search:</h3>
+            <TextField
+                label="Movie title"
+                size="small"
+                value={searchInput}
+                onChange={(e) => setSearchInput(e.target.value)}
+            />
 
             <h5>Year</h5>
             <Slider

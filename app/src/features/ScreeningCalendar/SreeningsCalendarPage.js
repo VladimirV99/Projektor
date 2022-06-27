@@ -1,8 +1,6 @@
 import { Fragment, useEffect, useMemo, useState } from 'react';
-import styled from 'styled-components';
 import axios from 'axios';
 import moment, { Moment } from 'moment';
-import Screening from 'models/Screening';
 import useAsyncError from 'hooks/useAsyncError';
 import Timeline from 'react-calendar-timeline';
 import 'react-calendar-timeline/lib/Timeline.css';
@@ -11,7 +9,7 @@ import { Backdrop } from '@mui/material';
 import { GET_SCREENINGS_URL } from 'constants/index';
 import { Helmet } from 'react-helmet';
 
-const ScreeningCalendar = () => {
+const ScreeningCalendarPage = () => {
     const [screeningsRaw, setScreeningsRaw] = useState([]);
     const [screeningsStatus, setScreeningsStatus] = useState('loading');
 
@@ -22,7 +20,6 @@ const ScreeningCalendar = () => {
         axios
             .get(GET_SCREENINGS_URL)
             .then((response) => {
-                console.log(response.data);
                 setScreeningsStatus('success');
                 setScreeningsRaw(response.data);
             })
@@ -49,9 +46,11 @@ const ScreeningCalendar = () => {
             return moment();
         }
 
-        return screenings.reduce((prev, curr) =>
-            curr.movieStart.isBefore(prev.movieStart) ? curr : prev
-        ).movieStart;
+        return screenings
+            .reduce((prev, curr) =>
+                curr.movieStart.isBefore(prev.movieStart) ? curr : prev
+            )
+            .movieStart.subtract(1, 'days');
     }, [screenings]);
 
     const timeEnd = useMemo(() => {
@@ -59,14 +58,12 @@ const ScreeningCalendar = () => {
             return moment();
         }
 
-        return screenings.reduce((prev, curr) =>
-            curr.movieStart.isAfter(prev.movieEnd) ? curr : prev
-        ).movieEnd;
+        return screenings
+            .reduce((prev, curr) =>
+                curr.movieStart.isAfter(prev.movieEnd) ? curr : prev
+            )
+            .movieEnd.add(1, 'days');
     }, [screenings]);
-
-    useEffect(() => {
-        console.log(timeStart.toString(), '---------', timeEnd.toString());
-    }, [timeStart, timeEnd]);
 
     const groups = useMemo(() => {
         let ids = Array.from(new Set(screenings.map(({ hallId }) => hallId)));
@@ -97,7 +94,7 @@ const ScreeningCalendar = () => {
         }
     }, [screeningsStatus]);
 
-    if (screeningsStatus === 'loading') {
+    if (screeningsStatus === 'loading' || screenings.length === 0) {
         return (
             <Backdrop open>
                 <CircularProgress />
@@ -108,20 +105,16 @@ const ScreeningCalendar = () => {
     return (
         <Fragment>
             <Helmet>
-                <title> Screening calendar | Projektor</title>
+                <title>Screenings Calendar | Projektor</title>
             </Helmet>
-            <Container>
-                <Timeline
-                    groups={groups}
-                    items={items}
-                    defaultTimeStart={timeStart}
-                    defaultTimeEnd={timeEnd}
-                />
-            </Container>
+            <Timeline
+                groups={groups}
+                items={items}
+                defaultTimeStart={timeStart}
+                defaultTimeEnd={timeEnd}
+            />
         </Fragment>
     );
 };
 
-export default ScreeningCalendar;
-
-const Container = styled.div``;
+export default ScreeningCalendarPage;

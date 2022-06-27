@@ -51,7 +51,7 @@ namespace Screening.Common.Controllers
         [Authorize(Roles = Roles.ADMINISTRATOR)]
         public async Task<ActionResult<IEnumerable<ScreeningModel>>> GetScreeningsByHallId(int id)
         {
-            var hall = _repository.GetHallById(id);
+            var hall = await _repository.GetHallById(id);
             if(hall == null) return NotFound();
 
             var screenings = await _repository.GetScreeningsByHallId(id);

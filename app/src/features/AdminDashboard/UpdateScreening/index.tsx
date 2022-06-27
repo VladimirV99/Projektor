@@ -20,6 +20,7 @@ const UpdateScreening = ({ screening, onClose, callback }: Props) => {
     });
 
     const [updateStatus, setUpdateStatus] = useState('idle');
+    const [updateError, setUpdateError] = useState<string | null>(null);
 
     const handleUpdateSubmit = () => {
         setUpdateStatus('pending');
@@ -32,7 +33,13 @@ const UpdateScreening = ({ screening, onClose, callback }: Props) => {
                 callback();
                 setUpdateStatus('success');
             })
-            .catch((error) => setUpdateStatus('error'));
+            .catch((error) => {
+                setUpdateStatus('error');
+                setUpdateError(
+                    error.response?.data ??
+                        'Something went wrong. Please try again later.'
+                );
+            });
     };
 
     return (
@@ -48,9 +55,7 @@ const UpdateScreening = ({ screening, onClose, callback }: Props) => {
                     {updateStatus === 'success' && (
                         <div>Screening updated successfully!</div>
                     )}
-                    {updateStatus === 'error' && (
-                        <div>Something went wrong.</div>
-                    )}
+                    {updateStatus === 'error' && <div>{updateError}</div>}
                 </Modal.Body>
                 <Modal.Footer>
                     <Button

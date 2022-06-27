@@ -24,6 +24,7 @@ const CreateScreening = ({ screening, onClose, callback }: Props) => {
         ...screening,
     });
     const [createStatus, setCreateStatus] = useState('idle');
+    const [createError, setCreateError] = useState<string | null>(null);
     const [selectedMovieId, setSelectedMovieId] = useState(screening.movie?.id);
     const [selectedHallId, setSelectedHallId] = useState(screening.hall?.id);
 
@@ -39,7 +40,13 @@ const CreateScreening = ({ screening, onClose, callback }: Props) => {
                 callback();
                 setCreateStatus('success');
             })
-            .catch((error) => setCreateStatus('error'));
+            .catch((error) => {
+                setCreateStatus('error');
+                setCreateError(
+                    error.response?.data ??
+                        'Something went wrong. Please try again later'
+                );
+            });
     };
 
     return (
@@ -55,9 +62,7 @@ const CreateScreening = ({ screening, onClose, callback }: Props) => {
                     {createStatus === 'success' && (
                         <div>Screening created successfully!</div>
                     )}
-                    {createStatus === 'error' && (
-                        <div>Something went wrong.</div>
-                    )}
+                    {createStatus === 'error' && <div>{createError}</div>}
                 </Modal.Body>
                 <Modal.Footer>
                     <Button

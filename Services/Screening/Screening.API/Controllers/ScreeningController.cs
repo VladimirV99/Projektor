@@ -54,7 +54,7 @@ namespace Screening.Common.Controllers
             var hall = _repository.GetHallById(id);
             if(hall == null) return NotFound();
 
-            var screenings = await _repository.GetScreeingsByHallId(id);
+            var screenings = await _repository.GetScreeningsByHallId(id);
             return Ok(_mapper.Map<IEnumerable<ScreeningModel>>(screenings));
         }
 

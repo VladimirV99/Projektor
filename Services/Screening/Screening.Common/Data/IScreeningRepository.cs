@@ -6,7 +6,7 @@ namespace Screening.Common.Data
     {
         Task<Entities.Screening?>GetScreeningById(int id);
         Task<IEnumerable<Entities.Screening>> GetScreenings();
-        Task<IEnumerable<Entities.Screening>> GetScreeingsByHallId(int id);
+        Task<IEnumerable<Entities.Screening>> GetScreeningsByHallId(int id);
         Task<IEnumerable<Entities.Screening>> GetScreeningsByMovieId(int id);
         Task<Entities.Screening?> GetScreeningByHallIdAtMoment(int id, DateTime start, DateTime end);
         Task<IEnumerable<Movie>> GetMovies();

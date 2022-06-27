@@ -36,7 +36,7 @@ namespace Screening.Common.Data
                 .SingleOrDefaultAsync(m => m.Id == id);
         }
 
-        public async Task<IEnumerable<Entities.Screening>> GetScreeingsByHallId(int id)
+        public async Task<IEnumerable<Entities.Screening>> GetScreeningsByHallId(int id)
         {
             return await _dbContext
                 .Screenings
@@ -51,6 +51,8 @@ namespace Screening.Common.Data
                 .Screenings
                 .Where(m => m.Movie.Id == id)
                 .Include(h => h.Hall)
+                .Include(s => s.Movie)
+                .Where(s => s.MovieStart.AddMinutes(s.Movie.Length) < DateTime.UtcNow)
                 .ToListAsync();
         }
 

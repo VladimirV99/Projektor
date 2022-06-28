@@ -73,9 +73,6 @@ const MovieFilters = ({
     }, [genreIds]);
 
     useEffect(() => {
-        if (!searchTerm) {
-            return;
-        }
         onSearchTermChange(searchTerm);
     }, [searchTerm]);
 

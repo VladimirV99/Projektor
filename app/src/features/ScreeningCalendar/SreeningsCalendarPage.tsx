@@ -1,6 +1,6 @@
 import { Fragment, useEffect, useMemo, useState } from 'react';
 import axios from 'axios';
-import moment, { Moment } from 'moment';
+import moment from 'moment';
 import useAsyncError from 'hooks/useAsyncError';
 import Timeline from 'react-calendar-timeline';
 import 'react-calendar-timeline/lib/Timeline.css';
@@ -8,10 +8,13 @@ import { CircularProgress } from '@material-ui/core';
 import { Backdrop } from '@mui/material';
 import { GET_SCREENINGS_URL } from 'constants/index';
 import { Helmet } from 'react-helmet';
+import Screening from 'models/Screening';
+
+type Status = 'loading' | 'success' | 'error';
 
 const ScreeningCalendarPage = () => {
-    const [screeningsRaw, setScreeningsRaw] = useState([]);
-    const [screeningsStatus, setScreeningsStatus] = useState('loading');
+    const [screeningsRaw, setScreeningsRaw] = useState<Screening[]>([]);
+    const [screeningsStatus, setScreeningsStatus] = useState<Status>('loading');
 
     const throwAsyncError = useAsyncError();
 
@@ -35,35 +38,19 @@ const ScreeningCalendarPage = () => {
                 movieTitle: movie?.title ?? '',
                 movieStart: moment(movieStart),
                 movieEnd: moment(movieStart).add(movie?.length ?? 1, 'minutes'),
-                hallId: hall.id,
+                hallId: hall?.id ?? 0,
                 hallName: hall?.name ?? '',
             };
         });
     }, [screeningsRaw]);
 
     const timeStart = useMemo(() => {
-        if (screenings.length === 0) {
-            return moment();
-        }
-
-        return screenings
-            .reduce((prev, curr) =>
-                curr.movieStart.isBefore(prev.movieStart) ? curr : prev
-            )
-            .movieStart.subtract(1, 'days');
-    }, [screenings]);
+        return moment().startOf('day');
+    }, []);
 
     const timeEnd = useMemo(() => {
-        if (screenings.length === 0) {
-            return moment();
-        }
-
-        return screenings
-            .reduce((prev, curr) =>
-                curr.movieStart.isAfter(prev.movieEnd) ? curr : prev
-            )
-            .movieEnd.add(1, 'days');
-    }, [screenings]);
+        return moment().endOf('day');
+    }, []);
 
     const groups = useMemo(() => {
         let ids = Array.from(new Set(screenings.map(({ hallId }) => hallId)));
@@ -71,7 +58,7 @@ const ScreeningCalendarPage = () => {
 
         return ids.map((id) => ({
             id,
-            title: screenings.find((s) => s.hallId === id).hallName,
+            title: screenings.find((s) => s.hallId === id)?.hallName ?? '',
             height: 100,
         }));
     }, [screenings]);
@@ -112,6 +99,9 @@ const ScreeningCalendarPage = () => {
                 items={items}
                 defaultTimeStart={timeStart}
                 defaultTimeEnd={timeEnd}
+                minZoom={12 * 60 * 60 * 1000}
+                maxZoom={2 * 24 * 60 * 60 * 1000}
+                canMove={false}
             />
         </Fragment>
     );

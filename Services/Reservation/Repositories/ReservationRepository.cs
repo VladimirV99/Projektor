@@ -35,17 +35,36 @@ namespace Reservation.Repositories
             await _dbContext.SaveChangesAsync();
         }
 
-        public async Task<bool> DeleteHall(int id)
+        public async Task<string?> DeleteHall(int id)
         {
             var hall = await _dbContext.Halls.FindAsync(id);
             if (hall == null)
             {
-                return false;
+                return null;
             }
+
+            // We check whether there are reservations in this hall
+            // In case there are we do not permit this operation
+            // This will not cause a deadlock since if you want to cancel
+            // all reservations for a hall you should first cancel all screenings
+            // after which an event which deletes all reservations will be emitted
+
+            var hasReservations = await _dbContext
+                .Reservations
+                .Include(r => r.Seats)
+                .Where(r => r.Seats.First().HallId == id)
+                .AnyAsync();
+
+            if (hasReservations)
+            {
+                return "Cannot delete a hall which has reservations in it. Delete screenings first.";
+            }
+
+            // Delete all s
             
             _dbContext.Halls.Remove(hall);
             await _dbContext.SaveChangesAsync();
-            return true;
+            return null;
         }
 
         public async Task CreateSeat(Seat seat)

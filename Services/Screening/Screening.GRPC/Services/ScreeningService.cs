@@ -48,5 +48,13 @@ namespace Screening.GRPC.Services
                 Success = await _repository.UpdateMovie(request.Id, request.Title, request.Length)
             };
         }
+
+        public override async Task<DeleteHallResponse> DeleteHall(DeleteHallRequest request, ServerCallContext context)
+        {
+            return new DeleteHallResponse
+            {
+                Success = await _repository.DeleteHall(request.Id)
+            };
+        }
     }
 }

@@ -33,5 +33,11 @@ namespace Reservation.Grpc
                 return null;
             }
         }
+
+        public async Task<bool> DeleteHall(int id)
+        {
+            var response = await _client.DeleteHallAsync(new DeleteHallRequest {Id = id});
+            return response.Success;
+        }
     }
 }

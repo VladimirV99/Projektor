@@ -1,5 +1,6 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using Screening.Common.Entities;
+using Screening.Common.Migrations;
 
 namespace Screening.Common.Data
 {
@@ -234,7 +235,39 @@ namespace Screening.Common.Data
             await _dbContext.SaveChangesAsync();
             return true;
 
-        }   
+        }
+
+        public async Task<bool> DeleteHall(int id)
+        {
+            var hall = await GetHallById(id);
+            if (hall == null)
+            {
+                return true;
+            }
+
+            var query = _dbContext.Screenings
+                .Where(s => s.HallId == id)
+                .Include(s => s.Movie);
+
+            
+            // Late cleanup
+            _dbContext.RemoveRange(
+                query.Where(s => s.MovieStart.AddMinutes(s.Movie.Length) < DateTime.UtcNow));
+            
+            // Any problems
+            var hasPendingScreenings =
+                await query.Where(s => s.MovieStart.AddMinutes(s.Movie.Length) >= DateTime.UtcNow).AnyAsync();
+
+            if (!hasPendingScreenings)
+            {
+                _dbContext.Remove(hall);    
+            }
+            
+            await _dbContext.SaveChangesAsync();
+
+            return !hasPendingScreenings;
+
+        }
     }
 }
 

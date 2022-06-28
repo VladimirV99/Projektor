@@ -18,6 +18,7 @@ import { LocalizationProvider } from '@mui/lab';
 import AdapterDateFns from '@mui/lab/AdapterDateFns';
 import MyReservationsScreen from 'features/MyReservationsScreen';
 import ReservationDetailsScreen from 'features/ReservationDetailsScreen';
+import ScreeningCalendarPage from 'features/ScreeningCalendar/SreeningsCalendarPage';
 
 function App() {
     return (
@@ -65,6 +66,10 @@ function App() {
                                     <Route
                                         path="/profile_settings"
                                         element={<UserProfileSettings />}
+                                    />
+                                    <Route
+                                        path="/screenings_calendar"
+                                        element={<ScreeningCalendarPage />}
                                     />
                                     <Route
                                         path="/reservations"

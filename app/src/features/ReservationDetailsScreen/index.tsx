@@ -10,7 +10,7 @@ import Screening from 'models/Screening';
 import SeatModel from 'models/Seat';
 import SeatMock from './Components/SeatMock';
 import { Fragment, useEffect, useState } from 'react';
-import { useParams } from 'react-router-dom';
+import { Navigate, useNavigate, useParams } from 'react-router-dom';
 import Row from './Components/Row';
 import ModalCheKoV from 'components/Modal';
 import { MovieScreen } from './index.styles';
@@ -18,6 +18,7 @@ import { PRICE_BASE } from 'constants/common/index';
 
 const ReservationDetailsScreen = () => {
     const { id: screeningId } = useParams();
+    const navigate = useNavigate();
 
     const [screening, setScreening] = useState<Screening | null>(null);
     const [seats, setSeats] = useState<SeatModel[][] | null>(null);
@@ -30,10 +31,11 @@ const ReservationDetailsScreen = () => {
         useState<number>(0);
 
     const changeSelectedMatrix = (i: number, j: number) => {
-        let newMatrix = selectedSeatMatrix;
-        newMatrix![i][j] = !newMatrix![i][j];
+
+        var newMatrix = selectedSeatMatrix!.map(arr => arr.slice())
+        newMatrix[i][j] = !newMatrix[i][j];
         setSelectedSeatMatrix(newMatrix);
-        recalculatePrice();
+        recalculatePrice(newMatrix);
     };
 
     const formSelectedMatrix = (seats: SeatModel[][]) => {
@@ -43,7 +45,7 @@ const ReservationDetailsScreen = () => {
         return Array(n).fill(Array(m).fill(false));
     };
 
-    const recalculatePrice = () => {
+    const recalculatePrice = (matrix : boolean[][]) => {
         const n = seats!.length;
         const m = seats![0].length;
         let newPrice = 0;
@@ -51,7 +53,7 @@ const ReservationDetailsScreen = () => {
 
         for (let i = 0; i < n; i++) {
             for (let j = 0; j < m; j++) {
-                if (selectedSeatMatrix![i][j]) {
+                if (matrix[i][j] && !seats![i][j].reserved) {
                     numOfSelected += 1;
                     newPrice += seats![i][j].priceMultiplier * PRICE_BASE;
                 }
@@ -85,7 +87,7 @@ const ReservationDetailsScreen = () => {
         let result = [];
         for (let i = 0; i < n; i++) {
             for (let j = 0; j < m; j++) {
-                if (selectedSeatMatrix![i][j]) {
+                if (selectedSeatMatrix![i][j] && !seats![i][j].reserved) {
                     result.push({ row: i, column: j });
                 }
             }
@@ -107,7 +109,7 @@ const ReservationDetailsScreen = () => {
         <Fragment>
             <ModalCheKoV
                 shouldRender={isModalOpened}
-                onModalClose={() => window.location.reload()}
+                onModalClose={() => navigate('/reservations')}
             >
                 <div
                     style={{

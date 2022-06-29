@@ -17,16 +17,15 @@ import { faPlus } from '@fortawesome/free-solid-svg-icons';
 import { Modal } from 'react-bootstrap';
 import axiosAuthInstance from 'axios/instance';
 import useAsyncError from 'hooks/useAsyncError';
-import Hall from 'models/Hall';
 import { GET_HALLS_URL } from 'constants/api/reservations';
-import CreateOrEditHall from '../CreateOrEditHall';
+import CreateHall from '../CreateHall';
+import { HallAdmin } from 'models/Hall';
 
 const ManageHalls = () => {
-    const [halls, setHalls] = useState<Hall[]>([]);
-    const [selectedHall, setSelectedHall] = useState<Hall | null>(null);
+    const [halls, setHalls] = useState<HallAdmin[]>([]);
     const [deleteHallId, setDeleteHallId] = useState<number | null>(null);
     const [deleteStatus, setDeleteStatus] = useState<string | null>('idle');
-    const [updateStatus, setUpdateStatus] = useState('idle');
+    const [createModalVisible, setCreateModalVisible] = useState(false);
 
     const throwAsyncError = useAsyncError();
 
@@ -49,21 +48,26 @@ const ManageHalls = () => {
                 <title>Manage halls | Projektor</title>
             </Helmet>
             <AddContainer>
-                <Button
-                    onClick={() => {
-                        setSelectedHall(new Hall(-1, ''));
-                    }}
-                >
-                    <FontAwesomeIcon icon={faPlus} />
-                    New Hall
+                <Button onClick={() => setCreateModalVisible(true)}>
+                    <FontAwesomeIcon icon={faPlus} /> New Hall
                 </Button>
             </AddContainer>
             <TableContainer component={Paper}>
                 <Table sx={{ minWidth: 650 }}>
                     <TableHead>
                         <TableRow>
-                            <TableCell align="left">ID</TableCell>
-                            <TableCell align="left">Name</TableCell>
+                            <TableCell align="left">
+                                <Title>ID</Title>
+                            </TableCell>
+                            <TableCell align="left">
+                                <Title>Name</Title>
+                            </TableCell>
+                            <TableCell align="left">
+                                <Title>Dimensions</Title>
+                            </TableCell>
+                            <TableCell align="left">
+                                <Title>Actions</Title>
+                            </TableCell>
                         </TableRow>
                     </TableHead>
                     <TableBody>
@@ -84,15 +88,23 @@ const ManageHalls = () => {
                                     {hall.id}
                                 </TableCell>
                                 <TableCell align="left">{hall.name}</TableCell>
+                                <TableCell align="left">
+                                    {hall.rows} rows x {hall.columns} columns
+                                </TableCell>
+                                <TableCell align="left" height={100}>
+                                    <Button onClick={() => {}}>
+                                        <FontAwesomeIcon icon={faTrash} />
+                                    </Button>
+                                </TableCell>
                             </TableRow>
                         ))}
                     </TableBody>
                 </Table>
             </TableContainer>
-            {selectedHall && (
-                <CreateOrEditHall
-                    hall={selectedHall}
-                    onClose={() => setSelectedHall(null)}
+            {createModalVisible && (
+                <CreateHall
+                    onClose={() => setCreateModalVisible(false)}
+                    onSuccess={getHalls}
                 />
             )}
         </Fragment>
@@ -106,4 +118,8 @@ const AddContainer = styled.div`
     flex-direction: row;
     align-items: center;
     justify-content: space-between;
+`;
+
+const Title = styled.div`
+    font-weight: bold;
 `;

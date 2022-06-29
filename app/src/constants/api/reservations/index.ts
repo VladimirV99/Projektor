@@ -21,4 +21,6 @@ export const CREATE_RESETVATION = urlJoin(
     '/Reservation/CreateReservation'
 );
 
-export const GET_HALLS_URL = urlJoin(URL_BASE, '/Reservation/GetHalls');
+export const GET_HALLS_URL = urlJoin(URL_BASE, '/Hall/GetHalls');
+
+export const CREATE_HALL_URL = urlJoin(URL_BASE, '/Hall/CreateHall');

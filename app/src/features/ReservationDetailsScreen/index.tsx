@@ -31,8 +31,7 @@ const ReservationDetailsScreen = () => {
         useState<number>(0);
 
     const changeSelectedMatrix = (i: number, j: number) => {
-
-        var newMatrix = selectedSeatMatrix!.map(arr => arr.slice())
+        var newMatrix = selectedSeatMatrix!.map((arr) => arr.slice());
         newMatrix[i][j] = !newMatrix[i][j];
         setSelectedSeatMatrix(newMatrix);
         recalculatePrice(newMatrix);
@@ -45,7 +44,7 @@ const ReservationDetailsScreen = () => {
         return Array(n).fill(Array(m).fill(false));
     };
 
-    const recalculatePrice = (matrix : boolean[][]) => {
+    const recalculatePrice = (matrix: boolean[][]) => {
         const n = seats!.length;
         const m = seats![0].length;
         let newPrice = 0;

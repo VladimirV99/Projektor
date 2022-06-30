@@ -10,11 +10,13 @@ import Screening from 'models/Screening';
 import SeatModel from 'models/Seat';
 import SeatMock from './Components/SeatMock';
 import { Fragment, useEffect, useState } from 'react';
-import { Navigate, useNavigate, useParams } from 'react-router-dom';
+import { useNavigate, useParams } from 'react-router-dom';
 import Row from './Components/Row';
 import ModalCheKoV from 'components/Modal';
 import { MovieScreen } from './index.styles';
 import { PRICE_BASE } from 'constants/common/index';
+import { useSelector } from 'react-redux';
+import { selectIsUserLoggedIn } from 'redux/auth/selectors';
 
 const ReservationDetailsScreen = () => {
     const { id: screeningId } = useParams();
@@ -29,6 +31,8 @@ const ReservationDetailsScreen = () => {
     const [currentPrice, setCurrentPrice] = useState<number>(0);
     const [numberOfSelectedSeats, setNumberOfSelectedSeats] =
         useState<number>(0);
+
+    const currentUser = useSelector(selectIsUserLoggedIn);
 
     const changeSelectedMatrix = (i: number, j: number) => {
         var newMatrix = selectedSeatMatrix!.map((arr) => arr.slice());
@@ -165,6 +169,11 @@ const ReservationDetailsScreen = () => {
                 <div>
                     <h2>Current price: {currentPrice}</h2>
                 </div>
+                {!currentUser && numberOfSelectedSeats > 0 &&(
+                    <div>
+                        <h3>You must be logged in to create reservations</h3>    
+                    </div>
+                )}
                 <div style={{ marginTop: 20 }}>
                     <Button
                         disabled={numberOfSelectedSeats === 0}

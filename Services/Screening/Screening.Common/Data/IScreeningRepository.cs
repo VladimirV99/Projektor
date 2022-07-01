@@ -15,13 +15,13 @@ namespace Screening.Common.Data
         Task<Hall?> GetHallById(int id);
         Task<IEnumerable<Hall>> GetAllHalls();
         Task<IEnumerable<Hall>> GetHallsBySearchString(string searchString);
-        Task<string?> InsertScreening(Entities.Screening screening);
+        Task<Tuple<string?, List<int>>> InsertScreening(Entities.Screening screening);
         Task InsertMovie(Movie movie);
         Task InsertHall(Hall hall);
         Task<string?> UpdateScreening(int id, DateTime moment);
         Task<bool> DeleteScreening(int id);
         Task<bool> DeleteMovie(int id);
         Task<bool> UpdateMovie(int id, string title, int length);
-        Task<bool> DeleteHall(int id);
+        Task<Tuple<bool, List<int>>> DeleteHall(int id);
     }
 }

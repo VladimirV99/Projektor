@@ -136,7 +136,13 @@ namespace Screening.Common.Controllers
                 if (movie == null) return BadRequest();
                 await _repository.InsertMovie(new Movie {Id = movie.Id, Length = movie.Length, Title = movie.Title});
             }
-            var errors = await _repository.InsertScreening(_mapper.Map<Entities.Screening>(request));
+            var (errors, toDelete) = await _repository.InsertScreening(_mapper.Map<Entities.Screening>(request));
+
+            foreach (var toDeleteId in toDelete)
+            {
+                await _publishEndpoint.Publish(new CancelScreeningEvent(toDeleteId));
+            }
+            
             if (errors != null)
             {
                 return BadRequest(errors);

@@ -1,6 +1,5 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using Screening.Common.Entities;
-using Screening.Common.Migrations;
 
 namespace Screening.Common.Data
 {
@@ -108,36 +107,46 @@ namespace Screening.Common.Data
                 .FindAsync(id);
         }
 
-        public async Task<string?> InsertScreening(Entities.Screening screening)
+        private async Task<List<int>> Cleanup()
+        {
+            var cleanupQuery = _dbContext
+                .Screenings
+                .Include(s => s.Movie)
+                .Where(s => s.MovieStart.AddMinutes(s.Movie.Length) < DateTime.UtcNow);
+
+            var ids = await cleanupQuery.Select(q => q.Id).ToListAsync();
+            
+            _dbContext
+                .Screenings
+                .RemoveRange(cleanupQuery);
+
+            await _dbContext.SaveChangesAsync();
+
+            return ids;
+        }
+        
+        public async Task<Tuple<string?, List<int>>> InsertScreening(Entities.Screening screening)
         {
             var movie = await _dbContext.Movies.Where(m => m.Id == screening.MovieId).SingleOrDefaultAsync();
             if (movie == null)
             {
                 // Already checked in the controller, so shouldn't be possible
-                return "Movie not found";
+                return new Tuple<string?, List<int>>("Movie not found", new List<int>());
             }
 
             var overlappingScreening = await GetScreeningByHallIdAtMoment(screening.HallId, screening.MovieStart,
                 screening.MovieStart.AddMinutes(movie.Length));
             if (overlappingScreening != null)
             {
-                return "Creating this screening at the given time would overlap with another screening.";
+                return new Tuple<string?, List<int>>("Creating this screening at the given time would overlap with another screening.", new List<int>());
             }
             await _dbContext.Screenings.AddAsync(screening);
-            
-            // Cleanup behind the scenes
-            _dbContext
-                .Screenings
-                .RemoveRange(
-                    _dbContext
-                        .Screenings
-                        .Include(s => s.Movie)
-                        .Where(s => s.MovieStart.AddMinutes(s.Movie.Length) < DateTime.UtcNow));
-                
-                
+
+            var ids = await Cleanup();
+
             await _dbContext.SaveChangesAsync();    
             
-            return null;
+            return new Tuple<string?, List<int>>(null, ids);
         }
         public async Task InsertMovie(Movie movie)
         {
@@ -200,7 +209,7 @@ namespace Screening.Common.Data
             if (movie == null) return false;
 
             _dbContext.Movies.Remove(movie);
-            _dbContext.SaveChanges();
+            await _dbContext.SaveChangesAsync();
 
             return true;
         }
@@ -237,26 +246,22 @@ namespace Screening.Common.Data
 
         }
 
-        public async Task<bool> DeleteHall(int id)
+        public async Task<Tuple<bool, List<int>>> DeleteHall(int id)
         {
             var hall = await GetHallById(id);
             if (hall == null)
             {
-                return true;
+                return new Tuple<bool, List<int>>(true, new List<int>());
             }
 
-            var query = _dbContext.Screenings
-                .Where(s => s.HallId == id)
-                .Include(s => s.Movie);
-
-            
-            // Late cleanup
-            _dbContext.RemoveRange(
-                query.Where(s => s.MovieStart.AddMinutes(s.Movie.Length) < DateTime.UtcNow));
+            var ids = await Cleanup();
             
             // Any problems
             var hasPendingScreenings =
-                await query.Where(s => s.MovieStart.AddMinutes(s.Movie.Length) >= DateTime.UtcNow).AnyAsync();
+                await _dbContext.Screenings
+                    .Where(s => s.HallId == id)
+                    .Include(s => s.Movie)
+                    .Where(s => s.MovieStart.AddMinutes(s.Movie.Length) >= DateTime.UtcNow).AnyAsync();
 
             if (!hasPendingScreenings)
             {
@@ -265,7 +270,7 @@ namespace Screening.Common.Data
             
             await _dbContext.SaveChangesAsync();
 
-            return !hasPendingScreenings;
+            return new Tuple<bool, List<int>>(!hasPendingScreenings, ids);
 
         }
     }

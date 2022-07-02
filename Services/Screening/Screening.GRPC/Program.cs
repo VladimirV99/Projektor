@@ -2,7 +2,6 @@ using Screening.GRPC.Services;
 using Microsoft.EntityFrameworkCore;
 using Screening.Common.Data;
 using System.Reflection;
-using MassTransit;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -17,20 +16,6 @@ builder.Services.AddDbContext<ScreeningContext>(options =>
 builder.Services.AddAutoMapper(Assembly.GetExecutingAssembly());
 builder.Services.AddGrpc();
 builder.Services.AddScoped<IScreeningRepository, ScreeningRepository>();
-
-builder.Services.AddMassTransit(config =>
-{
-    var eventBusSettings = builder.Configuration.GetSection("EventBus");
-
-    config.UsingRabbitMq((ctx, cfg) =>
-    {
-        cfg.Host(eventBusSettings["Host"], h =>
-        {
-            h.Username(eventBusSettings["Username"]);
-            h.Password(eventBusSettings["Password"]);
-        });
-    });
-});
 
 
 var app = builder.Build();

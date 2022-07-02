@@ -1,7 +1,5 @@
 using AutoMapper;
-using Common.EventBus.Events;
 using Grpc.Core;
-using MassTransit;
 using Screening.Common.Data;
 
 namespace Screening.GRPC.Services
@@ -11,14 +9,12 @@ namespace Screening.GRPC.Services
         private readonly ILogger<ScreeningService> _logger;
         private readonly IScreeningRepository _repository;
         private readonly IMapper _mapper;
-        private readonly IPublishEndpoint _publishEndpoint;
 
-        public ScreeningService(ILogger<ScreeningService> logger, IScreeningRepository repository, IMapper mapper, IPublishEndpoint publishEndpoint)
+        public ScreeningService(ILogger<ScreeningService> logger, IScreeningRepository repository, IMapper mapper)
         {
             _logger = logger ?? throw new ArgumentNullException(nameof(logger));
             _repository = repository ?? throw new ArgumentNullException(nameof(repository));
             _mapper = mapper ?? throw new ArgumentNullException(nameof(mapper));
-            _publishEndpoint = publishEndpoint ?? throw new ArgumentNullException(nameof(publishEndpoint));
         }
 
         public override async Task<GetScreeningResponse> GetScreening(GetScreeningRequest request, ServerCallContext context)

@@ -60,7 +60,7 @@ const DeleteModal = ({
                     }
                     onClick={onSubmit}
                 >
-                    {Delete}
+                    Delete
                 </Button>
             </Modal.Footer>
         </Modal>

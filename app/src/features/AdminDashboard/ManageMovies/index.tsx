@@ -288,7 +288,7 @@ const ManageMovies = () => {
                     onSubmit={handleDeleteMovie}
                     onClose={() => {
                         setDeleteMovieId(null);
-                        dispatch(resetDeleteStatus);
+                        dispatch(resetDeleteStatus());
                         if (deleteStatus === 'success') {
                             dispatch(filterMovies(filterMovieRequest));
                         }

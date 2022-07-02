@@ -142,7 +142,7 @@ const ManageHalls = () => {
                         setDeleteError(null);
                     }}
                     title={`Delete hall: ${
-                        halls.find(({ id }) => id === deleteHallId)!.name
+                        halls.find(({ id }) => id === deleteHallId)?.name ?? ''
                     }`}
                     entityName="hall"
                     deleteStatus={deleteStatus}

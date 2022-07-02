@@ -133,45 +133,47 @@ const ManageHalls = () => {
                     onSuccess={getHalls}
                 />
             )}
-            <Modal show={deleteHallId !== null}>
-                <Modal.Header>
-                    <Title>Delete hall {deleteHallId}</Title>
-                </Modal.Header>
-                <Modal.Body>
-                    {deleteStatus === 'idle' && (
-                        <p>
-                            Are you sure you want to delete this hall? This
-                            action cannot be undone.
-                        </p>
-                    )}
-                    {deleteStatus === 'pending' && <p>Loading...</p>}
-                    {deleteStatus === 'error' && <p>{deleteError}</p>}
-                    {deleteStatus === 'success' && (
-                        <p>Hall successfully deleted.</p>
-                    )}
-                </Modal.Body>
-                <Modal.Footer>
-                    <Button
-                        disabled={deleteStatus === 'pending'}
-                        onClick={() => {
-                            setDeleteHallId(null);
-                            setDeleteStatus('idle');
-                            setDeleteError(null);
-                        }}
-                    >
-                        Close
-                    </Button>
-                    <Button
-                        onClick={deleteHall}
-                        disabled={
-                            deleteStatus === 'pending' ||
-                            deleteStatus === 'success'
-                        }
-                    >
-                        Delete
-                    </Button>
-                </Modal.Footer>
-            </Modal>
+            {deleteHallId !== null && (
+                <Modal show={true}>
+                    <Modal.Header>
+                        <Title>Delete hall {deleteHallId}</Title>
+                    </Modal.Header>
+                    <Modal.Body>
+                        {deleteStatus === 'idle' && (
+                            <p>
+                                Are you sure you want to delete this hall? This
+                                action cannot be undone.
+                            </p>
+                        )}
+                        {deleteStatus === 'pending' && <p>Loading...</p>}
+                        {deleteStatus === 'error' && <p>{deleteError}</p>}
+                        {deleteStatus === 'success' && (
+                            <p>Hall successfully deleted.</p>
+                        )}
+                    </Modal.Body>
+                    <Modal.Footer>
+                        <Button
+                            disabled={deleteStatus === 'pending'}
+                            onClick={() => {
+                                setDeleteHallId(null);
+                                setDeleteStatus('idle');
+                                setDeleteError(null);
+                            }}
+                        >
+                            Close
+                        </Button>
+                        <Button
+                            onClick={deleteHall}
+                            disabled={
+                                deleteStatus === 'pending' ||
+                                deleteStatus === 'success'
+                            }
+                        >
+                            Delete
+                        </Button>
+                    </Modal.Footer>
+                </Modal>
+            )}
         </Fragment>
     );
 };

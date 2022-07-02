@@ -52,7 +52,7 @@ namespace Screening.Common.Data
                 .Where(m => m.Movie.Id == id)
                 .Include(h => h.Hall)
                 .Include(s => s.Movie)
-                .Where(s => s.MovieStart.AddMinutes(s.Movie.Length) < DateTime.UtcNow)
+                .Where(s => s.MovieStart >= DateTime.UtcNow)
                 .ToListAsync();
         }
 
@@ -234,7 +234,28 @@ namespace Screening.Common.Data
             await _dbContext.SaveChangesAsync();
             return true;
 
-        }   
+        }
+
+        public async Task<IEnumerable<int>> GetCurrentMovies()
+        {
+            return await _dbContext.Screenings
+                .Where(s => s.MovieStart.Date == DateTime.Today)
+                .Select(s => s.MovieId)
+                .Distinct()
+                .OrderBy(m => m)
+                .ToListAsync();
+        }
+
+        public async Task<IEnumerable<int>> GetFutureMovies()
+        {
+            return await _dbContext.Screenings
+                .GroupBy(s => s.MovieId)
+                .Select(s => new {MovieId = s.Key, MinDate = s.Min(x => x.MovieStart)})
+                .Where(s => s.MinDate >= DateTime.Today.AddDays(1))
+                .Select(s => s.MovieId)
+                .OrderBy(m => m)
+                .ToListAsync();
+        }
     }
 }
 

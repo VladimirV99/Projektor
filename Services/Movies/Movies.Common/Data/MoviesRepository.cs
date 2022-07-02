@@ -26,6 +26,14 @@ namespace Movies.Common.Data
                 .SingleOrDefaultAsync(m => m.Id == id);
         }
 
+        public async Task<IEnumerable<Movie>> GetMoviesById(IEnumerable<int> ids)
+        {
+            return await _dbContext.Movies
+                .Where(m => ids.Contains(m.Id))
+                .Include(m => m.Genres)
+                .ToListAsync();
+        }
+
         public async Task<List<Movie>> GetMoviesByGenreId(int id)
         {
             return await _dbContext

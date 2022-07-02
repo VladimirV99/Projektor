@@ -30,42 +30,49 @@ namespace Movies.API.Controllers
         
         // TODO: Most of these endpoints probably won't be needed anywhere, but I'm leaving them here for now.
         [HttpGet("[action]/{id}")]
-        public async Task<IActionResult> GetMovieById(int id)
+        [ProducesResponseType(typeof(MovieModel), StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        public async Task<ActionResult<MovieModel>> GetMovieById(int id)
         {
             var movie = await _repository.GetMovieById(id);
             return movie == null ? NotFound() : Ok(_mapper.Map<MovieModel>(movie));
         }
 
         [HttpGet("[action]/{id}")]
-        public async Task<IActionResult> GetMoviesByGenre(int id)
+        [ProducesResponseType(typeof(IEnumerable<MovieModel>), StatusCodes.Status200OK)]
+        public async Task<ActionResult<IEnumerable<MovieModel>>> GetMoviesByGenre(int id)
         {
             var movies = await _repository.GetMoviesByGenreId(id);
-            return Ok(_mapper.Map<List<MovieModel>>(movies));
+            return Ok(_mapper.Map<IEnumerable<MovieModel>>(movies));
         }
 
         [HttpGet("[action]/{id}")]
-        public async Task<IActionResult> GetMoviesByPerson(int id)
+        [ProducesResponseType(typeof(IEnumerable<MovieModel>), StatusCodes.Status200OK)]
+        public async Task<ActionResult<IEnumerable<MovieModel>>> GetMoviesByPerson(int id)
         {
             var movies = await _repository.GetMoviesByPerson(id);
-            return Ok(_mapper.Map<List<MovieModel>>(movies));
+            return Ok(_mapper.Map<IEnumerable<MovieModel>>(movies));
         }
         
         [HttpGet("[action]")]
-        public async Task<IActionResult> FilterMovies([FromQuery] FilterMoviesRequest request)
+        [ProducesResponseType(typeof(PaginatedPeopleList), StatusCodes.Status200OK)]
+        public async Task<ActionResult<PaginatedMovieList>> FilterMovies([FromQuery] FilterMoviesRequest request)
         {
             var (movies, count) = await _repository.FilterMovies(request);
             return Ok(new PaginatedMovieList {Movies = _mapper.Map<List<MovieModel>>(movies), Count = count});
         }
         
         [HttpGet("[action]")]
-        public async Task<IActionResult> GetGenres()
+        [ProducesResponseType(typeof(GenreSimpleModel), StatusCodes.Status200OK)]
+        public async Task<ActionResult<IEnumerable<GenreSimpleModel>>> GetGenres()
         {
             var genres = await _repository.GetGenres();
-            return Ok(_mapper.Map<List<GenreSimpleModel>>(genres));
+            return Ok(_mapper.Map<IEnumerable<GenreSimpleModel>>(genres));
         }
 
         [HttpGet("[action]")]
-        public async Task<IActionResult> GetFilterLimits()
+        [ProducesResponseType(typeof(FilterLimits), StatusCodes.Status200OK)]
+        public async Task<ActionResult<FilterLimits>> GetFilterLimits()
         {
             var (yearMin, yearMax, lengthMin, lengthMax) = await _repository.GetFilterLimits();
             return Ok(new FilterLimits{YearMax = yearMax, YearMin = yearMin, LengthMax = lengthMax, LengthMin = lengthMin});
@@ -119,21 +126,24 @@ namespace Movies.API.Controllers
         }
         
         [HttpGet("[action]")]
-        public async Task<IActionResult> SearchPeople([FromQuery] string searchString)
+        [ProducesResponseType(typeof(IEnumerable<PersonModel>), StatusCodes.Status200OK)]
+        public async Task<ActionResult<IEnumerable<PersonModel>>> SearchPeople([FromQuery] string searchString)
         {
             var people = await _repository.SearchPeople(searchString);
-            return Ok(_mapper.Map<List<PersonModel>>(people));
+            return Ok(_mapper.Map<IEnumerable<PersonModel>>(people));
         }
         
         [HttpGet("[action]")]
-        public async Task<IActionResult> SearchRoles([FromQuery] string searchString)
+        [ProducesResponseType(typeof(IEnumerable<RoleModel>), StatusCodes.Status200OK)]
+        public async Task<ActionResult<IEnumerable<RoleModel>>> SearchRoles([FromQuery] string searchString)
         {
             var roles = await _repository.SearchRoles(searchString);
-            return Ok(_mapper.Map<List<RoleModel>>(roles));
+            return Ok(_mapper.Map<IEnumerable<RoleModel>>(roles));
         }
 
         [HttpGet("[action]")]
-        public async Task<IActionResult> GetRoles()
+        [ProducesResponseType(typeof(IEnumerable<RoleModel>), StatusCodes.Status200OK)]
+        public async Task<ActionResult<RoleModel>> GetRoles()
         {
             var roles = await _repository.GetRoles();
             return Ok(_mapper.Map<List<RoleModel>>(roles));
@@ -141,7 +151,8 @@ namespace Movies.API.Controllers
 
         [HttpGet("[action]")]
         [Authorize(Roles = Roles.ADMINISTRATOR)]
-        public async Task<IActionResult> SearchPeopleAdmin([FromQuery] string? searchString, [FromQuery] int page = 1)
+        [ProducesResponseType(typeof(PaginatedPeopleList), StatusCodes.Status200OK)]
+        public async Task<ActionResult<PaginatedPeopleList>> SearchPeopleAdmin([FromQuery] string? searchString, [FromQuery] int page = 1)
         {
             var (people, count) = await _repository.SearchPeopleAdmin(searchString ?? "", page);
             return Ok(new PaginatedPeopleList { People = _mapper.Map<List<PersonModel>>(people), Count = count });
@@ -149,6 +160,7 @@ namespace Movies.API.Controllers
 
         [HttpDelete("[action]/{id}")]
         [Authorize(Roles = Roles.ADMINISTRATOR)]
+        [ProducesResponseType(StatusCodes.Status200OK)]
         public async Task<IActionResult> DeletePerson(int id)
         {
             await _repository.DeletePerson(id);
@@ -181,6 +193,22 @@ namespace Movies.API.Controllers
         {
             await _service.CreatePerson(createOrUpdatePersonRequest);
             return StatusCode(StatusCodes.Status201Created);
+        }
+
+        [HttpGet("[action]")]
+        [ProducesResponseType(typeof(IEnumerable<MovieModel>), StatusCodes.Status200OK)]
+        public async Task<ActionResult<IEnumerable<MovieModel>>> GetCurrentMovies()
+        {
+            var movies = await _screeningService.GetCurrentMovies();
+            return Ok(_mapper.Map<IEnumerable<MovieModel>>(movies));
+        }
+        
+        [HttpGet("[action]")]
+        [ProducesResponseType(typeof(IEnumerable<MovieModel>), StatusCodes.Status200OK)]
+        public async Task<ActionResult<IEnumerable<MovieModel>>> GetFutureMovies()
+        {
+            var movies = await _screeningService.GetFutureMovies();
+            return Ok(_mapper.Map<IEnumerable<MovieModel>>(movies));
         }
     }
 }

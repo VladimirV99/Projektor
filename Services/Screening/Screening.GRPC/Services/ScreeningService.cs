@@ -1,4 +1,5 @@
 using AutoMapper;
+using Google.Protobuf.WellKnownTypes;
 using Grpc.Core;
 using Screening.Common.Data;
 
@@ -47,6 +48,20 @@ namespace Screening.GRPC.Services
             {
                 Success = await _repository.UpdateMovie(request.Id, request.Title, request.Length)
             };
+        }
+        
+        public override async Task<MoviesResponse> GetCurrentMovies(Empty request, ServerCallContext context)
+        {
+            var response = new MoviesResponse();
+            response.Movies.AddRange(await _repository.GetCurrentMovies());
+            return response;
+        }
+
+        public override async Task<MoviesResponse> GetFutureMovies(Empty request, ServerCallContext context)
+        {
+            var response = new MoviesResponse();
+            response.Movies.AddRange(await _repository.GetFutureMovies());
+            return response;
         }
     }
 }

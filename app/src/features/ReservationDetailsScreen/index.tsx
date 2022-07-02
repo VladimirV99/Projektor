@@ -18,7 +18,6 @@ import { PRICE_BASE } from 'constants/common/index';
 import { useSelector } from 'react-redux';
 import { selectIsUserLoggedIn } from 'redux/auth/selectors';
 import { isUserCustomer } from 'util/auth';
-import SomethingWentWrong from 'components/SomethingWentWrong';
 
 const ReservationDetailsScreen = () => {
     const { id: screeningId } = useParams();
@@ -36,8 +35,6 @@ const ReservationDetailsScreen = () => {
     const [currentPrice, setCurrentPrice] = useState<number>(0);
     const [numberOfSelectedSeats, setNumberOfSelectedSeats] =
         useState<number>(0);
-
-    if (screening === null) return <SomethingWentWrong />;
 
     const currentUser = useSelector(selectIsUserLoggedIn);
 
@@ -77,7 +74,8 @@ const ReservationDetailsScreen = () => {
     useEffect(() => {
         axios
             .get(GET_SCREENING_BY_ID(parseInt(screeningId!)))
-            .then((response) => setScreening(response.data));
+            .then((response) => setScreening(response.data))
+            .catch((error) => setScreening(null));
     }, []);
 
     useEffect(() => {
@@ -88,6 +86,12 @@ const ReservationDetailsScreen = () => {
                     setSeats(response.data);
                     setSelectedSeatMatrix(formSelectedMatrix(response.data));
                 });
+        }
+    }, [screening]);
+
+    useEffect(() => {
+        if (screening === null) {
+            navigate('/not-found');
         }
     }, [screening]);
 
@@ -132,8 +136,9 @@ const ReservationDetailsScreen = () => {
                         borderRadius: '5px',
                     }}
                 >
-                    <h4>{`You successfully created reservation for ${screening?.movie?.title
-                        } for ${new Date(screening!.movieStart).toLocaleString()}.
+                    <h4>{`You successfully created reservation for ${
+                        screening?.movie?.title
+                    } for ${new Date(screening!.movieStart).toLocaleString()}.
                         We sent you an email with more information.`}</h4>
                 </div>
             </ModalCheKoV>

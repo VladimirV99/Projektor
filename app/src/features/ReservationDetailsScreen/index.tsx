@@ -179,7 +179,9 @@ const ReservationDetailsScreen = () => {
                 {currentUser && (
                     <div style={{ marginTop: 20 }}>
                         <Button
-                            disabled={numberOfSelectedSeats === 0 || !isCustomer}
+                            disabled={
+                                numberOfSelectedSeats === 0 || !isCustomer
+                            }
                             variant="contained"
                             fullWidth
                             onClick={() => createReservation()}

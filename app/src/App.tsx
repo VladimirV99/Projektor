@@ -19,6 +19,7 @@ import AdapterDateFns from '@mui/lab/AdapterDateFns';
 import MyReservationsScreen from 'features/MyReservationsScreen';
 import ReservationDetailsScreen from 'features/ReservationDetailsScreen';
 import ScreeningCalendarPage from 'features/ScreeningCalendar/SreeningsCalendarPage';
+import ContactUs from 'features/ContactUs';
 
 function App() {
     return (
@@ -80,6 +81,10 @@ function App() {
                                                 <MyReservationsScreen />
                                             </WithAuthorization>
                                         }
+                                    />
+                                    <Route
+                                        path="contact_us"
+                                        element={<ContactUs />}
                                     />
                                     <Route
                                         path="/not-found"

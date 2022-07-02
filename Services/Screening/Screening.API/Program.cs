@@ -8,6 +8,8 @@ using Common.Auth.Extensions;
 using MassTransit;
 using Microsoft.OpenApi.Models;
 using Screening.API.Grpc;
+using Screening.API.EventBus;
+using Common.EventBus.Constants;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -32,12 +34,19 @@ builder.Services.AddMassTransit(config =>
 {
     var eventBusSettings = builder.Configuration.GetSection("EventBus");
 
+    config.AddConsumer<CreateHallConsumer>();
+
     config.UsingRabbitMq((ctx, cfg) =>
     {
         cfg.Host(eventBusSettings["Host"], h =>
         {
             h.Username(eventBusSettings["Username"]);
             h.Password(eventBusSettings["Password"]);
+        });
+
+        cfg.ReceiveEndpoint(EventQueues.SCREENING, c =>
+        {
+            c.ConfigureConsumer<CreateHallConsumer>(ctx);
         });
     });
 });

@@ -46,6 +46,7 @@ services:
       - "gRPC:ScreeningUrl=http://screening.grpc"
     depends_on:
       - projektor_mssql
+      - screening.grpc
     ports:
       - "5000:80"
 
@@ -91,6 +92,7 @@ services:
     depends_on:
       - projektor_mssql
       - projektor_rabbitmq
+      - movies.grpc
     ports:
       - "5008:80"
 

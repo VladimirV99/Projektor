@@ -31,6 +31,7 @@ import { Modal, ModalDialog } from 'react-bootstrap';
 import Person from 'models/Movie/Person';
 import { Link, Navigate } from 'react-router-dom';
 import CreateOrEditPerson from '../CreateOrEditPerson';
+import DeleteModal from 'components/DeleteModal';
 
 const ManagePeople = () => {
     const [searchPeopleRequest, setSearchPeopleRequest] = useState<{
@@ -278,61 +279,19 @@ const ManagePeople = () => {
                     onClose={() => setSelectedPerson(null)}
                 />
             )}
-            <Modal show={deletePersonId !== null}>
-                <Modal.Header>
-                    <Modal.Title>
-                        Delete person - <i>{deletePersonFullName}</i>
-                    </Modal.Title>
-                </Modal.Header>
-                <Modal.Body>
-                    {deleteStatus === 'idle' && (
-                        <div>
-                            Are you sure you want to delete this person? This
-                            action cannot be undone.
-                        </div>
-                    )}
-                    {deleteStatus === 'pending' && <div>Please wait...</div>}
-                    {deleteStatus === 'error' && (
-                        <div>Something went wrong. Please try again.</div>
-                    )}
-                    {deleteStatus === 'success' && (
-                        <div>Person successfully deleted</div>
-                    )}
-                </Modal.Body>
-                <Modal.Footer>
-                    {(deleteStatus === 'success' ||
-                        deleteStatus === 'error') && (
-                        <Button
-                            onClick={() => {
-                                setDeletePersonId(null);
-                                dispatch(resetPeopleDeleteStatus());
-                            }}
-                        >
-                            Close
-                        </Button>
-                    )}
-                    {(deleteStatus === 'idle' ||
-                        deleteStatus === 'pending') && (
-                        <Fragment>
-                            <Button
-                                disabled={deleteStatus === 'pending'}
-                                onClick={() => {
-                                    setDeletePersonId(null);
-                                    // dispatch(resetDeleteStatus());
-                                }}
-                            >
-                                Cancel
-                            </Button>
-                            <Button
-                                onClick={handleDeletePerson}
-                                disabled={deleteStatus === 'pending'}
-                            >
-                                Delete
-                            </Button>
-                        </Fragment>
-                    )}
-                </Modal.Footer>
-            </Modal>
+            {deletePersonId !== null && (
+                <DeleteModal
+                    onSubmit={handleDeletePerson}
+                    onClose={() => {
+                        setDeletePersonId(null);
+                        dispatch(resetPeopleDeleteStatus());
+                    }}
+                    entityName="person"
+                    errorMessage={null}
+                    title={`Delete person: ${deletePersonFullName}?`}
+                    deleteStatus={deleteStatus}
+                />
+            )}
         </Fragment>
     );
 };

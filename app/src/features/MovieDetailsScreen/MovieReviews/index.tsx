@@ -23,6 +23,7 @@ import StarIcon from 'components/StarIcon';
 import { parseServerDate } from 'util/dateUtils';
 import { isUserCustomer } from 'util/auth';
 import { openSignInForm } from 'redux/auth/actions';
+import DeleteModal from 'components/DeleteModal';
 
 type CreateReviewRequest = {
     isAlreadyCreated: boolean;
@@ -280,62 +281,19 @@ const MovieReviews = ({
 
     const renderDeleteModal = useCallback(() => {
         return (
-            <Modal show={showDeleteModal}>
-                <Modal.Header>
-                    <Modal.Title>Delete review</Modal.Title>
-                </Modal.Header>
-                <Modal.Body>
-                    {deleteStatus === 'idle' && (
-                        <div>
-                            {deleteUserId === null
-                                ? 'Are you sure you want to delete your review?'
-                                : 'Are you sure you want to delete this review?'}
-                            <br />
-                            This action cannot be undone.
-                        </div>
-                    )}
-                    {deleteStatus === 'pending' && <div>Please wait...</div>}
-                    {deleteStatus === 'error' && (
-                        <div>Something went wrong. Please try again.</div>
-                    )}
-                    {deleteStatus === 'success' && (
-                        <div>Review successfully deleted</div>
-                    )}
-                </Modal.Body>
-                <Modal.Footer>
-                    {(deleteStatus === 'success' ||
-                        deleteStatus === 'error') && (
-                        <Button
-                            onClick={() => {
-                                setShowDeleteModal(false);
-                                setDeleteStatus('idle');
-                            }}
-                        >
-                            Close
-                        </Button>
-                    )}
-                    {(deleteStatus === 'idle' ||
-                        deleteStatus === 'pending') && (
-                        <Fragment>
-                            <Button
-                                disabled={deleteStatus === 'pending'}
-                                onClick={() => {
-                                    setShowDeleteModal(false);
-                                    setDeleteStatus('idle');
-                                }}
-                            >
-                                Cancel
-                            </Button>
-                            <Button
-                                onClick={deleteReview}
-                                disabled={deleteStatus === 'pending'}
-                            >
-                                Delete
-                            </Button>
-                        </Fragment>
-                    )}
-                </Modal.Footer>
-            </Modal>
+            showDeleteModal && (
+                <DeleteModal
+                    onSubmit={deleteReview}
+                    onClose={() => {
+                        setShowDeleteModal(false);
+                        setDeleteStatus('idle');
+                    }}
+                    entityName="review"
+                    title={null}
+                    errorMessage={null}
+                    deleteStatus={deleteStatus}
+                />
+            )
         );
     }, [showDeleteModal, deleteStatus]);
 

@@ -107,46 +107,40 @@ namespace Screening.Common.Data
                 .FindAsync(id);
         }
 
-        private async Task<List<int>> Cleanup()
+        public async Task Cleanup()
         {
             var cleanupQuery = _dbContext
                 .Screenings
                 .Include(s => s.Movie)
                 .Where(s => s.MovieStart.AddMinutes(s.Movie.Length) < DateTime.UtcNow);
-
-            var ids = await cleanupQuery.Select(q => q.Id).ToListAsync();
             
             _dbContext
                 .Screenings
                 .RemoveRange(cleanupQuery);
 
             await _dbContext.SaveChangesAsync();
-
-            return ids;
         }
         
-        public async Task<Tuple<string?, List<int>>> InsertScreening(Entities.Screening screening)
+        public async Task<string?> InsertScreening(Entities.Screening screening)
         {
             var movie = await _dbContext.Movies.Where(m => m.Id == screening.MovieId).SingleOrDefaultAsync();
             if (movie == null)
             {
                 // Already checked in the controller, so shouldn't be possible
-                return new Tuple<string?, List<int>>("Movie not found", new List<int>());
+                return "Movie not found";
             }
 
             var overlappingScreening = await GetScreeningByHallIdAtMoment(screening.HallId, screening.MovieStart,
                 screening.MovieStart.AddMinutes(movie.Length));
             if (overlappingScreening != null)
             {
-                return new Tuple<string?, List<int>>("Creating this screening at the given time would overlap with another screening.", new List<int>());
+                return "Creating this screening at the given time would overlap with another screening.";
             }
+            
             await _dbContext.Screenings.AddAsync(screening);
-
-            var ids = await Cleanup();
-
             await _dbContext.SaveChangesAsync();    
             
-            return new Tuple<string?, List<int>>(null, ids);
+            return null;
         }
         public async Task InsertMovie(Movie movie)
         {
@@ -246,15 +240,14 @@ namespace Screening.Common.Data
 
         }
 
-        public async Task<Tuple<bool, List<int>>> DeleteHall(int id)
+        public async Task<bool> DeleteHall(int id)
         {
             var hall = await GetHallById(id);
             if (hall == null)
             {
-                return new Tuple<bool, List<int>>(true, new List<int>());
+                return true;
             }
 
-            var ids = await Cleanup();
             
             // Any problems
             var hasPendingScreenings =
@@ -270,7 +263,7 @@ namespace Screening.Common.Data
             
             await _dbContext.SaveChangesAsync();
 
-            return new Tuple<bool, List<int>>(!hasPendingScreenings, ids);
+            return !hasPendingScreenings;
 
         }
     }

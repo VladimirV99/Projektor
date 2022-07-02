@@ -49,16 +49,16 @@ namespace Reservation.Repositories
             // all reservations for a hall you should first cancel all screenings
             // after which an event which deletes all reservations will be emitted
 
-            var hasReservations = await _dbContext
-                .Reservations
-                .Include(r => r.Seats)
-                .Where(r => r.Seats.First().HallId == id)
-                .AnyAsync();
-
-            if (hasReservations)
-            {
-                return "Cannot delete a hall which has reservations in it. Delete screenings first.";
-            }
+            // var hasReservations = await _dbContext
+            //     .Reservations
+            //     .Include(r => r.Seats)
+            //     .Where(r => r.Seats.First().HallId == id)
+            //     .AnyAsync();
+            //
+            // if (hasReservations)
+            // {
+            //     return "Cannot delete a hall which has reservations in it. Delete screenings first.";
+            // }
 
             // Delete all s
             

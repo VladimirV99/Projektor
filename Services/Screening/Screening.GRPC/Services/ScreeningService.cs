@@ -55,14 +55,9 @@ namespace Screening.GRPC.Services
 
         public override async Task<DeleteHallResponse> DeleteHall(DeleteHallRequest request, ServerCallContext context)
         {
-            var (success, toDelete) = await _repository.DeleteHall(request.Id);
-            foreach (var toDeleteId in toDelete)
-            {
-                await _publishEndpoint.Publish(new CancelScreeningEvent(toDeleteId));
-            }
             return new DeleteHallResponse
             {
-                Success = success
+                Success = await _repository.DeleteHall(request.Id)
             };
         }
     }

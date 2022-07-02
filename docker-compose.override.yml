@@ -10,8 +10,6 @@ services:
       - "1433:1433"
     volumes:
       - mssql_data:/var/opt/mssql/data
-      - ./Services/Movies/Movies.API/Seed:/var/seed
-      - ./Services/Screening/Screening.Common/Seed:/var/seed_screening
 
   projektor_rabbitmq:
     container_name: projektor_rabbitmq

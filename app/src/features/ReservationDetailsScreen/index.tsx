@@ -10,16 +10,23 @@ import Screening from 'models/Screening';
 import SeatModel from 'models/Seat';
 import SeatMock from './Components/SeatMock';
 import { Fragment, useEffect, useState } from 'react';
-import { useParams } from 'react-router-dom';
+import { useNavigate, useParams } from 'react-router-dom';
 import Row from './Components/Row';
 import ModalCheKoV from 'components/Modal';
 import { MovieScreen } from './index.styles';
 import { PRICE_BASE } from 'constants/common/index';
+import { useSelector } from 'react-redux';
+import { selectIsUserLoggedIn } from 'redux/auth/selectors';
+import { isUserCustomer } from 'util/auth';
 
 const ReservationDetailsScreen = () => {
     const { id: screeningId } = useParams();
+    const navigate = useNavigate();
+    const isCustomer = isUserCustomer();
 
-    const [screening, setScreening] = useState<Screening | null>(null);
+    const [screening, setScreening] = useState<Screening | null | undefined>(
+        undefined
+    );
     const [seats, setSeats] = useState<SeatModel[][] | null>(null);
     const [isModalOpened, setIsModalOpened] = useState<boolean>(false);
     const [selectedSeatMatrix, setSelectedSeatMatrix] = useState<
@@ -29,11 +36,13 @@ const ReservationDetailsScreen = () => {
     const [numberOfSelectedSeats, setNumberOfSelectedSeats] =
         useState<number>(0);
 
+    const currentUser = useSelector(selectIsUserLoggedIn);
+
     const changeSelectedMatrix = (i: number, j: number) => {
-        let newMatrix = selectedSeatMatrix;
-        newMatrix![i][j] = !newMatrix![i][j];
+        var newMatrix = selectedSeatMatrix!.map((arr) => arr.slice());
+        newMatrix[i][j] = !newMatrix[i][j];
         setSelectedSeatMatrix(newMatrix);
-        recalculatePrice();
+        recalculatePrice(newMatrix);
     };
 
     const formSelectedMatrix = (seats: SeatModel[][]) => {
@@ -43,7 +52,7 @@ const ReservationDetailsScreen = () => {
         return Array(n).fill(Array(m).fill(false));
     };
 
-    const recalculatePrice = () => {
+    const recalculatePrice = (matrix: boolean[][]) => {
         const n = seats!.length;
         const m = seats![0].length;
         let newPrice = 0;
@@ -51,7 +60,7 @@ const ReservationDetailsScreen = () => {
 
         for (let i = 0; i < n; i++) {
             for (let j = 0; j < m; j++) {
-                if (selectedSeatMatrix![i][j]) {
+                if (matrix[i][j] && !seats![i][j].reserved) {
                     numOfSelected += 1;
                     newPrice += seats![i][j].priceMultiplier * PRICE_BASE;
                 }
@@ -65,7 +74,8 @@ const ReservationDetailsScreen = () => {
     useEffect(() => {
         axios
             .get(GET_SCREENING_BY_ID(parseInt(screeningId!)))
-            .then((response) => setScreening(response.data));
+            .then((response) => setScreening(response.data))
+            .catch((error) => setScreening(null));
     }, []);
 
     useEffect(() => {
@@ -79,13 +89,19 @@ const ReservationDetailsScreen = () => {
         }
     }, [screening]);
 
+    useEffect(() => {
+        if (screening === null) {
+            navigate('/not-found');
+        }
+    }, [screening]);
+
     const createReservation = () => {
         const n = seats!.length;
         const m = seats![0].length;
         let result = [];
         for (let i = 0; i < n; i++) {
             for (let j = 0; j < m; j++) {
-                if (selectedSeatMatrix![i][j]) {
+                if (selectedSeatMatrix![i][j] && !seats![i][j].reserved) {
                     result.push({ row: i, column: j });
                 }
             }
@@ -107,7 +123,7 @@ const ReservationDetailsScreen = () => {
         <Fragment>
             <ModalCheKoV
                 shouldRender={isModalOpened}
-                onModalClose={() => window.location.reload()}
+                onModalClose={() => navigate('/reservations')}
             >
                 <div
                     style={{
@@ -132,7 +148,7 @@ const ReservationDetailsScreen = () => {
                 >
                     <h5>{screening!.hall!.name}</h5>
                     <h5>{screening!.movie?.title}</h5>
-                    <h5>{new Date(screening.movieStart).toLocaleString()}</h5>
+                    <h5>{new Date(screening!.movieStart).toLocaleString()}</h5>
                 </div>
                 <hr />
                 <div
@@ -164,16 +180,27 @@ const ReservationDetailsScreen = () => {
                 <div>
                     <h2>Current price: {currentPrice}</h2>
                 </div>
-                <div style={{ marginTop: 20 }}>
-                    <Button
-                        disabled={numberOfSelectedSeats === 0}
-                        variant="contained"
-                        fullWidth
-                        onClick={() => createReservation()}
-                    >
-                        Create reservation
-                    </Button>
-                </div>
+                {!currentUser && (
+                    <div>
+                        <h3 style={{ color: 'red' }}>
+                            You must be logged in to create reservations
+                        </h3>
+                    </div>
+                )}
+                {currentUser && (
+                    <div style={{ marginTop: 20 }}>
+                        <Button
+                            disabled={
+                                numberOfSelectedSeats === 0 || !isCustomer
+                            }
+                            variant="contained"
+                            fullWidth
+                            onClick={() => createReservation()}
+                        >
+                            Create reservation
+                        </Button>
+                    </div>
+                )}
                 <div
                     style={{
                         display: 'flex',

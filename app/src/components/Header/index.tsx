@@ -58,10 +58,9 @@ const Header = () => {
     const pages: { name: string; link: string }[] = useMemo(() => {
         return [
             { name: 'Home', link: '/' },
-            { name: 'About Us', link: '/about' },
             { name: 'Browse Movies', link: '/movies' },
             { name: 'Screenings Calendar', link: '/screenings_calendar' },
-            { name: 'Contact Us', link: '/contact' },
+            { name: 'Contact Us', link: '/contact_us' },
         ];
     }, []);
 

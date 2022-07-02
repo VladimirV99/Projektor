@@ -49,6 +49,14 @@ namespace Screening.GRPC.Services
                 Success = await _repository.UpdateMovie(request.Id, request.Title, request.Length)
             };
         }
+
+        public override async Task<DeleteHallResponse> DeleteHall(DeleteHallRequest request, ServerCallContext context)
+        {
+            return new DeleteHallResponse
+            {
+                Success = await _repository.DeleteHall(request.Id)
+            };
+        }
         
         public override async Task<MoviesResponse> GetCurrentMovies(Empty request, ServerCallContext context)
         {
@@ -62,6 +70,6 @@ namespace Screening.GRPC.Services
             var response = new MoviesResponse();
             response.Movies.AddRange(await _repository.GetFutureMovies());
             return response;
-        }
+        }        
     }
 }

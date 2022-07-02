@@ -20,3 +20,10 @@ export const CREATE_RESETVATION = urlJoin(
     URL_BASE,
     '/Reservation/CreateReservation'
 );
+
+export const GET_HALLS_URL = urlJoin(URL_BASE, '/Hall/GetHalls');
+
+export const CREATE_HALL_URL = urlJoin(URL_BASE, '/Hall/CreateHall');
+
+export const DELETE_HALL_URL = (id: number) =>
+    urlJoin(URL_BASE, `/Hall/DeleteHall/${id}`);

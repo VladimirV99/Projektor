@@ -8,7 +8,7 @@ namespace Reservation.Repositories
         Task<Hall?> GetHallById(int id);
         Task<IEnumerable<Hall>> GetHalls();
         Task UpdateHall(Hall hall);
-        Task<bool> DeleteHall(int id);
+        Task DeleteHall(int id);
         Task CreateSeat(Seat seat);
         Task<Seat?> GetSeat(int hallId, int row, int column);
         Task<bool> UpdateSeatPrice(int hallId, int row, int column, float newPriceMultiplier);

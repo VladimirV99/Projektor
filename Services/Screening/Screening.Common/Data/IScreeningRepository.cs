@@ -22,6 +22,8 @@ namespace Screening.Common.Data
         Task<bool> DeleteScreening(int id);
         Task<bool> DeleteMovie(int id);
         Task<bool> UpdateMovie(int id, string title, int length);
+        Task<bool> DeleteHall(int id);
+        Task Cleanup();
         Task<IEnumerable<int>> GetCurrentMovies();
         Task<IEnumerable<int>> GetFutureMovies();
     }

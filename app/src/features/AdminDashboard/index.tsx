@@ -9,6 +9,7 @@ import ManageScreenings from './ManageScreenings';
 import ManagePeople from './ManagePeople';
 import ManageUsers from './ManageUsers';
 import { ROLE_ADMINISTRATOR, ROLE_CUSTOMER } from 'constants/common';
+import ManageHalls from './ManageHalls';
 
 interface TabPanelProps {
     children?: React.ReactNode;
@@ -40,8 +41,9 @@ const tabValues: TabValuesType = {
     movies: 0,
     people: 1,
     screenings: 2,
-    customers: 3,
-    administrators: 4,
+    halls: 3,
+    customers: 4,
+    administrators: 5,
 };
 
 const AdminDashboard = () => {
@@ -81,6 +83,7 @@ const AdminDashboard = () => {
                         <Tab label="Movies" />
                         <Tab label="People" />
                         <Tab label="Screenings" />
+                        <Tab label="Halls" />
                         <Tab label="Customers" />
                         <Tab label="Administrators" />
                     </Tabs>
@@ -95,9 +98,12 @@ const AdminDashboard = () => {
                     <ManageScreenings />
                 </TabPanel>
                 <TabPanel value={value} index={3}>
-                    <ManageUsers role={ROLE_CUSTOMER} />
+                    <ManageHalls />
                 </TabPanel>
                 <TabPanel value={value} index={4}>
+                    <ManageUsers role={ROLE_CUSTOMER} />
+                </TabPanel>
+                <TabPanel value={value} index={5}>
                     <ManageUsers role={ROLE_ADMINISTRATOR} />
                 </TabPanel>
             </Box>

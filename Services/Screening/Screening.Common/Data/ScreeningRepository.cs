@@ -107,6 +107,20 @@ namespace Screening.Common.Data
                 .FindAsync(id);
         }
 
+        public async Task Cleanup()
+        {
+            var cleanupQuery = _dbContext
+                .Screenings
+                .Include(s => s.Movie)
+                .Where(s => s.MovieStart.AddMinutes(s.Movie.Length) < DateTime.UtcNow);
+            
+            _dbContext
+                .Screenings
+                .RemoveRange(cleanupQuery);
+
+            await _dbContext.SaveChangesAsync();
+        }
+        
         public async Task<string?> InsertScreening(Entities.Screening screening)
         {
             var movie = await _dbContext.Movies.Where(m => m.Id == screening.MovieId).SingleOrDefaultAsync();
@@ -122,18 +136,8 @@ namespace Screening.Common.Data
             {
                 return "Creating this screening at the given time would overlap with another screening.";
             }
-            await _dbContext.Screenings.AddAsync(screening);
             
-            // Cleanup behind the scenes
-            _dbContext
-                .Screenings
-                .RemoveRange(
-                    _dbContext
-                        .Screenings
-                        .Include(s => s.Movie)
-                        .Where(s => s.MovieStart.AddMinutes(s.Movie.Length) < DateTime.UtcNow));
-                
-                
+            await _dbContext.Screenings.AddAsync(screening);
             await _dbContext.SaveChangesAsync();    
             
             return null;
@@ -199,7 +203,7 @@ namespace Screening.Common.Data
             if (movie == null) return false;
 
             _dbContext.Movies.Remove(movie);
-            _dbContext.SaveChanges();
+            await _dbContext.SaveChangesAsync();
 
             return true;
         }
@@ -234,7 +238,34 @@ namespace Screening.Common.Data
             await _dbContext.SaveChangesAsync();
             return true;
 
-        }   
+        }
+
+        public async Task<bool> DeleteHall(int id)
+        {
+            var hall = await GetHallById(id);
+            if (hall == null)
+            {
+                return true;
+            }
+
+            
+            // Any problems
+            var hasPendingScreenings =
+                await _dbContext.Screenings
+                    .Where(s => s.HallId == id)
+                    .Include(s => s.Movie)
+                    .Where(s => s.MovieStart.AddMinutes(s.Movie.Length) >= DateTime.UtcNow).AnyAsync();
+
+            if (!hasPendingScreenings)
+            {
+                _dbContext.Remove(hall);    
+            }
+            
+            await _dbContext.SaveChangesAsync();
+
+            return !hasPendingScreenings;
+
+        }
     }
 }
 

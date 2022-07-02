@@ -10,6 +10,7 @@ service ScreeningProtoService {
 	rpc GetScreening (GetScreeningRequest) returns (GetScreeningResponse);
   rpc DeleteMovie (DeleteMovieRequest) returns (DeleteMovieResponse);
   rpc UpdateMovie (UpdateMovieRequest) returns (UpdateMovieResponse);
+  rpc DeleteHall (DeleteHallRequest) returns (DeleteHallResponse);
 }
 
 message GetScreeningRequest {
@@ -43,5 +44,13 @@ message UpdateMovieRequest {
 }
 
 message UpdateMovieResponse {
+  bool success = 1;
+}
+
+message DeleteHallRequest {
+  int32 id = 1;
+}
+
+message DeleteHallResponse {
   bool success = 1;
 }

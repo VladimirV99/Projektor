@@ -17,6 +17,7 @@ builder.Services.AddAutoMapper(Assembly.GetExecutingAssembly());
 builder.Services.AddGrpc();
 builder.Services.AddScoped<IScreeningRepository, ScreeningRepository>();
 
+
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.

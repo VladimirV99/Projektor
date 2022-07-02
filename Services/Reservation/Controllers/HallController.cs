@@ -2,6 +2,7 @@ using AutoMapper;
 using Common.Auth;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Reservation.Grpc;
 using Reservation.Models;
 using Reservation.Repositories;
 using Reservation.Services;
@@ -16,12 +17,14 @@ namespace Reservation.Controllers
         private readonly IReservationRepository _repository;
         private readonly IHallService _hallService;
         private readonly IMapper _mapper;
+        private readonly ScreeningService _screeningService;
 
-        public HallController(IReservationRepository repository, IHallService hallService, IMapper mapper)
+        public HallController(IReservationRepository repository, IHallService hallService, IMapper mapper, ScreeningService service)
         {
             _repository = repository ?? throw new ArgumentNullException(nameof(repository));
             _hallService = hallService ?? throw new ArgumentNullException(nameof(hallService));
             _mapper = mapper ?? throw new ArgumentNullException(nameof(mapper));
+            _screeningService = service ?? throw new ArgumentNullException(nameof(service));
         }
         
         [HttpPost("[action]")]
@@ -56,11 +59,17 @@ namespace Reservation.Controllers
 
         [HttpDelete("[action]/{id}")]
         [ProducesResponseType(StatusCodes.Status200OK)]
-        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
         public async Task<IActionResult> DeleteHall(int id)
         {
-            var result = await _repository.DeleteHall(id);
-            return result ? Ok() : NotFound();
+            var screeningResponse = await _screeningService.DeleteHall(id);
+            if (!screeningResponse)
+            {
+                return BadRequest("Cannot delete hall with pending screenings.");
+            }
+            
+            await _repository.DeleteHall(id);
+            return Ok();
         }
 
         [HttpPost("[action]")]

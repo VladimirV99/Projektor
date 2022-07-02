@@ -132,9 +132,8 @@ const ReservationDetailsScreen = () => {
                         borderRadius: '5px',
                     }}
                 >
-                    <h4>{`You successfully created reservation for ${
-                        screening?.movie?.title
-                    } for ${new Date(screening!.movieStart).toLocaleString()}.
+                    <h4>{`You successfully created reservation for ${screening?.movie?.title
+                        } for ${new Date(screening!.movieStart).toLocaleString()}.
                         We sent you an email with more information.`}</h4>
                 </div>
             </ModalCheKoV>

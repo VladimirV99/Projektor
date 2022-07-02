@@ -47,22 +47,13 @@ This account cannot be deleted as it will be recreated when the service restarts
 
 ### Movies
 
-![Movies Workflow Status](https://img.shields.io/github/workflow/status/VladimirV99/Projektor/Movies/main?style=for-the-badge)
-
-#### Seeding the database:
-1. Start the database container from the project root:
-   ```
-   docker-compose up --build -d projektor_mssql
-   ```
-2. Execute the seed sql script:
-   ```
-   docker exec -it projektor_mssql opt/mssql-tools/bin/sqlcmd -S localhost -U sa -P MatfRs2_MSSQL -d MoviesDB -e -i /var/seed/seed_script.sql 
-   ```
+![Movies.API Workflow Status](https://img.shields.io/github/workflow/status/VladimirV99/Projektor/Movies.API/main?style=for-the-badge&label=Build%20API)
+![Movies.GRPC Workflow Status](https://img.shields.io/github/workflow/status/VladimirV99/Projektor/Movies.GRPC/main?style=for-the-badge&label=Build%20GRPC)
 
 ### Screening
 
-![Screening.API Workflow Status](https://img.shields.io/github/workflow/status/VladimirV99/Projektor/Screening.API/main?style=for-the-badge&label=Screening.API)
-![Screening.GRPC Workflow Status](https://img.shields.io/github/workflow/status/VladimirV99/Projektor/Screening.GRPC/main?style=for-the-badge&label=Screening.GRPC)
+![Screening.API Workflow Status](https://img.shields.io/github/workflow/status/VladimirV99/Projektor/Screening.API/main?style=for-the-badge&label=Build%20API)
+![Screening.GRPC Workflow Status](https://img.shields.io/github/workflow/status/VladimirV99/Projektor/Screening.GRPC/main?style=for-the-badge&label=Build%20GRPC)
 
 ### Reservation
 

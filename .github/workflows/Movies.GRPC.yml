@@ -1,0 +1,34 @@
+name: Movies.GRPC
+
+on:
+  workflow_dispatch:
+  push:
+    branches:
+      - main
+
+    paths:
+      - "Services/Movies/Movies.Common/**"
+      - "Services/Movies/Movies.GRPC/**"
+      - ".github/workflows/Movies.GRPC.yml"
+
+  pull_request:
+    branches:
+      - main
+
+    paths:
+      - "Services/Movies/Movies.Common/**"
+      - "Services/Movies/Movies.GRPC/**"
+      - ".github/workflows/Movies.GRPC.yml"
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+      - name: Build the Movie.GRPC service
+        shell: bash
+        run: |
+          cd Services/Movies/Movies.GRPC
+          dotnet build

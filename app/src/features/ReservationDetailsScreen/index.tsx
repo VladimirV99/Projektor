@@ -17,10 +17,12 @@ import { MovieScreen } from './index.styles';
 import { PRICE_BASE } from 'constants/common/index';
 import { useSelector } from 'react-redux';
 import { selectIsUserLoggedIn } from 'redux/auth/selectors';
+import { isUserCustomer } from 'util/auth';
 
 const ReservationDetailsScreen = () => {
     const { id: screeningId } = useParams();
     const navigate = useNavigate();
+    const isCustomer = isUserCustomer();
 
     const [screening, setScreening] = useState<Screening | null>(null);
     const [seats, setSeats] = useState<SeatModel[][] | null>(null);
@@ -169,21 +171,23 @@ const ReservationDetailsScreen = () => {
                 <div>
                     <h2>Current price: {currentPrice}</h2>
                 </div>
-                {!currentUser && numberOfSelectedSeats > 0 && (
+                {!currentUser && (
                     <div>
                         <h3>You must be logged in to create reservations</h3>
                     </div>
                 )}
-                <div style={{ marginTop: 20 }}>
-                    <Button
-                        disabled={numberOfSelectedSeats === 0}
-                        variant="contained"
-                        fullWidth
-                        onClick={() => createReservation()}
-                    >
-                        Create reservation
-                    </Button>
-                </div>
+                {currentUser && (
+                    <div style={{ marginTop: 20 }}>
+                        <Button
+                            disabled={numberOfSelectedSeats === 0 || !isCustomer}
+                            variant="contained"
+                            fullWidth
+                            onClick={() => createReservation()}
+                        >
+                            Create reservation
+                        </Button>
+                    </div>
+                )}
                 <div
                     style={{
                         display: 'flex',

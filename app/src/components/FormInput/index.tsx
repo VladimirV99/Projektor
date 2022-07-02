@@ -7,6 +7,7 @@ type Props = {
     label: string;
     error?: string | undefined;
     required?: boolean;
+    multiline?: boolean;
 };
 
 const FormInput = ({
@@ -16,9 +17,11 @@ const FormInput = ({
     label,
     error = undefined,
     required = true,
+    multiline = false,
 }: Props): JSX.Element => {
     return (
         <TextField
+            multiline={multiline}
             type={type}
             variant="standard"
             fullWidth

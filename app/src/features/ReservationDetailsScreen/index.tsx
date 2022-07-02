@@ -18,13 +18,14 @@ import { PRICE_BASE } from 'constants/common/index';
 import { useSelector } from 'react-redux';
 import { selectIsUserLoggedIn } from 'redux/auth/selectors';
 import { isUserCustomer } from 'util/auth';
+import SomethingWentWrong from 'components/SomethingWentWrong';
 
 const ReservationDetailsScreen = () => {
     const { id: screeningId } = useParams();
     const navigate = useNavigate();
     const isCustomer = isUserCustomer();
 
-    const [screening, setScreening] = useState<Screening | null>(null);
+    const [screening, setScreening] = useState<Screening | null | undefined>(undefined);
     const [seats, setSeats] = useState<SeatModel[][] | null>(null);
     const [isModalOpened, setIsModalOpened] = useState<boolean>(false);
     const [selectedSeatMatrix, setSelectedSeatMatrix] = useState<
@@ -33,6 +34,8 @@ const ReservationDetailsScreen = () => {
     const [currentPrice, setCurrentPrice] = useState<number>(0);
     const [numberOfSelectedSeats, setNumberOfSelectedSeats] =
         useState<number>(0);
+
+    if(screening === null) return <SomethingWentWrong />
 
     const currentUser = useSelector(selectIsUserLoggedIn);
 
@@ -139,7 +142,7 @@ const ReservationDetailsScreen = () => {
                 >
                     <h5>{screening!.hall!.name}</h5>
                     <h5>{screening!.movie?.title}</h5>
-                    <h5>{new Date(screening.movieStart).toLocaleString()}</h5>
+                    <h5>{new Date(screening!.movieStart).toLocaleString()}</h5>
                 </div>
                 <hr />
                 <div
@@ -173,7 +176,7 @@ const ReservationDetailsScreen = () => {
                 </div>
                 {!currentUser && (
                     <div>
-                        <h3>You must be logged in to create reservations</h3>
+                        <h3 style={{ color: 'red' }}>You must be logged in to create reservations</h3>
                     </div>
                 )}
                 {currentUser && (

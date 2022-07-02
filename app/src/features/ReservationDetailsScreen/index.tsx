@@ -169,9 +169,9 @@ const ReservationDetailsScreen = () => {
                 <div>
                     <h2>Current price: {currentPrice}</h2>
                 </div>
-                {!currentUser && numberOfSelectedSeats > 0 &&(
+                {!currentUser && numberOfSelectedSeats > 0 && (
                     <div>
-                        <h3>You must be logged in to create reservations</h3>    
+                        <h3>You must be logged in to create reservations</h3>
                     </div>
                 )}
                 <div style={{ marginTop: 20 }}>

@@ -25,7 +25,9 @@ const ReservationDetailsScreen = () => {
     const navigate = useNavigate();
     const isCustomer = isUserCustomer();
 
-    const [screening, setScreening] = useState<Screening | null | undefined>(undefined);
+    const [screening, setScreening] = useState<Screening | null | undefined>(
+        undefined
+    );
     const [seats, setSeats] = useState<SeatModel[][] | null>(null);
     const [isModalOpened, setIsModalOpened] = useState<boolean>(false);
     const [selectedSeatMatrix, setSelectedSeatMatrix] = useState<
@@ -35,7 +37,7 @@ const ReservationDetailsScreen = () => {
     const [numberOfSelectedSeats, setNumberOfSelectedSeats] =
         useState<number>(0);
 
-    if(screening === null) return <SomethingWentWrong />
+    if (screening === null) return <SomethingWentWrong />;
 
     const currentUser = useSelector(selectIsUserLoggedIn);
 
@@ -176,7 +178,9 @@ const ReservationDetailsScreen = () => {
                 </div>
                 {!currentUser && (
                     <div>
-                        <h3 style={{ color: 'red' }}>You must be logged in to create reservations</h3>
+                        <h3 style={{ color: 'red' }}>
+                            You must be logged in to create reservations
+                        </h3>
                     </div>
                 )}
                 {currentUser && (

@@ -1,3 +1,4 @@
+import { Status } from 'constants/index';
 import { useCallback, useMemo } from 'react';
 import { Button, Modal } from 'react-bootstrap';
 
@@ -5,7 +6,7 @@ type Props = {
     onClose: () => void;
     onSubmit: () => void;
     title: string | null;
-    deleteStatus: 'idle' | 'pending' | 'success' | 'error';
+    deleteStatus: Status;
     errorMessage: string | null;
     entityName: string;
 };

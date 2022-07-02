@@ -35,17 +35,16 @@ namespace Reservation.Repositories
             await _dbContext.SaveChangesAsync();
         }
 
-        public async Task<string?> DeleteHall(int id)
+        public async Task DeleteHall(int id)
         {
             var hall = await _dbContext.Halls.FindAsync(id);
             if (hall == null)
             {
-                return null;
+                return;
             }
 
             _dbContext.Halls.Remove(hall);
             await _dbContext.SaveChangesAsync();
-            return null;
         }
 
         public async Task CreateSeat(Seat seat)

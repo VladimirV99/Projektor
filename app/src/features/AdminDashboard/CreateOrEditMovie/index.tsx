@@ -41,6 +41,16 @@ const CreateOrEditMovie = ({ movie, onClose }: Props) => {
     const updateStatus = useSelector(selectors.getUpdateStatus);
     const updateError = useSelector(selectors.getUpdateError);
 
+    const renderErrors = () => {
+        return (
+            <ul>
+                {(updateError ?? '').split(',').map((updateError, idx) => (
+                    <li key={idx}>{updateError}</li>
+                ))}
+            </ul>
+        );
+    };
+
     const peopleByRoles = useMemo<PeopleByRolesType>(() => {
         const peopleByRolesTmp = [] as PeopleByRolesType;
         movieInput.people.forEach(({ personId, roleId, role, name }) => {
@@ -104,7 +114,10 @@ const CreateOrEditMovie = ({ movie, onClose }: Props) => {
                     </Modal.Header>
                     <Modal.Body>
                         {updateStatus === 'pending' && (
-                            <div>Updating movie...</div>
+                            <div>
+                                {movie.id === -1 ? 'Creating' : 'Updating'}{' '}
+                                movie...
+                            </div>
                         )}
                         {updateStatus === 'success' && (
                             <div>
@@ -113,7 +126,9 @@ const CreateOrEditMovie = ({ movie, onClose }: Props) => {
                                 successfully!
                             </div>
                         )}
-                        {updateStatus === 'error' && <div>{updateError}</div>}
+                        {updateStatus === 'error' && (
+                            <div>{renderErrors()}</div>
+                        )}
                     </Modal.Body>
                     <Modal.Footer>
                         <Button

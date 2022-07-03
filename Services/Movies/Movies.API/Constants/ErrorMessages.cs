@@ -9,6 +9,7 @@
 		public const string TITLE_REQUIRED = "Title is required";
 		public const string YEAR_REQUIRED = "Year is required";
 		public const string LENGTH_REQUIRED = "Length is required";
+		public const string LENGTH_POSITIVE = "Length must be positive";
 
 		public const string NAME_REQUIRED = "Name is required";
 

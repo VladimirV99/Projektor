@@ -1,4 +1,4 @@
-import { useState, useMemo, useEffect } from 'react';
+import { useState, useMemo, useEffect, Fragment } from 'react';
 import { Formik } from 'formik';
 import { Alert, Button } from '@mui/material';
 import ModalCheKoV from 'components/Modal';
@@ -21,11 +21,11 @@ type Props = {
 };
 
 type Validation = {
-    firstName: string | undefined;
-    lastName: string | undefined;
-    email: string | undefined;
-    password: string | undefined;
-    passwordConfirmed: string | undefined;
+    firstName: string[];
+    lastName: string[];
+    email: string[];
+    password: string[];
+    passwordConfirmed: string[];
 };
 
 const SignUp = ({ onModalClose }: Props) => {
@@ -36,20 +36,20 @@ const SignUp = ({ onModalClose }: Props) => {
     const [passwordConfirmed, setPasswordConfirmed] = useState<string>('');
 
     const [errors, setErrors] = useState({
-        firstName: undefined,
-        lastName: undefined,
-        email: undefined,
-        password: undefined,
-        passwordConfirmed: undefined,
+        firstName: [],
+        lastName: [],
+        email: [],
+        password: [],
+        passwordConfirmed: [],
     } as Validation);
 
     const hasError = useMemo(() => {
         return (
-            errors.firstName !== undefined ||
-            errors.lastName !== undefined ||
-            errors.email !== undefined ||
-            errors.password !== undefined ||
-            errors.passwordConfirmed !== undefined
+            errors.firstName.length > 0 ||
+            errors.lastName.length > 0 ||
+            errors.email.length > 0 ||
+            errors.password.length > 0 ||
+            errors.passwordConfirmed.length > 0
         );
     }, [errors]);
 
@@ -62,8 +62,16 @@ const SignUp = ({ onModalClose }: Props) => {
     const dispatch = useDispatch();
 
     useEffect(() => {
-        if (apiStatus === LoadingStatus.Failed && apiErrors !== null)
-            setErrors({ ...errors, ...(apiErrors as Validation) });
+        if (apiStatus === LoadingStatus.Failed && apiErrors !== null) {
+            const newErrors = Object.keys(apiErrors).reduce(
+                (acc: any, key: string) => {
+                    acc[key.toLowerCase()] = apiErrors[key];
+                    return acc;
+                },
+                {}
+            );
+            setErrors({ ...errors, ...(newErrors as Validation) });
+        }
         setSubmitting(false);
     }, [apiStatus, apiErrors]);
 
@@ -71,42 +79,59 @@ const SignUp = ({ onModalClose }: Props) => {
 
     const validate = () => {
         let errors: Validation = {
-            firstName: undefined,
-            lastName: undefined,
-            email: undefined,
-            password: undefined,
-            passwordConfirmed: undefined,
+            firstName: [],
+            lastName: [],
+            email: [],
+            password: [],
+            passwordConfirmed: [],
         };
         let hasError = false;
 
         if (firstName.trim().length == 0) {
-            errors.firstName = REQUIRED;
+            errors.firstName.push(REQUIRED);
             hasError = true;
         }
         if (lastName.trim().length == 0) {
-            errors.lastName = REQUIRED;
+            errors.lastName.push(REQUIRED);
             hasError = true;
         }
         if (email.trim().length == 0) {
-            errors.email = REQUIRED;
+            errors.email.push(REQUIRED);
             hasError = true;
         } else if (
             !/^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/.test(email)
         ) {
-            errors.email = INVALID_EMAIL;
+            errors.email.push(INVALID_EMAIL);
             hasError = true;
         }
         if (password !== passwordConfirmed) {
-            errors.passwordConfirmed = PASSWORDS_DONT_MATCH;
+            errors.passwordConfirmed.push(PASSWORDS_DONT_MATCH);
             hasError = true;
         }
         if (password.length < MIN_PASSWORD_LENGTH) {
-            errors.password = PASSWORD_TOO_SHORT;
+            errors.password.push(PASSWORD_TOO_SHORT);
             hasError = true;
         }
 
         setErrors(errors);
         if (hasError) return errors;
+    };
+
+    const getErrorsElement = (errors: string[]): JSX.Element | undefined => {
+        return errors.length > 0 ? (
+            <Fragment>
+                {errors.map((x, i) => (
+                    <span
+                        key={i}
+                        style={{
+                            display: 'block',
+                        }}
+                    >
+                        {x}
+                    </span>
+                ))}
+            </Fragment>
+        ) : undefined;
     };
 
     return (
@@ -160,11 +185,11 @@ const SignUp = ({ onModalClose }: Props) => {
                                     setFirstName(e.currentTarget.value);
                                     setErrors({
                                         ...errors,
-                                        firstName: undefined,
+                                        firstName: [],
                                     });
                                 }}
                                 value={firstName}
-                                error={errors.firstName}
+                                error={getErrorsElement(errors.firstName)}
                             />
                             <FormInput
                                 type="text"
@@ -173,11 +198,11 @@ const SignUp = ({ onModalClose }: Props) => {
                                     setLastName(e.currentTarget.value);
                                     setErrors({
                                         ...errors,
-                                        lastName: undefined,
+                                        lastName: [],
                                     });
                                 }}
                                 value={lastName}
-                                error={errors.lastName}
+                                error={getErrorsElement(errors.lastName)}
                             />
                             <FormInput
                                 type="text"
@@ -186,11 +211,11 @@ const SignUp = ({ onModalClose }: Props) => {
                                     setEmail(e.currentTarget.value);
                                     setErrors({
                                         ...errors,
-                                        email: undefined,
+                                        email: [],
                                     });
                                 }}
                                 value={email}
-                                error={errors.email}
+                                error={getErrorsElement(errors.email)}
                             />
                             <FormInput
                                 type="password"
@@ -199,12 +224,12 @@ const SignUp = ({ onModalClose }: Props) => {
                                     setPassword(e.currentTarget.value);
                                     setErrors({
                                         ...errors,
-                                        password: undefined,
-                                        passwordConfirmed: undefined,
+                                        password: [],
+                                        passwordConfirmed: [],
                                     });
                                 }}
                                 value={password}
-                                error={errors.password}
+                                error={getErrorsElement(errors.password)}
                             />
                             <FormInput
                                 type="password"
@@ -213,12 +238,14 @@ const SignUp = ({ onModalClose }: Props) => {
                                     setPasswordConfirmed(e.currentTarget.value);
                                     setErrors({
                                         ...errors,
-                                        password: undefined,
-                                        passwordConfirmed: undefined,
+                                        password: [],
+                                        passwordConfirmed: [],
                                     });
                                 }}
                                 value={passwordConfirmed}
-                                error={errors.passwordConfirmed}
+                                error={getErrorsElement(
+                                    errors.passwordConfirmed
+                                )}
                             />
                             {apiStatus === LoadingStatus.Failed &&
                                 apiErrors === null && (

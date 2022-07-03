@@ -5,7 +5,7 @@ type Props = {
     value: string;
     type: string;
     label: string;
-    error?: string | undefined;
+    error?: JSX.Element | string | undefined;
     required?: boolean;
     multiline?: boolean;
 };

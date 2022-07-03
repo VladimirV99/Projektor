@@ -8,8 +8,10 @@ on:
     
     paths:
       - "Common/Auth/**"
+      - "Common/EventBus/**"
       - "Services/Screening/Screening.Common/**"
       - "Services/Screening/Screening.API/**"
+      - "Services/Movies/Movies.GRPC/Protos/movies.proto"
       - ".github/workflows/Screening.API.yml"
       
   pull_request:
@@ -18,8 +20,10 @@ on:
     
     paths:
       - "Common/Auth/**"
+      - "Common/EventBus/**"
       - "Services/Screening/Screening.Common/**"
       - "Services/Screening/Screening.API/**"
+      - "Services/Movies/Movies.GRPC/Protos/movies.proto"
       - ".github/workflows/Screening.API.yml"
 
 jobs:

@@ -10,8 +10,6 @@ services:
       - "1433:1433"
     volumes:
       - mssql_data:/var/opt/mssql/data
-      - ./Services/Movies/Movies.API/Seed:/var/seed
-      - ./Services/Screening/Screening.Common/Seed:/var/seed_screening
 
   projektor_rabbitmq:
     container_name: projektor_rabbitmq
@@ -48,6 +46,7 @@ services:
       - "gRPC:ScreeningUrl=http://screening.grpc"
     depends_on:
       - projektor_mssql
+      - screening.grpc
     ports:
       - "5000:80"
 
@@ -93,6 +92,7 @@ services:
     depends_on:
       - projektor_mssql
       - projektor_rabbitmq
+      - movies.grpc
     ports:
       - "5008:80"
 

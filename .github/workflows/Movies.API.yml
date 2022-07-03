@@ -1,4 +1,4 @@
-name: Movies
+name: Movies.API
 
 on:
   workflow_dispatch:
@@ -8,8 +8,10 @@ on:
     
     paths:
       - "Common/Auth/**"
+      - "Services/Movies/Movies.Common/**"
       - "Services/Movies/Movies.API/**"
-      - ".github/workflows/Movies.yml"
+      - "Services/Screening/Screening.GRPC/Protos/screening.proto"
+      - ".github/workflows/Movies.API.yml"
 
   pull_request:
     branches:
@@ -17,8 +19,10 @@ on:
     
     paths:
       - "Common/Auth/**"
+      - "Services/Movies/Movies.Common/**"
       - "Services/Movies/Movies.API/**"
-      - ".github/workflows/Movies.yml"
+      - "Services/Screening/Screening.GRPC/Protos/screening.proto"
+      - ".github/workflows/Movies.API.yml"
 
 jobs:
   build:
@@ -27,7 +31,7 @@ jobs:
     steps:
       - name: Checkout code
         uses: actions/checkout@v3
-      - name: Build the Movie service
+      - name: Build the Movie.API service
         shell: bash
         run: |
           cd Services/Movies/Movies.API

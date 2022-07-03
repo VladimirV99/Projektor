@@ -8,6 +8,7 @@ on:
     
     paths:
       - "Common/Auth/**"
+      - "Common/EventBus/**"
       - "Services/Review/**"
       - ".github/workflows/Review.yml"
 
@@ -17,6 +18,7 @@ on:
     
     paths:
       - "Common/Auth/**"
+      - "Common/EventBus/**"
       - "Services/Review/**"
       - ".github/workflows/Review.yml"
 

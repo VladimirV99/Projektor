@@ -95,285 +95,301 @@ const CreateOrEditMovie = ({ movie, onClose }: Props) => {
 
     return (
         <Fragment>
-            <Modal show={updateStatus !== 'idle'}>
-                <Modal.Header>
-                    <Modal.Title>
-                        {movie.id == -1 ? 'Creating' : 'Updating'} a movie
-                    </Modal.Title>
-                </Modal.Header>
-                <Modal.Body>
-                    {updateStatus === 'pending' && <div>Updating movie...</div>}
-                    {updateStatus === 'success' && (
-                        <div>
-                            Movie {movieInput.id === -1 ? 'created' : 'updated'}{' '}
-                            successfully!
-                        </div>
-                    )}
-                    {updateStatus === 'error' && <div>{updateError}</div>}
-                </Modal.Body>
-                <Modal.Footer>
-                    <Button
-                        disabled={updateStatus === 'pending'}
-                        onClick={() => {
-                            if (updateStatus === 'success') {
-                                dispatch(patchMovie(movieInput));
-                                onClose();
-                            }
-                            dispatch(resetUpdateStatus());
-                        }}
-                    >
-                        Close
-                    </Button>
-                </Modal.Footer>
-            </Modal>
-            <Modal show={updateStatus === 'idle'}>
-                <Modal.Header>
-                    {movie.id != -1 ? (
-                        <h4>
-                            Editing: <i>{movieInput.title}</i> (
-                            {movieInput.year})
-                        </h4>
-                    ) : (
-                        <FormInputFieldTitle>
-                            Create a new movie
-                        </FormInputFieldTitle>
-                    )}
-                </Modal.Header>
-
-                <Modal.Body>
-                    <FormTextInputField>
-                        <TextField
-                            value={movieInput.title}
-                            label="Title"
-                            onChange={(e) => {
-                                setMovieInput({
-                                    ...movieInput,
-                                    title: e.target.value,
-                                });
-                            }}
-                            fullWidth
-                        />
-                    </FormTextInputField>
-                    <FormTextInputField>
-                        <TextField
-                            value={movieInput.year}
-                            label="Year"
-                            type="number"
-                            onChange={(e) => {
-                                setMovieInput({
-                                    ...movieInput,
-                                    year: parseInt(e.target.value, 10),
-                                });
-                            }}
-                            fullWidth
-                        />
-                    </FormTextInputField>
-                    <FormTextInputField>
-                        <TextField
-                            value={movieInput.length}
-                            type="number"
-                            label="length"
-                            onChange={(e) =>
-                                setMovieInput({
-                                    ...movieInput,
-                                    length: parseInt(e.target.value, 10),
-                                })
-                            }
-                            fullWidth
-                        />
-                    </FormTextInputField>
-                    <FormTextInputField>
-                        <FormInputFieldTitle>Trailer URL</FormInputFieldTitle>
-                        <TextField
-                            value={movieInput.trailerUrl ?? ''}
-                            label="Trailer URL"
-                            onChange={(e) => {
-                                setMovieInput({
-                                    ...movieInput,
-                                    trailerUrl: e.target.value,
-                                });
-                            }}
-                            fullWidth
-                        />
-                    </FormTextInputField>
-                    <FormTextInputField>
-                        <TextField
-                            label="IMDB URL"
-                            value={movieInput.imdbUrl ?? ''}
-                            onChange={(e) => {
-                                setMovieInput({
-                                    ...movieInput,
-                                    imdbUrl: e.target.value,
-                                });
-                            }}
-                            fullWidth
-                        />
-                    </FormTextInputField>
-                    <FormTextInputField>
-                        <TextField
-                            label="Image URL"
-                            value={movieInput.imageUrl ?? ''}
-                            onChange={(e) => {
-                                setMovieInput({
-                                    ...movieInput,
-                                    imageUrl: e.target.value,
-                                });
-                            }}
-                            fullWidth
-                        />
-                    </FormTextInputField>
-                    <div>
-                        <FormInputFieldTitle>People</FormInputFieldTitle>
-                        {peopleByRoles.map(({ roleId, roleName, people }) => (
-                            <Fragment key={roleId}>
-                                <SelectedValuesWrapper>
-                                    <RoleTitle>{roleName}</RoleTitle>
-                                    {people.length === 0 && (
-                                        <p>No people with this role.</p>
-                                    )}
-                                    <SelectedOptions
-                                        direction="row"
-                                        options={people.map(
-                                            ({ personId, name }) => ({
-                                                id: personId,
-                                                label: name,
-                                            })
-                                        )}
-                                        onDelete={(deletedPersonId) => {
-                                            setMovieInput({
-                                                ...movieInput,
-                                                people: movieInput.people.filter(
-                                                    ({
-                                                        personId:
-                                                            currentPersonId,
-                                                        roleId: currentRoleId,
-                                                    }) => {
-                                                        if (
-                                                            currentPersonId ===
-                                                                deletedPersonId &&
-                                                            currentRoleId ===
-                                                                roleId
-                                                        ) {
-                                                            return false;
-                                                        }
-                                                        return true;
-                                                    }
-                                                ),
-                                            });
-                                        }}
-                                    />
-                                    <div>Add {roleName}: </div>
-                                    <SearchInput
-                                        searchEndpoint={SEARCH_PEOPLE_URL}
-                                        getOptions={(people) =>
-                                            people.map(
-                                                ({
-                                                    id,
-                                                    firstName,
-                                                    lastName,
-                                                }) => ({
-                                                    id,
-                                                    label: `${firstName} ${lastName}`,
-                                                })
-                                            )
-                                        }
-                                        onOptionClicked={({
-                                            id: clickedPersonId,
-                                            label: clickedPersonName,
-                                        }) => {
-                                            if (
-                                                movieInput.people.find(
-                                                    ({
-                                                        personId,
-                                                        roleId: currentRoleId,
-                                                    }) =>
-                                                        clickedPersonId ===
-                                                            personId &&
-                                                        currentRoleId === roleId
-                                                )
-                                            ) {
-                                            }
-                                            setMovieInput({
-                                                ...movieInput,
-                                                people: [
-                                                    ...movieInput.people,
-                                                    {
-                                                        personId:
-                                                            clickedPersonId,
-                                                        roleId: roleId,
-                                                        role: roleName,
-                                                        name: clickedPersonName,
-                                                    },
-                                                ],
-                                            });
-                                        }}
-                                    />
-                                </SelectedValuesWrapper>
-                            </Fragment>
-                        ))}
-                    </div>
-                    <div>
-                        <FormInputFieldTitle>Genres</FormInputFieldTitle>
-                        <StaticSearchInput
-                            staticOptions={genreOptions}
-                            onOptionClicked={({ id, label }) => {
-                                if (
-                                    movieInput.genres.find((g) => g.id === id)
-                                ) {
-                                    return;
+            {updateStatus !== 'idle' && (
+                <Modal show={true}>
+                    <Modal.Header>
+                        <Modal.Title>
+                            {movie.id === -1 ? 'Creating' : 'Updating'} a movie
+                        </Modal.Title>
+                    </Modal.Header>
+                    <Modal.Body>
+                        {updateStatus === 'pending' && (
+                            <div>Updating movie...</div>
+                        )}
+                        {updateStatus === 'success' && (
+                            <div>
+                                Movie{' '}
+                                {movieInput.id === -1 ? 'created' : 'updated'}{' '}
+                                successfully!
+                            </div>
+                        )}
+                        {updateStatus === 'error' && <div>{updateError}</div>}
+                    </Modal.Body>
+                    <Modal.Footer>
+                        <Button
+                            disabled={updateStatus === 'pending'}
+                            onClick={() => {
+                                if (updateStatus === 'success') {
+                                    dispatch(patchMovie(movieInput));
+                                    onClose();
                                 }
-                                setMovieInput({
-                                    ...movieInput,
-                                    genres: [
-                                        ...movieInput.genres,
-                                        { id, name: label },
-                                    ],
-                                });
+                                dispatch(resetUpdateStatus());
                             }}
-                        />
-                        <SelectedValuesWrapper>
-                            {movieInput.genres.length === 0 && (
-                                <p>No genres added for this movie.</p>
-                            )}
-                            <SelectedOptions
-                                direction="row"
-                                options={movieInput.genres.map(
-                                    ({ id, name }) => ({
-                                        id,
-                                        label: name,
-                                    })
-                                )}
-                                onDelete={(id) => {
+                        >
+                            Close
+                        </Button>
+                    </Modal.Footer>
+                </Modal>
+            )}
+            {updateStatus === 'idle' && (
+                <Modal show={true}>
+                    <Modal.Header>
+                        {movie.id != -1 ? (
+                            <h4>
+                                Editing: <i>{movieInput.title}</i> (
+                                {movieInput.year})
+                            </h4>
+                        ) : (
+                            <FormInputFieldTitle>
+                                Create a new movie
+                            </FormInputFieldTitle>
+                        )}
+                    </Modal.Header>
+
+                    <Modal.Body>
+                        <FormTextInputField>
+                            <TextField
+                                value={movieInput.title}
+                                label="Title"
+                                onChange={(e) => {
                                     setMovieInput({
                                         ...movieInput,
-                                        genres: movieInput.genres.filter(
-                                            (g) => g.id !== id
-                                        ),
+                                        title: e.target.value,
+                                    });
+                                }}
+                                fullWidth
+                            />
+                        </FormTextInputField>
+                        <FormTextInputField>
+                            <TextField
+                                value={movieInput.year}
+                                label="Year"
+                                type="number"
+                                onChange={(e) => {
+                                    setMovieInput({
+                                        ...movieInput,
+                                        year: parseInt(e.target.value, 10),
+                                    });
+                                }}
+                                fullWidth
+                            />
+                        </FormTextInputField>
+                        <FormTextInputField>
+                            <TextField
+                                value={movieInput.length}
+                                type="number"
+                                label="length"
+                                onChange={(e) =>
+                                    setMovieInput({
+                                        ...movieInput,
+                                        length: parseInt(e.target.value, 10),
+                                    })
+                                }
+                                fullWidth
+                            />
+                        </FormTextInputField>
+                        <FormTextInputField>
+                            <FormInputFieldTitle>
+                                Trailer URL
+                            </FormInputFieldTitle>
+                            <TextField
+                                value={movieInput.trailerUrl ?? ''}
+                                label="Trailer URL"
+                                onChange={(e) => {
+                                    setMovieInput({
+                                        ...movieInput,
+                                        trailerUrl: e.target.value,
+                                    });
+                                }}
+                                fullWidth
+                            />
+                        </FormTextInputField>
+                        <FormTextInputField>
+                            <TextField
+                                label="IMDB URL"
+                                value={movieInput.imdbUrl ?? ''}
+                                onChange={(e) => {
+                                    setMovieInput({
+                                        ...movieInput,
+                                        imdbUrl: e.target.value,
+                                    });
+                                }}
+                                fullWidth
+                            />
+                        </FormTextInputField>
+                        <FormTextInputField>
+                            <TextField
+                                label="Image URL"
+                                value={movieInput.imageUrl ?? ''}
+                                onChange={(e) => {
+                                    setMovieInput({
+                                        ...movieInput,
+                                        imageUrl: e.target.value,
+                                    });
+                                }}
+                                fullWidth
+                            />
+                        </FormTextInputField>
+                        <div>
+                            <FormInputFieldTitle>People</FormInputFieldTitle>
+                            {peopleByRoles.map(
+                                ({ roleId, roleName, people }) => (
+                                    <Fragment key={roleId}>
+                                        <SelectedValuesWrapper>
+                                            <RoleTitle>{roleName}</RoleTitle>
+                                            {people.length === 0 && (
+                                                <p>No people with this role.</p>
+                                            )}
+                                            <SelectedOptions
+                                                direction="row"
+                                                options={people.map(
+                                                    ({ personId, name }) => ({
+                                                        id: personId,
+                                                        label: name,
+                                                    })
+                                                )}
+                                                onDelete={(deletedPersonId) => {
+                                                    setMovieInput({
+                                                        ...movieInput,
+                                                        people: movieInput.people.filter(
+                                                            ({
+                                                                personId:
+                                                                    currentPersonId,
+                                                                roleId: currentRoleId,
+                                                            }) => {
+                                                                if (
+                                                                    currentPersonId ===
+                                                                        deletedPersonId &&
+                                                                    currentRoleId ===
+                                                                        roleId
+                                                                ) {
+                                                                    return false;
+                                                                }
+                                                                return true;
+                                                            }
+                                                        ),
+                                                    });
+                                                }}
+                                            />
+                                            <div>Add {roleName}: </div>
+                                            <SearchInput
+                                                searchEndpoint={
+                                                    SEARCH_PEOPLE_URL
+                                                }
+                                                getOptions={(people) =>
+                                                    people.map(
+                                                        ({
+                                                            id,
+                                                            firstName,
+                                                            lastName,
+                                                        }) => ({
+                                                            id,
+                                                            label: `${firstName} ${lastName}`,
+                                                        })
+                                                    )
+                                                }
+                                                onOptionClicked={({
+                                                    id: clickedPersonId,
+                                                    label: clickedPersonName,
+                                                }) => {
+                                                    if (
+                                                        movieInput.people.find(
+                                                            ({
+                                                                personId,
+                                                                roleId: currentRoleId,
+                                                            }) =>
+                                                                clickedPersonId ===
+                                                                    personId &&
+                                                                currentRoleId ===
+                                                                    roleId
+                                                        )
+                                                    ) {
+                                                    }
+                                                    setMovieInput({
+                                                        ...movieInput,
+                                                        people: [
+                                                            ...movieInput.people,
+                                                            {
+                                                                personId:
+                                                                    clickedPersonId,
+                                                                roleId: roleId,
+                                                                role: roleName,
+                                                                name: clickedPersonName,
+                                                            },
+                                                        ],
+                                                    });
+                                                }}
+                                            />
+                                        </SelectedValuesWrapper>
+                                    </Fragment>
+                                )
+                            )}
+                        </div>
+                        <div>
+                            <FormInputFieldTitle>Genres</FormInputFieldTitle>
+                            <StaticSearchInput
+                                staticOptions={genreOptions}
+                                onOptionClicked={({ id, label }) => {
+                                    if (
+                                        movieInput.genres.find(
+                                            (g) => g.id === id
+                                        )
+                                    ) {
+                                        return;
+                                    }
+                                    setMovieInput({
+                                        ...movieInput,
+                                        genres: [
+                                            ...movieInput.genres,
+                                            { id, name: label },
+                                        ],
                                     });
                                 }}
                             />
-                        </SelectedValuesWrapper>
-                    </div>
-                </Modal.Body>
+                            <SelectedValuesWrapper>
+                                {movieInput.genres.length === 0 && (
+                                    <p>No genres added for this movie.</p>
+                                )}
+                                <SelectedOptions
+                                    direction="row"
+                                    options={movieInput.genres.map(
+                                        ({ id, name }) => ({
+                                            id,
+                                            label: name,
+                                        })
+                                    )}
+                                    onDelete={(id) => {
+                                        setMovieInput({
+                                            ...movieInput,
+                                            genres: movieInput.genres.filter(
+                                                (g) => g.id !== id
+                                            ),
+                                        });
+                                    }}
+                                />
+                            </SelectedValuesWrapper>
+                        </div>
+                    </Modal.Body>
 
-                <Modal.Footer>
-                    <div
-                        style={{
-                            display: 'flex',
-                            justifyContent: 'space-between',
-                        }}
-                    >
-                        <Button variant="contained" onClick={handleSubmit}>
-                            {movieInput.id != -1
-                                ? 'Update movie'
-                                : 'Create movie'}
-                        </Button>
-                        <Button variant="contained" onClick={onClose}>
-                            Close
-                        </Button>
-                    </div>
-                </Modal.Footer>
-            </Modal>
+                    <Modal.Footer>
+                        <div
+                            style={{
+                                display: 'flex',
+                                justifyContent: 'space-between',
+                            }}
+                        >
+                            <Button variant="contained" onClick={handleSubmit}>
+                                {movieInput.id != -1
+                                    ? 'Update movie'
+                                    : 'Create movie'}
+                            </Button>
+                            <Button variant="contained" onClick={onClose}>
+                                Close
+                            </Button>
+                        </div>
+                    </Modal.Footer>
+                </Modal>
+            )}
         </Fragment>
     );
 };

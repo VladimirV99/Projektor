@@ -8,11 +8,13 @@ namespace Review.Data
     {
         private readonly ReviewContext _dbContext;
         private readonly ILogger<DataSeeder> _logger;
+        private readonly IConfiguration _configuration;
 
-        public DataSeeder(ReviewContext dbContext, ILogger<DataSeeder> logger)
+        public DataSeeder(ReviewContext dbContext, ILogger<DataSeeder> logger, IConfiguration configuration)
         {
             _dbContext = dbContext ?? throw new ArgumentNullException(nameof(dbContext));
             _logger = logger ?? throw new ArgumentNullException(nameof(logger));
+            _configuration = configuration ?? throw new ArgumentNullException(nameof(configuration));
         }
 
         public void Seed()
@@ -39,6 +41,21 @@ namespace Review.Data
 
         private void SeedFunction()
         {
+            var connectionString = _configuration.GetConnectionString("ReviewConnectionString");
+            var dbConnectionString = string.Join(';', connectionString.Split(';').Select(x => x.StartsWith("Database=") ? "Database=postgres" : x));
+            var dbName = connectionString.Split(';').Single(x => x.StartsWith("Database=")).Split('=')[1];
+            using (var dbConnection = new NpgsqlConnection(dbConnectionString))
+            {
+                var databaseExists = dbConnection.ExecuteScalar<bool>(
+                    "SELECT EXISTS (SELECT datname FROM pg_catalog.pg_database WHERE datname = @DbName)",
+                    new {DbName = dbName}
+                );
+                if (!databaseExists)
+                {
+                    dbConnection.Execute("CREATE DATABASE \"" + dbName + "\"");
+                }
+            }
+            
             using var connection = _dbContext.GetConnection();
 
             const int DATABASE_VERSION = 5;

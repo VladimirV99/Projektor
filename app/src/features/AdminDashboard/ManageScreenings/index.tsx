@@ -23,6 +23,7 @@ import {
     DELETE_SCREENING_URL,
 } from 'constants/api/screenings';
 import axiosAuthInstance from 'axios/instance';
+import PageTitle from 'components/PageTitle';
 
 const ManageScreenings = () => {
     const [screenings, setScreenings] = useState<Screening[] | null>(null);
@@ -67,9 +68,7 @@ const ManageScreenings = () => {
 
     return (
         <Fragment>
-            <Helmet>
-                <title>Admin dashboard | Projektor</title>
-            </Helmet>
+            <PageTitle title="Manage screenings" />
             <AddScreeningContainer>
                 <Button
                     onClick={() => {

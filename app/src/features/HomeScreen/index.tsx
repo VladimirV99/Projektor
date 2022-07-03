@@ -1,5 +1,11 @@
+import PageTitle from 'components/PageTitle';
+
 const HomeScreen = () => {
-    return <div>under construction</div>;
+    return (
+        <div>
+            <PageTitle />
+        </div>
+    );
 };
 
 export default HomeScreen;

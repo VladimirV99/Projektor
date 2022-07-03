@@ -31,6 +31,7 @@ import { Modal, ModalDialog } from 'react-bootstrap';
 import Person from 'models/Movie/Person';
 import { Link, Navigate } from 'react-router-dom';
 import CreateOrEditPerson from '../CreateOrEditPerson';
+import PageTitle from 'components/PageTitle';
 
 const ManagePeople = () => {
     const [searchPeopleRequest, setSearchPeopleRequest] = useState<{
@@ -180,9 +181,7 @@ const ManagePeople = () => {
 
     return (
         <Fragment>
-            <Helmet>
-                <title>Admin dashboard | Projektor</title>
-            </Helmet>
+            <PageTitle title="Manage people" />
             {!isDataLoaded && (
                 <Backdrop open={true}>
                     <CircularProgress />

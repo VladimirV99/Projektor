@@ -33,6 +33,7 @@ import { faTrash } from '@fortawesome/free-solid-svg-icons';
 import { faPlus } from '@fortawesome/free-solid-svg-icons';
 import { useDebounce } from 'use-debounce';
 import { Modal } from 'react-bootstrap';
+import PageTitle from 'components/PageTitle';
 
 const ManageMovies = () => {
     const [filterMovieRequest, setFilterMovieRequest] =
@@ -160,9 +161,7 @@ const ManageMovies = () => {
 
     return (
         <Fragment>
-            <Helmet>
-                <title>Admin dashboard | Projektor</title>
-            </Helmet>
+            <PageTitle title="Manage movies" />
             {!isDataLoaded && (
                 <Backdrop open={true}>
                     <CircularProgress />

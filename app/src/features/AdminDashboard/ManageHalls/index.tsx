@@ -20,6 +20,7 @@ import useAsyncError from 'hooks/useAsyncError';
 import { DELETE_HALL_URL, GET_HALLS_URL } from 'constants/api/reservations';
 import CreateHall from '../CreateHall';
 import { HallAdmin } from 'models/Hall';
+import PageTitle from 'components/PageTitle';
 
 const ManageHalls = () => {
     const [halls, setHalls] = useState<HallAdmin[]>([]);
@@ -66,9 +67,7 @@ const ManageHalls = () => {
 
     return (
         <Fragment>
-            <Helmet>
-                <title>Manage halls | Projektor</title>
-            </Helmet>
+            <PageTitle title="Manage halls" />
             <AddContainer>
                 <Button onClick={() => setCreateModalVisible(true)}>
                     <FontAwesomeIcon icon={faPlus} /> New Hall

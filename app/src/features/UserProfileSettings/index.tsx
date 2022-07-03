@@ -18,6 +18,7 @@ import { UPDATE_NAME, UPDATE_PASSWORD } from 'constants/api';
 import { updateName } from 'redux/auth/actions';
 import * as E from 'constants/errors';
 import * as F from 'constants/forms';
+import PageTitle from 'components/PageTitle';
 
 const getErrorsFromResponse = (errors: any) => {
     if (!errors.response) {
@@ -350,9 +351,7 @@ const UserProfileSettings = () => {
     return (
         <Fragment>
             <Container>
-                <Helmet>
-                    <title>{fullName} - Profile Settings</title>
-                </Helmet>
+                <PageTitle title={`${fullName} - profile settings`} />
                 <ProfileContainer>
                     <Row>
                         <FlexCol xs={12} md={6}>

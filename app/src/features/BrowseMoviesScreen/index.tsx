@@ -12,6 +12,7 @@ import FilterMoviesRequest from 'models/Movie/FilterMoviesRequest';
 import useAsyncError from 'hooks/useAsyncError';
 import * as selectors from 'redux/movies/selectors';
 import * as S from './index.styles';
+import PageTitle from 'components/PageTitle';
 
 const BrowseMoviesScreen = (): JSX.Element => {
     const [filterMovieRequest, setFilterMovieRequest] =
@@ -134,6 +135,7 @@ const BrowseMoviesScreen = (): JSX.Element => {
 
     return (
         <S.Container>
+            <PageTitle title="Browse Movies" />
             <Row>
                 <Col sm={12} md={4}>
                     <S.MovieFiltersContainer>

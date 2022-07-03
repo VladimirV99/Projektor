@@ -22,6 +22,7 @@ import {
     GET_USER_RESERVATIONS,
 } from 'constants/api/reservations';
 import Reservation from 'models/Reservation';
+import PageTitle from 'components/PageTitle';
 
 type Status = 'idle' | 'pending' | 'success' | 'error';
 
@@ -65,6 +66,7 @@ const MyReservationsScreen = (): JSX.Element => {
 
     return (
         <div style={{ padding: '2rem' }}>
+            <PageTitle title="My reservations" />
             {isLoading && (
                 <Backdrop open={true}>
                     <CircularProgress />

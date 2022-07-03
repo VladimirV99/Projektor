@@ -31,6 +31,7 @@ import { Modal, ModalDialog } from 'react-bootstrap';
 import Person from 'models/Movie/Person';
 import { Link, Navigate } from 'react-router-dom';
 import CreateOrEditPerson from '../CreateOrEditPerson';
+import PageTitle from 'components/PageTitle';
 import DeleteModal from 'components/DeleteModal';
 
 const ManagePeople = () => {
@@ -157,9 +158,8 @@ const ManagePeople = () => {
                     {person.movies.length === 0
                         ? 'This person has no movies'
                         : person.movies.map((movie) => (
-                              <div>
+                              <div key={movie.id}>
                                   <Link
-                                      key={movie.id}
                                       to={`/movie/${movie.id}`}
                                       target="_blank"
                                   >
@@ -181,9 +181,7 @@ const ManagePeople = () => {
 
     return (
         <Fragment>
-            <Helmet>
-                <title>Admin dashboard | Projektor</title>
-            </Helmet>
+            <PageTitle title="Manage people" />
             {!isDataLoaded && (
                 <Backdrop open={true}>
                     <CircularProgress />
@@ -219,55 +217,53 @@ const ManagePeople = () => {
                     </TableHead>
                     <TableBody>
                         {people.map((person) => (
-                            <Fragment>
+                            <TableRow
+                                sx={{
+                                    '&:last-child td, &:last-child th': {
+                                        border: 0,
+                                    },
+                                }}
+                                key={person.id}
+                            >
                                 {renderMoviesModal(person)}
-                                <TableRow
-                                    key={person.id}
-                                    sx={{
-                                        '&:last-child td, &:last-child th': {
-                                            border: 0,
-                                        },
-                                    }}
-                                >
-                                    <TableCell component="th" scope="row">
-                                        {person.id}
-                                    </TableCell>
-                                    <TableCell align="left">
-                                        {renderFullName(person)}
-                                    </TableCell>
-                                    <TableCell align="right">
-                                        {person.imdbUrl &&
-                                            renderLink(person.imdbUrl)}
-                                    </TableCell>
-                                    <TableCell align="right">
-                                        <Button
-                                            onClick={() => {
-                                                setSelectedPersonForMoviesModal(
-                                                    person
-                                                );
-                                            }}
-                                        >
-                                            Show movies
-                                        </Button>
-                                    </TableCell>
-                                    <TableCell align="right">
-                                        <Button
-                                            onClick={() =>
-                                                setSelectedPerson(person)
-                                            }
-                                        >
-                                            <FontAwesomeIcon icon={faEdit} />
-                                        </Button>
-                                        <Button
-                                            onClick={() =>
-                                                setDeletePersonId(person.id)
-                                            }
-                                        >
-                                            <FontAwesomeIcon icon={faTrash} />
-                                        </Button>
-                                    </TableCell>
-                                </TableRow>
-                            </Fragment>
+                                <TableCell component="th" scope="row">
+                                    {person.id}
+                                </TableCell>
+                                <TableCell align="left">
+                                    {renderFullName(person)}
+                                </TableCell>
+                                <TableCell align="right">
+                                    {person.imdbUrl &&
+                                        renderLink(person.imdbUrl)}
+                                </TableCell>
+                                <TableCell align="right">
+                                    <Button
+                                        onClick={() => {
+                                            setSelectedPersonForMoviesModal(
+                                                person
+                                            );
+                                        }}
+                                    >
+                                        Show movies
+                                    </Button>
+                                </TableCell>
+                                <TableCell align="right">
+                                    <Button
+                                        onClick={() =>
+                                            setSelectedPerson(person)
+                                        }
+                                    >
+                                        <FontAwesomeIcon icon={faEdit} />
+                                    </Button>
+                                    <Button
+                                        onClick={() =>
+                                            setDeletePersonId(person.id)
+                                        }
+                                    >
+                                        <FontAwesomeIcon icon={faTrash} />
+                                    </Button>
+                                </TableCell>
+                            </TableRow>
                         ))}
                     </TableBody>
                 </Table>

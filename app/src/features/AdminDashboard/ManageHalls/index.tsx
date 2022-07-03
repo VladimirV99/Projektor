@@ -17,6 +17,7 @@ import useAsyncError from 'hooks/useAsyncError';
 import { DELETE_HALL_URL, GET_HALLS_URL } from 'constants/api/reservations';
 import CreateHall from '../CreateHall';
 import { HallAdmin } from 'models/Hall';
+import PageTitle from 'components/PageTitle';
 import DeleteModal from 'components/DeleteModal';
 import { Status } from 'constants/index';
 
@@ -61,9 +62,7 @@ const ManageHalls = () => {
 
     return (
         <Fragment>
-            <Helmet>
-                <title>Manage halls | Projektor</title>
-            </Helmet>
+            <PageTitle title="Manage halls" />
             <AddContainer>
                 <Button onClick={() => setCreateModalVisible(true)}>
                     <FontAwesomeIcon icon={faPlus} /> New Hall

@@ -18,6 +18,7 @@ import { PRICE_BASE } from 'constants/common/index';
 import { useSelector } from 'react-redux';
 import { selectIsUserLoggedIn } from 'redux/auth/selectors';
 import { isUserCustomer } from 'util/auth';
+import PageTitle from 'components/PageTitle';
 
 const ReservationDetailsScreen = () => {
     const { id: screeningId } = useParams();
@@ -121,6 +122,7 @@ const ReservationDetailsScreen = () => {
 
     return (
         <Fragment>
+            <PageTitle title="Reservation Details" />
             <ModalCheKoV
                 shouldRender={isModalOpened}
                 onModalClose={() => navigate('/reservations')}

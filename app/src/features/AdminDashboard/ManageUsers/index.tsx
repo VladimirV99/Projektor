@@ -31,6 +31,7 @@ import { ROLE_ADMINISTRATOR, ROLE_CUSTOMER, Status } from 'constants/common';
 import SomethingWentWrong from 'components/SomethingWentWrong';
 import { selectUser } from 'redux/auth/selectors';
 import { Navigate } from 'react-router-dom';
+import PageTitle from 'components/PageTitle';
 import DeleteModal from 'components/DeleteModal';
 
 type ManageUsersProps = {
@@ -156,9 +157,7 @@ const ManageUsers = ({ role }: ManageUsersProps) => {
 
     return (
         <Fragment>
-            <Helmet>
-                <title>Admin dashboard | Projektor</title>
-            </Helmet>
+            <PageTitle title={`Manage ${role.toLowerCase()}s`} />
 
             <UserActionsContainer>
                 <Button variant="outlined" color="error" onClick={revokeTokens}>

@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useMemo } from 'react';
+import { Fragment, useCallback, useEffect, useMemo } from 'react';
 import { Navigate, useParams } from 'react-router-dom';
 import { useSelector, useDispatch } from 'react-redux';
 import { Backdrop, CircularProgress } from '@mui/material';
@@ -17,6 +17,7 @@ import SomethingWentWrong from 'components/SomethingWentWrong';
 import MovieDetails from './MovieDetails';
 import MovieReviews from './MovieReviews';
 import * as S from './index.styles';
+import PageTitle from 'components/PageTitle';
 
 const MovieDetailsScreen = (): JSX.Element => {
     const { id: _id } = useParams();
@@ -141,16 +142,22 @@ const MovieDetailsScreen = (): JSX.Element => {
     }, [movieStatus, screeningsStatus, throwAsyncError]);
 
     return (
-        <S.Panel>
-            {renderMovie()}
+        <Fragment>
+            <PageTitle title={movie?.title ?? ''} />
+            <S.Panel>
+                {renderMovie()}
 
-            <div>
-                <h3>Screenings</h3>
-            </div>
-            {renderScreenings()}
+                <div>
+                    <h3>Screenings</h3>
+                </div>
+                {renderScreenings()}
 
-            <MovieReviews isMovieLoaded={!isMovieLoading} movieId={movieId} />
-        </S.Panel>
+                <MovieReviews
+                    isMovieLoaded={!isMovieLoading}
+                    movieId={movieId}
+                />
+            </S.Panel>
+        </Fragment>
     );
 };
 

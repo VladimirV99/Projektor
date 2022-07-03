@@ -1,9 +1,11 @@
+import PageTitle from 'components/PageTitle';
 import { Fragment } from 'react';
 import { Link } from 'react-router-dom';
 import styled from 'styled-components';
 
 const NotFound = () => (
     <Fragment>
+        <PageTitle title="Not found" />
         <Container>
             <NotFoundContainer>
                 <h1>404 Not Found</h1>

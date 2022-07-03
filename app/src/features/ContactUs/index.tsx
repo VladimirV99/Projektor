@@ -1,5 +1,6 @@
 import { Button } from '@mui/material';
 import FormInput from 'components/FormInput';
+import PageTitle from 'components/PageTitle';
 import { Fragment, useState } from 'react';
 
 const ContactUs = () => {
@@ -60,16 +61,19 @@ const ContactUs = () => {
     );
 
     return (
-        <div
-            style={{
-                width: '100%',
-                height: '100%',
-                display: 'flex',
-                justifyContent: 'center',
-            }}
-        >
-            {renderForm()}
-        </div>
+        <Fragment>
+            <PageTitle title="Contact Us" />
+            <div
+                style={{
+                    width: '100%',
+                    height: '100%',
+                    display: 'flex',
+                    justifyContent: 'center',
+                }}
+            >
+                {renderForm()}
+            </div>
+        </Fragment>
     );
 };
 

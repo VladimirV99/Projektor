@@ -7,8 +7,8 @@ import 'react-calendar-timeline/lib/Timeline.css';
 import { CircularProgress } from '@material-ui/core';
 import { Backdrop } from '@mui/material';
 import { GET_SCREENINGS_URL } from 'constants/index';
-import { Helmet } from 'react-helmet';
 import Screening from 'models/Screening';
+import PageTitle from 'components/PageTitle';
 
 type Status = 'loading' | 'success' | 'error';
 
@@ -81,28 +81,28 @@ const ScreeningCalendarPage = () => {
         }
     }, [screeningsStatus]);
 
-    if (screeningsStatus === 'loading' || screenings.length === 0) {
-        return (
-            <Backdrop open>
-                <CircularProgress />
-            </Backdrop>
-        );
-    }
-
     return (
         <Fragment>
-            <Helmet>
-                <title>Screenings Calendar | Projektor</title>
-            </Helmet>
-            <Timeline
-                groups={groups}
-                items={items}
-                defaultTimeStart={timeStart}
-                defaultTimeEnd={timeEnd}
-                minZoom={12 * 60 * 60 * 1000}
-                maxZoom={2 * 24 * 60 * 60 * 1000}
-                canMove={false}
-            />
+            <PageTitle title="Screenings calendar" />
+            {screeningsStatus === 'loading' && (
+                <Backdrop open>
+                    <CircularProgress />
+                </Backdrop>
+            )}
+            {screeningsStatus === 'success' && screenings.length > 0 && (
+                <Timeline
+                    groups={groups}
+                    items={items}
+                    defaultTimeStart={timeStart}
+                    defaultTimeEnd={timeEnd}
+                    minZoom={12 * 60 * 60 * 1000}
+                    maxZoom={2 * 24 * 60 * 60 * 1000}
+                    canMove={false}
+                />
+            )}
+            {screeningsStatus === 'success' && screenings.length === 0 && (
+                <p>No screenings.</p>
+            )}
         </Fragment>
     );
 };

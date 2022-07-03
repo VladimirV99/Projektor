@@ -266,14 +266,14 @@ const CreateOrEditMovie = ({ movie, onClose }: Props) => {
                                                         people: movieInput.people.filter(
                                                             ({
                                                                 personId:
-                                                                currentPersonId,
+                                                                    currentPersonId,
                                                                 roleId: currentRoleId,
                                                             }) => {
                                                                 if (
                                                                     currentPersonId ===
-                                                                    deletedPersonId &&
+                                                                        deletedPersonId &&
                                                                     currentRoleId ===
-                                                                    roleId
+                                                                        roleId
                                                                 ) {
                                                                     return false;
                                                                 }
@@ -311,9 +311,9 @@ const CreateOrEditMovie = ({ movie, onClose }: Props) => {
                                                                 roleId: currentRoleId,
                                                             }) =>
                                                                 clickedPersonId ===
-                                                                personId &&
+                                                                    personId &&
                                                                 currentRoleId ===
-                                                                roleId
+                                                                    roleId
                                                         )
                                                     ) {
                                                     }

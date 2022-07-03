@@ -1,4 +1,4 @@
-import { Box, Tab, Tabs } from '@mui/material';
+import { Backdrop, Box, CircularProgress, Tab, Tabs } from '@mui/material';
 import axios from 'axios';
 import MoviePoster from 'components/MoviePoster';
 import { GET_CURRENT_MOVIES_URL, GET_FUTURE_MOVIES_URL } from 'constants/api';
@@ -40,17 +40,40 @@ const HomeScreen = (): JSX.Element => {
 
     const [currentMovies, setCurrentMovies] = useState<Movie[]>([]);
     const [futureMovies, setFutureMovies] = useState<Movie[]>([]);
+    const [currentMovieStatus, setCurrentMovieStatus] =
+        useState<string>('idle');
+    const [futureMovieStatus, setFutureMovieStatus] = useState<string>('idle');
 
     useEffect(() => {
-        axios.get<Movie[]>(GET_CURRENT_MOVIES_URL).then((res) => {
-            setCurrentMovies(res.data);
-        });
+        setTimeout(
+            () =>
+                axios
+                    .get<Movie[]>(GET_CURRENT_MOVIES_URL)
+                    .then((res) => {
+                        setCurrentMovies(res.data);
+                        setCurrentMovieStatus('success');
+                    })
+                    .catch((error) => {
+                        setCurrentMovieStatus('error');
+                    }),
+            2000
+        );
     }, []);
 
     useEffect(() => {
-        axios.get<Movie[]>(GET_FUTURE_MOVIES_URL).then((res) => {
-            setFutureMovies(res.data);
-        });
+        setTimeout(
+            () =>
+                axios
+                    .get<Movie[]>(GET_FUTURE_MOVIES_URL)
+                    .then((res) => {
+                        setFutureMovies(res.data);
+                        setFutureMovieStatus('success');
+                    })
+                    .catch((error) => {
+                        setFutureMovieStatus('error');
+                    }),
+            2000
+        );
     }, []);
 
     return (
@@ -66,6 +89,12 @@ const HomeScreen = (): JSX.Element => {
                 </Tabs>
             </Box>
             <TabPanel value={value} index={0}>
+                {currentMovieStatus === 'idle' && <CircularProgress />}
+                {currentMovieStatus === 'error' && (
+                    <h3 style={{ color: 'red' }}>
+                        Failed to load current movies
+                    </h3>
+                )}
                 <S.PosterList>
                     {currentMovies.map((movie) => (
                         <MoviePoster
@@ -79,6 +108,12 @@ const HomeScreen = (): JSX.Element => {
                 </S.PosterList>
             </TabPanel>
             <TabPanel value={value} index={1}>
+                {futureMovieStatus === 'idle' && <CircularProgress />}
+                {futureMovieStatus === 'error' && (
+                    <h3 style={{ color: 'red' }}>
+                        Failed to load future movies
+                    </h3>
+                )}
                 <S.PosterList>
                     {futureMovies.map((movie) => (
                         <MoviePoster

@@ -27,10 +27,11 @@ import CreateNewUser from '../CreateNewUser';
 import { useDispatch } from 'react-redux';
 import { useDebounce } from 'use-debounce';
 import { logoutCustomer } from 'redux/auth/modules';
-import { ROLE_ADMINISTRATOR, ROLE_CUSTOMER } from 'constants/common';
+import { ROLE_ADMINISTRATOR, ROLE_CUSTOMER, Status } from 'constants/common';
 import SomethingWentWrong from 'components/SomethingWentWrong';
 import { selectUser } from 'redux/auth/selectors';
 import { Navigate } from 'react-router-dom';
+import DeleteModal from 'components/DeleteModal';
 
 type ManageUsersProps = {
     role: string;
@@ -63,7 +64,7 @@ const ManageUsers = ({ role }: ManageUsersProps) => {
     const [userForCreation, setUserForCreation] =
         useState<CreateUserRequest | null>(null);
     const [deleteUserEmail, setDeleteUserEmail] = useState<string | null>(null);
-    const [deleteStatus, setDeleteStatus] = useState('idle');
+    const [deleteStatus, setDeleteStatus] = useState<Status>('idle');
     const [shouldRefresh, setShouldRefresh] = useState(false);
 
     const [filterUsersRequest, setFilterUsersRequest] =
@@ -269,60 +270,19 @@ const ManageUsers = ({ role }: ManageUsersProps) => {
                     callback={() => setShouldRefresh(true)}
                 />
             )}
-            <Modal show={deleteUserEmail !== null}>
-                <Modal.Header>
-                    <Modal.Title>
-                        Deleting administrator: {deleteUserEmail}
-                    </Modal.Title>
-                </Modal.Header>
-                <Modal.Body>
-                    {deleteStatus === 'idle' && (
-                        <div>
-                            Are you sure you want to delete this user? This
-                            action cannot be undone.
-                        </div>
-                    )}
-                    {deleteStatus === 'pending' && <div>Please wait...</div>}
-                    {deleteStatus === 'error' && (
-                        <div>Something went wrong. Please try again.</div>
-                    )}
-                    {deleteStatus === 'success' && (
-                        <div>User successfully deleted</div>
-                    )}
-                </Modal.Body>
-                <Modal.Footer>
-                    {(deleteStatus === 'success' ||
-                        deleteStatus === 'error') && (
-                        <Button
-                            onClick={() => {
-                                setDeleteUserEmail(null);
-                                setDeleteStatus('idle');
-                            }}
-                        >
-                            Close
-                        </Button>
-                    )}
-                    {(deleteStatus === 'idle' ||
-                        deleteStatus === 'pending') && (
-                        <Fragment>
-                            <Button
-                                disabled={deleteStatus === 'pending'}
-                                onClick={() => {
-                                    setDeleteUserEmail(null);
-                                }}
-                            >
-                                Cancel
-                            </Button>
-                            <Button
-                                onClick={deleteUser}
-                                disabled={deleteStatus === 'pending'}
-                            >
-                                Delete
-                            </Button>
-                        </Fragment>
-                    )}
-                </Modal.Footer>
-            </Modal>
+            {deleteUserEmail !== null && (
+                <DeleteModal
+                    onSubmit={deleteUser}
+                    onClose={() => {
+                        setDeleteUserEmail(null);
+                        setDeleteStatus('idle');
+                    }}
+                    entityName="user"
+                    title={`Delete user ${deleteUserEmail} ?`}
+                    errorMessage={null}
+                    deleteStatus={deleteStatus}
+                />
+            )}
         </Fragment>
     );
 };

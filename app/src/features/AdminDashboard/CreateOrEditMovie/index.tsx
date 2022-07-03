@@ -193,7 +193,7 @@ const CreateOrEditMovie = ({ movie, onClose }: Props) => {
                             <TextField
                                 value={movieInput.length}
                                 type="number"
-                                label="length"
+                                label="Length"
                                 onChange={(e) =>
                                     setMovieInput({
                                         ...movieInput,
@@ -204,9 +204,6 @@ const CreateOrEditMovie = ({ movie, onClose }: Props) => {
                             />
                         </FormTextInputField>
                         <FormTextInputField>
-                            <FormInputFieldTitle>
-                                Trailer URL
-                            </FormInputFieldTitle>
                             <TextField
                                 value={movieInput.trailerUrl ?? ''}
                                 label="Trailer URL"
@@ -269,14 +266,14 @@ const CreateOrEditMovie = ({ movie, onClose }: Props) => {
                                                         people: movieInput.people.filter(
                                                             ({
                                                                 personId:
-                                                                    currentPersonId,
+                                                                currentPersonId,
                                                                 roleId: currentRoleId,
                                                             }) => {
                                                                 if (
                                                                     currentPersonId ===
-                                                                        deletedPersonId &&
+                                                                    deletedPersonId &&
                                                                     currentRoleId ===
-                                                                        roleId
+                                                                    roleId
                                                                 ) {
                                                                     return false;
                                                                 }
@@ -314,9 +311,9 @@ const CreateOrEditMovie = ({ movie, onClose }: Props) => {
                                                                 roleId: currentRoleId,
                                                             }) =>
                                                                 clickedPersonId ===
-                                                                    personId &&
+                                                                personId &&
                                                                 currentRoleId ===
-                                                                    roleId
+                                                                roleId
                                                         )
                                                     ) {
                                                     }

@@ -156,9 +156,6 @@ const ManageUsers = ({ role }: ManageUsersProps) => {
 
     return (
         <Fragment>
-            <Helmet>
-                <title>Admin dashboard | Projektor</title>
-            </Helmet>
             <PageTitle title={`Manage ${role.toLowerCase()}s`} />
 
             <UserActionsContainer>

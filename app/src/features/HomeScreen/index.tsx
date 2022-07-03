@@ -1,4 +1,4 @@
-import { Backdrop, Box, CircularProgress, Tab, Tabs } from '@mui/material';
+import { Box, CircularProgress, Tab, Tabs } from '@mui/material';
 import axios from 'axios';
 import MoviePoster from 'components/MoviePoster';
 import { GET_CURRENT_MOVIES_URL, GET_FUTURE_MOVIES_URL } from 'constants/api';

@@ -33,3 +33,12 @@ export const CREATE_PERSON_URL = urlJoin(URL_BASE, '/Movies/CreatePerson');
 
 export const DELETE_PERSON_URL = (id: number) =>
     urlJoin(URL_BASE, `/Movies/DeletePerson/${id}`);
+
+export const GET_CURRENT_MOVIES_URL = urlJoin(
+    URL_BASE,
+    '/Movies/GetCurrentMovies'
+);
+export const GET_FUTURE_MOVIES_URL = urlJoin(
+    URL_BASE,
+    '/Movies/GetFutureMovies'
+);

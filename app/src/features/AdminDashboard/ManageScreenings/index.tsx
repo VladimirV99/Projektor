@@ -147,14 +147,14 @@ const ManageScreenings = () => {
                 <CreateScreening
                     screening={selectedScreening}
                     onClose={() => setSelectedScreening(null)}
-                    callback={getScreenings}
+                    onCreate={getScreenings}
                 />
             )}
             {selectedScreening && updateModal && (
                 <UpdateScreening
                     screening={selectedScreening}
                     onClose={() => setSelectedScreening(null)}
-                    callback={getScreenings}
+                    onUpdate={getScreenings}
                 />
             )}
             {deleteScreeningId !== null && (

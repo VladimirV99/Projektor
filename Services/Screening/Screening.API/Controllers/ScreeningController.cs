@@ -100,7 +100,7 @@ namespace Screening.Common.Controllers
 
         [HttpGet("[action]")]
         [ProducesResponseType(typeof(IEnumerable<HallModel>), StatusCodes.Status200OK)]
-        public async Task<ActionResult<HallModel>> GetHalls()
+        public async Task<ActionResult<IEnumerable<HallModel>>> GetHalls()
         {
             var halls = await _repository.GetAllHalls();
             return Ok(_mapper.Map<IEnumerable<HallModel>>(halls));
@@ -108,11 +108,12 @@ namespace Screening.Common.Controllers
 
         [HttpGet("[action]")]
         [ProducesResponseType(typeof(IEnumerable<HallModel>), StatusCodes.Status200OK)]
-        public async Task<ActionResult<HallModel>> GetHallsBySearchString([FromQuery] string searchString)
+        public async Task<ActionResult<IEnumerable<HallModel>>> GetHallsBySearchString([FromQuery] string? searchString)
         {
-            var halls = await _repository.GetHallsBySearchString(searchString);
+            var halls = await _repository.GetHallsBySearchString(searchString ?? "");
             return Ok(_mapper.Map<IEnumerable<HallModel>>(halls));
         }
+
         // This is a debug function
         [HttpGet("[action]")]
         [ProducesResponseType(typeof(IEnumerable<MovieModel>), StatusCodes.Status200OK)]

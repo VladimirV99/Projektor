@@ -1,7 +1,7 @@
-import { Fragment, useState } from 'react';
+import { useState } from 'react';
 import styled from 'styled-components';
-import { Button, TextField } from '@mui/material';
-import { Modal } from 'react-bootstrap';
+import { Stack, TextField } from '@mui/material';
+import { Button, Modal } from 'react-bootstrap';
 import Screening from 'models/Screening';
 import SearchInput from '../SearchInput';
 import {
@@ -12,32 +12,38 @@ import {
 import { DateTimePicker } from '@mui/lab';
 import dayjs from 'dayjs';
 import axiosAuthInstance from 'axios/instance';
+import { Status } from 'constants/common';
 
-type Props = {
+type CreateScreeningProps = {
     screening: Screening;
     onClose: () => void;
-    callback: () => void;
+    onCreate: () => void;
 };
 
-const CreateScreening = ({ screening, onClose, callback }: Props) => {
-    const [screeningInput, setScreeningInput] = useState<Screening>({
-        ...screening,
+type ScreeningInput = {
+    movieId: number | undefined;
+    hallId: number | undefined;
+    movieStart: string;
+};
+
+const CreateScreening = ({
+    onClose,
+    onCreate,
+}: CreateScreeningProps): JSX.Element => {
+    const [screeningInput, setScreeningInput] = useState<ScreeningInput>({
+        movieId: undefined,
+        hallId: undefined,
+        movieStart: '',
     });
-    const [createStatus, setCreateStatus] = useState('idle');
+    const [createStatus, setCreateStatus] = useState<Status>('idle');
     const [createError, setCreateError] = useState<string | null>(null);
-    const [selectedMovieId, setSelectedMovieId] = useState(screening.movie?.id);
-    const [selectedHallId, setSelectedHallId] = useState(screening.hall?.id);
 
     const handleCreateSubmit = () => {
         setCreateStatus('pending');
         axiosAuthInstance
-            .post(INSERT_SCREENING_URL, {
-                movieId: selectedMovieId,
-                hallId: selectedHallId,
-                movieStart: screeningInput.movieStart,
-            })
+            .post(INSERT_SCREENING_URL, screeningInput)
             .then((response) => {
-                callback();
+                onCreate();
                 setCreateStatus('success');
             })
             .catch((error) => {
@@ -50,129 +56,119 @@ const CreateScreening = ({ screening, onClose, callback }: Props) => {
     };
 
     return (
-        <Fragment>
-            <Modal show={createStatus !== 'idle'}>
-                <Modal.Header>
-                    <Modal.Title>Creating a screening</Modal.Title>
-                </Modal.Header>
-                <Modal.Body>
-                    {createStatus === 'pending' && (
-                        <div>Creating screening...</div>
-                    )}
-                    {createStatus === 'success' && (
-                        <div>Screening created successfully!</div>
-                    )}
-                    {createStatus === 'error' && <div>{createError}</div>}
-                </Modal.Body>
-                <Modal.Footer>
-                    <Button
-                        disabled={createStatus === 'pending'}
-                        onClick={onClose}
-                    >
-                        Close
-                    </Button>
-                </Modal.Footer>
-            </Modal>
-            <Modal show={createStatus === 'idle'}>
-                <Modal.Header>
-                    {screening.id != -1 ? (
-                        <h4>
-                            Editing:{' '}
-                            <i>
-                                {screening.movie?.title} {screening.hall!.name}
-                            </i>
-                        </h4>
-                    ) : (
-                        <FormInputFieldTitle>
-                            Create a new screening
-                        </FormInputFieldTitle>
-                    )}
-                </Modal.Header>
+        <Modal show={true}>
+            <Modal.Header>
+                <Modal.Title>Create a new screening</Modal.Title>
+            </Modal.Header>
 
-                <Modal.Body>
-                    <DateTimePicker
-                        label={'Movie start'}
-                        onChange={(value) => {
-                            setScreeningInput({
-                                ...screeningInput,
-                                movieStart: dayjs(value!).format(
-                                    'YYYY-MM-DDTHH:mm:ss'
-                                ),
-                            });
-                        }}
-                        value={new Date(screeningInput.movieStart)}
-                        renderInput={(props) => (
-                            <TextField {...props} fullWidth />
-                        )}
-                        ampm={false}
-                    />
-                    <div>
-                        <FormInputFieldTitle>Movie</FormInputFieldTitle>
+            <Modal.Body>
+                {createStatus === 'idle' && (
+                    <Stack spacing={3}>
+                        <DateTimePicker
+                            label="Movie start"
+                            minDateTime={new Date()}
+                            onChange={(value) => {
+                                setScreeningInput({
+                                    ...screeningInput,
+                                    movieStart:
+                                        value !== null
+                                            ? dayjs(value).format(
+                                                  'YYYY-MM-DDTHH:mm:ss'
+                                              )
+                                            : '',
+                                });
+                            }}
+                            value={
+                                screeningInput.movieStart !== ''
+                                    ? new Date(screeningInput.movieStart)
+                                    : null
+                            }
+                            renderInput={(props) => (
+                                <TextField {...props} fullWidth />
+                            )}
+                            ampm={false}
+                        />
                         <SearchInput
+                            label="Movie"
                             searchEndpoint={GET_MOVIES_BY_SEARCH_STRING}
                             getOptions={(movies) =>
                                 movies.map(({ id, title, length }) => ({
                                     id,
-                                    label: `${title} ${length}`,
+                                    label: title,
                                 }))
                             }
-                            onOptionClicked={({ id, label }) => {
-                                setSelectedMovieId(id);
-                            }}
+                            onOptionClicked={({ id, label }) =>
+                                setScreeningInput({
+                                    ...screeningInput,
+                                    movieId: id,
+                                })
+                            }
+                            onInputCleared={() =>
+                                setScreeningInput({
+                                    ...screeningInput,
+                                    movieId: undefined,
+                                })
+                            }
                             extractData={(data) => data.movies}
                         />
-                    </div>
-                    <div>
-                        <FormInputFieldTitle>Hall</FormInputFieldTitle>
                         <SearchInput
+                            label="Hall"
                             searchEndpoint={GET_HALLS_BY_SEARCH_STRING}
                             getOptions={(halls) =>
                                 halls.map(({ id, name }) => ({
                                     id,
-                                    label: `${name}`,
+                                    label: name,
                                 }))
                             }
                             onOptionClicked={({ id, label }) => {
-                                setSelectedHallId(id);
+                                setScreeningInput({
+                                    ...screeningInput,
+                                    hallId: id,
+                                });
                             }}
+                            onInputCleared={() =>
+                                setScreeningInput({
+                                    ...screeningInput,
+                                    hallId: undefined,
+                                })
+                            }
                         />
-                    </div>
-                </Modal.Body>
+                    </Stack>
+                )}
+                {createStatus === 'pending' && <div>Creating screening...</div>}
+                {createStatus === 'success' && (
+                    <div>Screening created successfully!</div>
+                )}
+                {createStatus === 'error' && <div>{createError}</div>}
+            </Modal.Body>
 
-                <Modal.Footer>
-                    <div
-                        style={{
-                            display: 'flex',
-                            justifyContent: 'space-between',
-                        }}
+            <Modal.Footer>
+                <Button
+                    variant="secondary"
+                    onClick={onClose}
+                    disabled={createStatus === 'pending'}
+                >
+                    Close
+                </Button>
+                {createStatus === 'idle' && (
+                    <Button
+                        variant="primary"
+                        onClick={handleCreateSubmit}
+                        disabled={
+                            isNaN(Date.parse(screeningInput.movieStart)) ||
+                            screeningInput.movieId === undefined ||
+                            screeningInput.hallId === undefined
+                        }
                     >
-                        <Button
-                            variant="contained"
-                            onClick={handleCreateSubmit}
-                        >
-                            Create screening
-                        </Button>
-                        <Button variant="contained" onClick={onClose}>
-                            Close
-                        </Button>
-                    </div>
-                </Modal.Footer>
-            </Modal>
-        </Fragment>
+                        Create screening
+                    </Button>
+                )}
+            </Modal.Footer>
+        </Modal>
     );
 };
 
 export default CreateScreening;
-
-const FormInputFieldTitle = styled.div`
-    font-size: 20px;
-    font-weight: bold;
-`;
-
-const FormTextInputField = styled.div`
-    padding-top: 10px;
-    padding-bottom: 10px;
-`;
 
 export const SelectedValuesWrapper = styled.div`
     padding-top: 10px;

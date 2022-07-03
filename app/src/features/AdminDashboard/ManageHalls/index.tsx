@@ -19,7 +19,7 @@ import CreateHall from '../CreateHall';
 import { HallAdmin } from 'models/Hall';
 import PageTitle from 'components/PageTitle';
 import DeleteModal from 'components/DeleteModal';
-import { Status } from 'constants/index';
+import { Status } from 'constants/common/index';
 
 const ManageHalls = () => {
     const [halls, setHalls] = useState<HallAdmin[]>([]);

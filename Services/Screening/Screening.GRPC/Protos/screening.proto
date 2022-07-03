@@ -1,6 +1,7 @@
 syntax = "proto3";
 
 import "google/protobuf/timestamp.proto";
+import "google/protobuf/empty.proto";
 
 option csharp_namespace = "Screening.GRPC";
 
@@ -11,6 +12,8 @@ service ScreeningProtoService {
   rpc DeleteMovie (DeleteMovieRequest) returns (DeleteMovieResponse);
   rpc UpdateMovie (UpdateMovieRequest) returns (UpdateMovieResponse);
   rpc DeleteHall (DeleteHallRequest) returns (DeleteHallResponse);
+  rpc GetCurrentMovies (google.protobuf.Empty) returns (MoviesResponse);
+  rpc GetFutureMovies (google.protobuf.Empty) returns (MoviesResponse);
 }
 
 message GetScreeningRequest {
@@ -53,4 +56,8 @@ message DeleteHallRequest {
 
 message DeleteHallResponse {
   bool success = 1;
+}
+
+message MoviesResponse {
+  repeated int32 movies = 1;
 }

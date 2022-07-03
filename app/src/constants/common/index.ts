@@ -1,9 +1,3 @@
-export enum FetchType {
-    InitialLoad,
-    LoadingMore,
-    Refreshing,
-}
-
 export enum LoadingStatus {
     NotInitialized,
     Initializing,
@@ -19,3 +13,5 @@ export const ROLE_ADMINISTRATOR = 'Administrator';
 export const ROLE_CUSTOMER = 'Customer';
 
 export const PRICE_BASE = 300;
+
+export type Status = 'idle' | 'pending' | 'success' | 'error';

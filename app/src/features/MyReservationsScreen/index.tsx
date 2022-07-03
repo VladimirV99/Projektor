@@ -18,8 +18,8 @@ import {
 import { Modal } from 'react-bootstrap';
 import CancelIcon from '@mui/icons-material/Cancel';
 import {
-    CANCEL_RESERVATION,
-    GET_USER_RESERVATIONS,
+    CANCEL_RESERVATION_URL,
+    GET_USER_RESERVATIONS_URL,
 } from 'constants/api/reservations';
 import Reservation from 'models/Reservation';
 import PageTitle from 'components/PageTitle';
@@ -39,7 +39,7 @@ const MyReservationsScreen = (): JSX.Element => {
 
     useEffect(() => {
         axiosAuthInstance
-            .get<Reservation[]>(GET_USER_RESERVATIONS)
+            .get<Reservation[]>(GET_USER_RESERVATIONS_URL)
             .then((res) => {
                 setReservations(res.data);
                 setLoading(false);
@@ -52,7 +52,7 @@ const MyReservationsScreen = (): JSX.Element => {
         }
         setCancelStatus('pending');
         axiosAuthInstance
-            .delete(CANCEL_RESERVATION(cancelReservationId))
+            .delete(CANCEL_RESERVATION_URL(cancelReservationId))
             .then(() => {
                 setReservations(
                     reservations.filter((r) => r.id !== cancelReservationId)

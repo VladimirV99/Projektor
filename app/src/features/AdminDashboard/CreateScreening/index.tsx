@@ -101,7 +101,9 @@ const CreateScreening = ({ screening, onClose, callback }: Props) => {
                             });
                         }}
                         value={new Date(screeningInput.movieStart)}
-                        renderInput={(props) => <TextField {...props} />}
+                        renderInput={(props) => (
+                            <TextField {...props} fullWidth />
+                        )}
                         ampm={false}
                     />
                     <div>

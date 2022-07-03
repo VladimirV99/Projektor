@@ -32,6 +32,7 @@ import Person from 'models/Movie/Person';
 import { Link, Navigate } from 'react-router-dom';
 import CreateOrEditPerson from '../CreateOrEditPerson';
 import PageTitle from 'components/PageTitle';
+import DeleteModal from 'components/DeleteModal';
 
 const ManagePeople = () => {
     const [searchPeopleRequest, setSearchPeopleRequest] = useState<{
@@ -157,9 +158,8 @@ const ManagePeople = () => {
                     {person.movies.length === 0
                         ? 'This person has no movies'
                         : person.movies.map((movie) => (
-                              <div>
+                              <div key={movie.id}>
                                   <Link
-                                      key={movie.id}
                                       to={`/movie/${movie.id}`}
                                       target="_blank"
                                   >
@@ -217,55 +217,53 @@ const ManagePeople = () => {
                     </TableHead>
                     <TableBody>
                         {people.map((person) => (
-                            <Fragment>
+                            <TableRow
+                                sx={{
+                                    '&:last-child td, &:last-child th': {
+                                        border: 0,
+                                    },
+                                }}
+                                key={person.id}
+                            >
                                 {renderMoviesModal(person)}
-                                <TableRow
-                                    key={person.id}
-                                    sx={{
-                                        '&:last-child td, &:last-child th': {
-                                            border: 0,
-                                        },
-                                    }}
-                                >
-                                    <TableCell component="th" scope="row">
-                                        {person.id}
-                                    </TableCell>
-                                    <TableCell align="left">
-                                        {renderFullName(person)}
-                                    </TableCell>
-                                    <TableCell align="right">
-                                        {person.imdbUrl &&
-                                            renderLink(person.imdbUrl)}
-                                    </TableCell>
-                                    <TableCell align="right">
-                                        <Button
-                                            onClick={() => {
-                                                setSelectedPersonForMoviesModal(
-                                                    person
-                                                );
-                                            }}
-                                        >
-                                            Show movies
-                                        </Button>
-                                    </TableCell>
-                                    <TableCell align="right">
-                                        <Button
-                                            onClick={() =>
-                                                setSelectedPerson(person)
-                                            }
-                                        >
-                                            <FontAwesomeIcon icon={faEdit} />
-                                        </Button>
-                                        <Button
-                                            onClick={() =>
-                                                setDeletePersonId(person.id)
-                                            }
-                                        >
-                                            <FontAwesomeIcon icon={faTrash} />
-                                        </Button>
-                                    </TableCell>
-                                </TableRow>
-                            </Fragment>
+                                <TableCell component="th" scope="row">
+                                    {person.id}
+                                </TableCell>
+                                <TableCell align="left">
+                                    {renderFullName(person)}
+                                </TableCell>
+                                <TableCell align="right">
+                                    {person.imdbUrl &&
+                                        renderLink(person.imdbUrl)}
+                                </TableCell>
+                                <TableCell align="right">
+                                    <Button
+                                        onClick={() => {
+                                            setSelectedPersonForMoviesModal(
+                                                person
+                                            );
+                                        }}
+                                    >
+                                        Show movies
+                                    </Button>
+                                </TableCell>
+                                <TableCell align="right">
+                                    <Button
+                                        onClick={() =>
+                                            setSelectedPerson(person)
+                                        }
+                                    >
+                                        <FontAwesomeIcon icon={faEdit} />
+                                    </Button>
+                                    <Button
+                                        onClick={() =>
+                                            setDeletePersonId(person.id)
+                                        }
+                                    >
+                                        <FontAwesomeIcon icon={faTrash} />
+                                    </Button>
+                                </TableCell>
+                            </TableRow>
                         ))}
                     </TableBody>
                 </Table>
@@ -277,61 +275,19 @@ const ManagePeople = () => {
                     onClose={() => setSelectedPerson(null)}
                 />
             )}
-            <Modal show={deletePersonId !== null}>
-                <Modal.Header>
-                    <Modal.Title>
-                        Delete person - <i>{deletePersonFullName}</i>
-                    </Modal.Title>
-                </Modal.Header>
-                <Modal.Body>
-                    {deleteStatus === 'idle' && (
-                        <div>
-                            Are you sure you want to delete this person? This
-                            action cannot be undone.
-                        </div>
-                    )}
-                    {deleteStatus === 'pending' && <div>Please wait...</div>}
-                    {deleteStatus === 'error' && (
-                        <div>Something went wrong. Please try again.</div>
-                    )}
-                    {deleteStatus === 'success' && (
-                        <div>Person successfully deleted</div>
-                    )}
-                </Modal.Body>
-                <Modal.Footer>
-                    {(deleteStatus === 'success' ||
-                        deleteStatus === 'error') && (
-                        <Button
-                            onClick={() => {
-                                setDeletePersonId(null);
-                                dispatch(resetPeopleDeleteStatus());
-                            }}
-                        >
-                            Close
-                        </Button>
-                    )}
-                    {(deleteStatus === 'idle' ||
-                        deleteStatus === 'pending') && (
-                        <Fragment>
-                            <Button
-                                disabled={deleteStatus === 'pending'}
-                                onClick={() => {
-                                    setDeletePersonId(null);
-                                    // dispatch(resetDeleteStatus());
-                                }}
-                            >
-                                Cancel
-                            </Button>
-                            <Button
-                                onClick={handleDeletePerson}
-                                disabled={deleteStatus === 'pending'}
-                            >
-                                Delete
-                            </Button>
-                        </Fragment>
-                    )}
-                </Modal.Footer>
-            </Modal>
+            {deletePersonId !== null && (
+                <DeleteModal
+                    onSubmit={handleDeletePerson}
+                    onClose={() => {
+                        setDeletePersonId(null);
+                        dispatch(resetPeopleDeleteStatus());
+                    }}
+                    entityName="person"
+                    errorMessage={null}
+                    title={`Delete person: ${deletePersonFullName}?`}
+                    deleteStatus={deleteStatus}
+                />
+            )}
         </Fragment>
     );
 };

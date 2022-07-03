@@ -7,25 +7,24 @@ import TableCell from '@mui/material/TableCell';
 import TableContainer from '@mui/material/TableContainer';
 import TableHead from '@mui/material/TableHead';
 import TableRow from '@mui/material/TableRow';
-import Screening from 'models/Screening';
 import styled from 'styled-components';
 import { Button } from '@mui/material';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faEdit } from '@fortawesome/free-regular-svg-icons';
 import { faTrash } from '@fortawesome/free-solid-svg-icons';
 import { faPlus } from '@fortawesome/free-solid-svg-icons';
-import { Modal } from 'react-bootstrap';
 import axiosAuthInstance from 'axios/instance';
 import useAsyncError from 'hooks/useAsyncError';
 import { DELETE_HALL_URL, GET_HALLS_URL } from 'constants/api/reservations';
 import CreateHall from '../CreateHall';
 import { HallAdmin } from 'models/Hall';
 import PageTitle from 'components/PageTitle';
+import DeleteModal from 'components/DeleteModal';
+import { Status } from 'constants/index';
 
 const ManageHalls = () => {
     const [halls, setHalls] = useState<HallAdmin[]>([]);
     const [deleteHallId, setDeleteHallId] = useState<number | null>(null);
-    const [deleteStatus, setDeleteStatus] = useState<string>('idle');
+    const [deleteStatus, setDeleteStatus] = useState<Status>('idle');
     const [deleteError, setDeleteError] = useState<string | null>(null);
     const [createModalVisible, setCreateModalVisible] = useState(false);
 
@@ -60,10 +59,6 @@ const ManageHalls = () => {
     };
 
     useEffect(getHalls, []);
-
-    useEffect(() => {
-        console.log(deleteHallId);
-    }, [deleteHallId]);
 
     return (
         <Fragment>
@@ -133,45 +128,20 @@ const ManageHalls = () => {
                 />
             )}
             {deleteHallId !== null && (
-                <Modal show={true}>
-                    <Modal.Header>
-                        <Title>Delete hall {deleteHallId}</Title>
-                    </Modal.Header>
-                    <Modal.Body>
-                        {deleteStatus === 'idle' && (
-                            <p>
-                                Are you sure you want to delete this hall? This
-                                action cannot be undone.
-                            </p>
-                        )}
-                        {deleteStatus === 'pending' && <p>Loading...</p>}
-                        {deleteStatus === 'error' && <p>{deleteError}</p>}
-                        {deleteStatus === 'success' && (
-                            <p>Hall successfully deleted.</p>
-                        )}
-                    </Modal.Body>
-                    <Modal.Footer>
-                        <Button
-                            disabled={deleteStatus === 'pending'}
-                            onClick={() => {
-                                setDeleteHallId(null);
-                                setDeleteStatus('idle');
-                                setDeleteError(null);
-                            }}
-                        >
-                            Close
-                        </Button>
-                        <Button
-                            onClick={deleteHall}
-                            disabled={
-                                deleteStatus === 'pending' ||
-                                deleteStatus === 'success'
-                            }
-                        >
-                            Delete
-                        </Button>
-                    </Modal.Footer>
-                </Modal>
+                <DeleteModal
+                    onSubmit={deleteHall}
+                    onClose={() => {
+                        setDeleteHallId(null);
+                        setDeleteStatus('idle');
+                        setDeleteError(null);
+                    }}
+                    title={`Delete hall: ${
+                        halls.find(({ id }) => id === deleteHallId)?.name ?? ''
+                    }`}
+                    entityName="hall"
+                    deleteStatus={deleteStatus}
+                    errorMessage={deleteError}
+                />
             )}
         </Fragment>
     );

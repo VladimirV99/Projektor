@@ -10,7 +10,7 @@ import TableRow from '@mui/material/TableRow';
 import axios from 'axios';
 import Screening from 'models/Screening';
 import styled from 'styled-components';
-import { Button } from '@mui/material';
+import { Backdrop, Button, CircularProgress } from '@mui/material';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faEdit } from '@fortawesome/free-regular-svg-icons';
 import { faTrash } from '@fortawesome/free-solid-svg-icons';
@@ -24,6 +24,8 @@ import {
 } from 'constants/api/screenings';
 import axiosAuthInstance from 'axios/instance';
 import PageTitle from 'components/PageTitle';
+import DeleteModal from 'components/DeleteModal';
+import { Status } from 'constants/index';
 
 const ManageScreenings = () => {
     const [screenings, setScreenings] = useState<Screening[] | null>(null);
@@ -32,8 +34,7 @@ const ManageScreenings = () => {
     const [deleteScreeningId, setDeleteScreeningId] = useState<number | null>(
         null
     );
-    const [deleteStatus, setDeleteStatus] = useState('idle');
-    const [shouldRefresh, setShouldRefresh] = useState(false);
+    const [deleteStatus, setDeleteStatus] = useState<Status>('idle');
     const [updateModal, setUpdateModal] = useState(false);
 
     const getScreenings = () =>
@@ -46,9 +47,8 @@ const ManageScreenings = () => {
         axiosAuthInstance
             .delete(DELETE_SCREENING_URL(deleteScreeningId!))
             .then((response) => {
-                setShouldRefresh(true);
+                getScreenings();
                 setDeleteStatus('success');
-                setDeleteScreeningId(null);
             })
             .catch(() => setDeleteStatus('error'));
     };
@@ -57,14 +57,12 @@ const ManageScreenings = () => {
         getScreenings();
     }, []);
 
-    useEffect(() => {
-        if (shouldRefresh) {
-            getScreenings();
-            setShouldRefresh(false);
-        }
-    }, [shouldRefresh]);
-
-    if (screenings === null) return null;
+    if (screenings === null)
+        return (
+            <Backdrop open={true}>
+                <CircularProgress />
+            </Backdrop>
+        );
 
     return (
         <Fragment>
@@ -149,78 +147,29 @@ const ManageScreenings = () => {
                 <CreateScreening
                     screening={selectedScreening}
                     onClose={() => setSelectedScreening(null)}
-                    callback={() => setShouldRefresh(true)}
+                    callback={getScreenings}
                 />
             )}
             {selectedScreening && updateModal && (
                 <UpdateScreening
                     screening={selectedScreening}
                     onClose={() => setSelectedScreening(null)}
-                    callback={() => setShouldRefresh(true)}
+                    callback={getScreenings}
                 />
             )}
-            <Modal show={deleteScreeningId !== null}>
-                <Modal.Header>
-                    <Modal.Title>
-                        Delete screening:{' '}
-                        {screenings.find(({ id }) => id === deleteScreeningId)
-                            ?.movie?.title ?? ''}{' '}
-                        {screenings.find(({ id }) => id === deleteScreeningId)
-                            ?.hall?.name ?? ''}
-                    </Modal.Title>
-                </Modal.Header>
-                <Modal.Body>
-                    {deleteStatus === 'idle' && (
-                        <div>
-                            Are you sure you want to delete this screening? This
-                            action cannot be undone.
-                        </div>
-                    )}
-                    {deleteStatus === 'pending' && <div>Please wait...</div>}
-                    {deleteStatus === 'error' && (
-                        <div>Something went wrong. Please try again.</div>
-                    )}
-                    {deleteStatus === 'success' && (
-                        <div>Screening successfully deleted</div>
-                    )}
-                </Modal.Body>
-                <Modal.Footer>
-                    {(deleteStatus === 'success' ||
-                        deleteStatus === 'error') && (
-                        <Button
-                            onClick={() => {
-                                setDeleteScreeningId(null);
-                                if (deleteStatus === 'success') {
-                                    getScreenings();
-                                }
-                                setDeleteStatus('idle');
-                            }}
-                        >
-                            Close
-                        </Button>
-                    )}
-                    {(deleteStatus === 'idle' ||
-                        deleteStatus === 'pending') && (
-                        <Fragment>
-                            <Button
-                                disabled={deleteStatus === 'pending'}
-                                onClick={() => {
-                                    setDeleteScreeningId(null);
-                                    setDeleteStatus('idle');
-                                }}
-                            >
-                                Cancel
-                            </Button>
-                            <Button
-                                onClick={() => deleteScreening()}
-                                disabled={deleteStatus === 'pending'}
-                            >
-                                Delete
-                            </Button>
-                        </Fragment>
-                    )}
-                </Modal.Footer>
-            </Modal>
+            {deleteScreeningId !== null && (
+                <DeleteModal
+                    onSubmit={deleteScreening}
+                    onClose={() => {
+                        setDeleteScreeningId(null);
+                        setDeleteStatus('idle');
+                    }}
+                    deleteStatus={deleteStatus}
+                    entityName="screening"
+                    title={null}
+                    errorMessage={null}
+                />
+            )}
         </Fragment>
     );
 };

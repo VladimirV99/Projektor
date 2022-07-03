@@ -1,5 +1,7 @@
 using AutoMapper;
 using Common.Auth;
+using Common.EventBus.Events;
+using MassTransit;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Reservation.Grpc;
@@ -18,21 +20,24 @@ namespace Reservation.Controllers
         private readonly IHallService _hallService;
         private readonly IMapper _mapper;
         private readonly ScreeningService _screeningService;
+        private readonly IPublishEndpoint _publishEndpoint;
 
-        public HallController(IReservationRepository repository, IHallService hallService, IMapper mapper, ScreeningService service)
+        public HallController(IReservationRepository repository, IHallService hallService, IMapper mapper, ScreeningService screeningService, IPublishEndpoint publishEndpoint)
         {
             _repository = repository ?? throw new ArgumentNullException(nameof(repository));
             _hallService = hallService ?? throw new ArgumentNullException(nameof(hallService));
             _mapper = mapper ?? throw new ArgumentNullException(nameof(mapper));
-            _screeningService = service ?? throw new ArgumentNullException(nameof(service));
+            _screeningService = screeningService ?? throw new ArgumentNullException(nameof(screeningService));
+            _publishEndpoint = publishEndpoint ?? throw new ArgumentNullException(nameof(publishEndpoint));
         }
-        
+
         [HttpPost("[action]")]
         [ProducesResponseType(typeof(HallBasicModel), StatusCodes.Status201Created)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         public async Task<ActionResult<HallBasicModel>> CreateHall([FromBody] CreateHallRequest request)
         {
             var hall = await _hallService.CreateHall(request.Name, request.Rows, request.Columns);
+            await _publishEndpoint.Publish(new CreateHallEvent(hall.Id, hall.Name));
             return CreatedAtAction(
                 nameof(GetHallById), 
                 new { id = hall.Id },

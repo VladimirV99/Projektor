@@ -34,6 +34,7 @@ import { faPlus } from '@fortawesome/free-solid-svg-icons';
 import { useDebounce } from 'use-debounce';
 import { Modal } from 'react-bootstrap';
 import PageTitle from 'components/PageTitle';
+import DeleteModal from 'components/DeleteModal';
 
 const ManageMovies = () => {
     const [filterMovieRequest, setFilterMovieRequest] =
@@ -281,66 +282,25 @@ const ManageMovies = () => {
                     onClose={() => setSelectedMovie(null)}
                 />
             )}
-            <Modal show={deleteMovieId !== null}>
-                <Modal.Header>
-                    <Modal.Title>
-                        Delete movie:{' '}
-                        {movies.find(({ id }) => id === deleteMovieId)?.title ??
-                            ''}
-                    </Modal.Title>
-                </Modal.Header>
-                <Modal.Body>
-                    {deleteStatus === 'idle' && (
-                        <div>
-                            Are you sure you want to delete this movie? This
-                            action cannot be undone.
-                        </div>
-                    )}
-                    {deleteStatus === 'pending' && <div>Please wait...</div>}
-                    {deleteStatus === 'error' && (
-                        <div>Something went wrong. Please try again.</div>
-                    )}
-                    {deleteStatus === 'success' && (
-                        <div>Movie successfully deleted</div>
-                    )}
-                </Modal.Body>
-                <Modal.Footer>
-                    {(deleteStatus === 'success' ||
-                        deleteStatus === 'error') && (
-                        <Button
-                            onClick={() => {
-                                setDeleteMovieId(null);
-                                dispatch(resetDeleteStatus());
-                                if (deleteStatus === 'success') {
-                                    dispatch(filterMovies(filterMovieRequest));
-                                }
-                            }}
-                        >
-                            Close
-                        </Button>
-                    )}
-                    {(deleteStatus === 'idle' ||
-                        deleteStatus === 'pending') && (
-                        <Fragment>
-                            <Button
-                                disabled={deleteStatus === 'pending'}
-                                onClick={() => {
-                                    setDeleteMovieId(null);
-                                    dispatch(resetDeleteStatus());
-                                }}
-                            >
-                                Cancel
-                            </Button>
-                            <Button
-                                onClick={handleDeleteMovie}
-                                disabled={deleteStatus === 'pending'}
-                            >
-                                Delete
-                            </Button>
-                        </Fragment>
-                    )}
-                </Modal.Footer>
-            </Modal>
+            {deleteMovieId !== null && (
+                <DeleteModal
+                    onSubmit={handleDeleteMovie}
+                    onClose={() => {
+                        setDeleteMovieId(null);
+                        dispatch(resetDeleteStatus());
+                        if (deleteStatus === 'success') {
+                            dispatch(filterMovies(filterMovieRequest));
+                        }
+                    }}
+                    deleteStatus={deleteStatus}
+                    entityName="movie"
+                    errorMessage={null}
+                    title={`Delete movie: ${
+                        movies.find(({ id }) => id === deleteMovieId)?.title ??
+                        ''
+                    }`}
+                />
+            )}
         </Fragment>
     );
 };

@@ -10,7 +10,6 @@ import TableRow from '@mui/material/TableRow';
 import styled from 'styled-components';
 import { Button } from '@mui/material';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faEdit } from '@fortawesome/free-regular-svg-icons';
 import { faTrash } from '@fortawesome/free-solid-svg-icons';
 import { faPlus } from '@fortawesome/free-solid-svg-icons';
 import axiosAuthInstance from 'axios/instance';
@@ -59,10 +58,6 @@ const ManageHalls = () => {
     };
 
     useEffect(getHalls, []);
-
-    useEffect(() => {
-        console.log(deleteHallId);
-    }, [deleteHallId]);
 
     return (
         <Fragment>

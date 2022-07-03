@@ -3,8 +3,8 @@ import axios from 'axios';
 import axiosAuthInstance from 'axios/instance';
 import { GET_SCREENING_BY_ID } from 'constants/api';
 import {
-    GET_SEATS_FOR_SCREENING,
-    CREATE_RESETVATION,
+    GET_SEATS_FOR_SCREENING_URL,
+    CREATE_RESERVATION_URL,
 } from 'constants/api/reservations';
 import Screening from 'models/Screening';
 import SeatModel from 'models/Seat';
@@ -81,7 +81,7 @@ const ReservationDetailsScreen = () => {
     useEffect(() => {
         if (screening !== null) {
             axios
-                .get(GET_SEATS_FOR_SCREENING(parseInt(screeningId!)))
+                .get(GET_SEATS_FOR_SCREENING_URL(parseInt(screeningId!)))
                 .then((response) => {
                     setSeats(response.data);
                     setSelectedSeatMatrix(formSelectedMatrix(response.data));
@@ -108,7 +108,7 @@ const ReservationDetailsScreen = () => {
         }
 
         axiosAuthInstance
-            .post(CREATE_RESETVATION, {
+            .post(CREATE_RESERVATION_URL, {
                 screeningId,
                 seats: result,
             })
@@ -154,19 +154,15 @@ const ReservationDetailsScreen = () => {
                 <div
                     style={{
                         display: 'flex',
-                        justifyContent: 'center',
-                        marginBottom: 30,
+                        alignItems: 'center',
+                        flexDirection: 'column',
                     }}
                 >
-                    <div style={{ flexDirection: 'column' }}>
-                        <MovieScreen />
-                    </div>
-                </div>
-                <div style={{ display: 'flex', justifyContent: 'center' }}>
+                    <MovieScreen />
                     <div>
                         {seats.map((row, index) => {
                             return (
-                                <div>
+                                <div key={index}>
                                     <Row
                                         onClick={changeSelectedMatrix}
                                         row={row}

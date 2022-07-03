@@ -11,7 +11,7 @@ const Row = ({ row, rowIndex, onClick }: Props) => {
     return (
         <div style={{ display: 'flex', flexDirection: 'row' }}>
             {row.map((seat, index) => (
-                <div style={{ margin: 5 }}>
+                <div key={index} style={{ margin: 5 }}>
                     <Seat
                         onSeatClick={onClick}
                         rowIndex={rowIndex}

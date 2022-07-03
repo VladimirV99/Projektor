@@ -11,6 +11,7 @@ public class CreateOrUpdateMovieRequest
     public string Title { get; set; }
     
     [Required(ErrorMessage = ErrorMessages.LENGTH_REQUIRED)]
+    [Range(0, int.MaxValue, ErrorMessage = ErrorMessages.LENGTH_POSITIVE)]
     public int Length { get; set; }
     
     [Required(ErrorMessage = ErrorMessages.YEAR_REQUIRED)]

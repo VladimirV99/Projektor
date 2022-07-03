@@ -5,6 +5,7 @@ import { ApiSuccess } from 'models';
 import * as API from 'redux/movies/api';
 import { PaginatedMovieList } from 'models/Movie/PaginatedMovieList';
 import CreateOrUpdateMovieRequest from 'models/Movie/CreateOrUpdateMovieRequest';
+import { isNull } from 'util';
 
 export type MovieSliceType = {
     entities: Movie[];
@@ -44,8 +45,12 @@ export const createOrUpdateMovie = createAsyncThunk(
             );
             return data;
         } catch (e: any) {
-            if (e.response && e.response.data) {
-                throw new Error(e.response.data);
+            if (e.response && e.response.data && e.response.data.errors) {
+                throw new Error(
+                    Object.entries(e.response.data.errors)
+                        .map(([_, v]) => v)
+                        .join(',')
+                );
             }
             throw new Error('Something went wrong. Please try again later.');
         }
@@ -97,7 +102,7 @@ const moviesSlice = createSlice({
             state.updateStatus = 'success';
         });
         builder.addCase(createOrUpdateMovie.rejected, (state, action) => {
-            state.updateError = action.error?.message ?? null;
+            state.updateError = action.error.message ?? null;
             state.updateStatus = 'error';
         });
         builder.addCase(resetUpdateStatus, (state, action) => {

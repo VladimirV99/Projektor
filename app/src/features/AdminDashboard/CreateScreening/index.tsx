@@ -30,6 +30,11 @@ const CreateScreening = ({ screening, onClose, callback }: Props) => {
 
     const handleCreateSubmit = () => {
         setCreateStatus('pending');
+        if (isNaN(Date.parse(screeningInput.movieStart)) === true) {
+            setCreateError('Date is invalid');
+            setCreateStatus('error');
+            return;
+        }
         axiosAuthInstance
             .post(INSERT_SCREENING_URL, {
                 movieId: selectedMovieId,

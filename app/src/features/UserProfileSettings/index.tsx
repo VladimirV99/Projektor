@@ -19,6 +19,7 @@ import { updateName } from 'redux/auth/actions';
 import * as E from 'constants/errors';
 import * as F from 'constants/forms';
 import PageTitle from 'components/PageTitle';
+import { useNavigate } from 'react-router-dom';
 
 const getErrorsFromResponse = (errors: any) => {
     if (!errors.response) {
@@ -38,6 +39,8 @@ const getErrorsFromResponse = (errors: any) => {
 };
 
 const UserProfileSettings = () => {
+    const navigate = useNavigate();
+
     const isLoggedIn = useSelector(selectIsUserLoggedIn);
     const user = useSelector(selectUser);
     const firstName = user?.firstName ?? '';
@@ -205,12 +208,7 @@ const UserProfileSettings = () => {
     };
 
     if (!isLoggedIn) {
-        return (
-            <p>
-                Not found (TODO: replace with NotFound component after merge (so
-                i dont write it twice))
-            </p>
-        );
+        navigate('/not_found');
     }
 
     const renderNameInfo = () => (

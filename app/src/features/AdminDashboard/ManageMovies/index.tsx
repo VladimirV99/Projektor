@@ -279,7 +279,10 @@ const ManageMovies = () => {
             {selectedMovie && (
                 <CreateOrEditMovie
                     movie={selectedMovie}
-                    onClose={() => setSelectedMovie(null)}
+                    onClose={() => {
+                        setSelectedMovie(null);
+                        dispatch(filterMovies(filterMovieRequest));
+                    }}
                 />
             )}
             {deleteMovieId !== null && (

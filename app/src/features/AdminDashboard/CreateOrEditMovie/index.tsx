@@ -193,7 +193,7 @@ const CreateOrEditMovie = ({ movie, onClose }: Props) => {
                             <TextField
                                 value={movieInput.length}
                                 type="number"
-                                label="length"
+                                label="Length"
                                 onChange={(e) =>
                                     setMovieInput({
                                         ...movieInput,
@@ -204,9 +204,6 @@ const CreateOrEditMovie = ({ movie, onClose }: Props) => {
                             />
                         </FormTextInputField>
                         <FormTextInputField>
-                            <FormInputFieldTitle>
-                                Trailer URL
-                            </FormInputFieldTitle>
                             <TextField
                                 value={movieInput.trailerUrl ?? ''}
                                 label="Trailer URL"

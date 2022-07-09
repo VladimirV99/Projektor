@@ -14,7 +14,6 @@ import TableContainer from '@mui/material/TableContainer';
 import TableHead from '@mui/material/TableHead';
 import TableRow from '@mui/material/TableRow';
 import Paper from '@mui/material/Paper';
-import { Helmet } from 'react-helmet';
 import {
     Backdrop,
     Button,
@@ -27,9 +26,9 @@ import { faEdit } from '@fortawesome/free-regular-svg-icons';
 import { faTrash } from '@fortawesome/free-solid-svg-icons';
 import { faPlus } from '@fortawesome/free-solid-svg-icons';
 import { useDebounce } from 'use-debounce';
-import { Modal, ModalDialog } from 'react-bootstrap';
+import { Modal } from 'react-bootstrap';
 import Person from 'models/Movie/Person';
-import { Link, Navigate } from 'react-router-dom';
+import { Link } from 'react-router-dom';
 import CreateOrEditPerson from '../CreateOrEditPerson';
 import PageTitle from 'components/PageTitle';
 import DeleteModal from 'components/DeleteModal';
@@ -272,7 +271,16 @@ const ManagePeople = () => {
             {selectedPerson && (
                 <CreateOrEditPerson
                     person={selectedPerson}
-                    onClose={() => setSelectedPerson(null)}
+                    onClose={() => {
+                        setSelectedPerson(null);
+                        dispatch(
+                            searchPeopleAdmin({
+                                searchString:
+                                    searchPeopleRequest.searchString ?? '',
+                                page: searchPeopleRequest.page,
+                            })
+                        );
+                    }}
                 />
             )}
             {deletePersonId !== null && (

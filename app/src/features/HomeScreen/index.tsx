@@ -87,6 +87,9 @@ const HomeScreen = (): JSX.Element => {
                         Failed to load current movies
                     </h3>
                 )}
+                {currentMovies.length === 0 && (
+                    <h3>No movies playing right now.</h3>
+                )}
                 <S.PosterList>
                     {currentMovies.map((movie) => (
                         <MoviePoster

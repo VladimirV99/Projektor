@@ -5,15 +5,21 @@ import { AnyArray } from 'immer/dist/internal';
 import axios from 'axios';
 
 type Props = {
+    label?: string;
     searchEndpoint: string;
+    maxOptions?: number;
     onOptionClicked: (option: any) => void;
+    onInputCleared?: () => void;
     getOptions: (results: any[]) => { id: any; label: string }[];
     extractData?: (data: any) => any;
 };
 
 function SearchInput({
+    label = '',
     searchEndpoint,
+    maxOptions = 5,
     onOptionClicked,
+    onInputCleared = () => {},
     getOptions,
     extractData = (data) => data,
 }: Props): JSX.Element {
@@ -22,9 +28,6 @@ function SearchInput({
     const [searchResults, setSearchResults] = useState<AnyArray>([]);
 
     useEffect(() => {
-        if (searchTerm.trim().length === 0) {
-            return;
-        }
         axios
             .get(searchEndpoint, {
                 params: {
@@ -42,6 +45,7 @@ function SearchInput({
             <Autocomplete
                 onChange={(e, selectedOption) => {
                     if (!selectedOption) {
+                        onInputCleared();
                         return;
                     }
                     onOptionClicked({
@@ -49,11 +53,12 @@ function SearchInput({
                         label: selectedOption.label,
                     });
                 }}
-                options={getOptions(searchResults)}
+                options={getOptions(searchResults).slice(0, maxOptions)}
                 isOptionEqualToValue={(option, value) => option.id === value.id}
                 renderInput={(params) => (
                     <TextField
                         {...params}
+                        label={label}
                         onChange={(e) => setSearchTermInput(e.target.value)}
                     />
                 )}
